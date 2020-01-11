@@ -1,6 +1,17 @@
 # tapir-learn
 Learning to build APIs with Scala Tapir
 
+## Quick start up
+
+Run the following commands for quick startup and check
+
+0. git clone https://github.com/butcherless/tapir-learn.git
+0. cd tapir-learn
+0. sbt
+0. reStart
+0. http://localhost:8080/api/v1.0/docs
+
+
 ## Project structure
 
 Sbt build tool config file
@@ -23,16 +34,6 @@ Sbt plugins
 
     project/plugins.sbt
 
-
-## Quick start up
-
-Run the following commands for quick startup and check
-
-0. git clone https://github.com/butcherless/tapir-learn.git
-0. cd tapir-learn
-0. sbt
-0. reStart
-0. http://localhost:8080/api/v1.0/docs
 
 ## Compile and run this project
 
