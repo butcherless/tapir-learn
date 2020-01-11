@@ -24,11 +24,21 @@ Sbt plugins
     project/plugins.sbt
 
 
-## Compile this project
+## Quick start up
+
+Run the following commands for quick startup and check
+
+0. git clone https://github.com/butcherless/tapir-learn.git
+0. cd tapir-learn
+0. sbt
+0. reStart
+0. http://localhost:8080/api/v1.0/docs
+
+## Compile and run this project
 
 Run Sbt build tool
 
-`sbt` &#9166; \
+`sbt` &#9166;
 
 Compile the application 
 
