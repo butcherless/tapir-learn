@@ -5,11 +5,11 @@ Learning to build APIs with Scala Tapir
 
 Run the following commands for quick startup and check
 
-0. git clone https://github.com/butcherless/tapir-learn.git
-0. cd tapir-learn
-0. sbt
-0. reStart
-0. http://localhost:8080/api/v1.0/docs
+1. git clone https://github.com/butcherless/tapir-learn.git
+2. cd tapir-learn
+3. sbt
+4. reStart
+5. http://localhost:8080/api/v1.0/docs
 
 
 ## Project structure
