@@ -26,7 +26,7 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion,
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % tapirVersion,
 
-    "ch.qos.logback" % "logback-classic" % logbackVersion,
+    "ch.qos.logback" % "logback-classic" % logbackVersion exclude ("org.slf4j", "slf4j-api"),
     "dev.zio" %% "zio" % zioVersion,
 
     "org.scalatest" %% "scalatest" % scalatestVersion % Test,
