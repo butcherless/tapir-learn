@@ -80,6 +80,17 @@ Exit Sbt
 `CTRL + D`
 
 
+## Testing
+
+Rapid test cycle via continuous testing wirh a single suite test:
+
+    ~testOnly com.cmartin.learn.api.ActuatorApiSpec
+
+Rapid test cycle via continuous testing wirh a single test:
+
+    ~testOnly com.cmartin.learn.api.ActuatorApiSpec -- -z "keyword"
+
+
 ## Logback config
 
 Asynchronous non-blocking _appender_ config

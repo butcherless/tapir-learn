@@ -25,5 +25,5 @@ lazy val templateProject = (project in file("."))
   .settings(
       commonSettings,
       name := "tapir-learn",
-      testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
+      testFrameworks ++= Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
   )
