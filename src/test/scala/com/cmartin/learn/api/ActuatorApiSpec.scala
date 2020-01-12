@@ -38,7 +38,6 @@ object ActuatorApiSpec {
   import io.circe.generic.auto._
   import io.circe.parser._
 
-
   val contentTypeJson = `Content-Type`(`application/json`)
 
   def parseBuildInfo(json: String): Either[circe.Error, BuildInfo] =

@@ -90,6 +90,10 @@ Rapid test cycle via continuous testing wirh a single test:
 
     ~testOnly com.cmartin.learn.api.ActuatorApiSpec -- -z "keyword"
 
+Links:
+
+- http://www.scalatest.org/at_a_glance/FlatSpec
+- https://doc.akka.io/docs/akka-http/current/routing-dsl/testkit.html
 
 ## Logback config
 
