@@ -4,6 +4,9 @@ import java.time.{Clock, LocalDateTime}
 
 object ApiModel {
 
+  val APP_NAME = "tapir learn web application"
+  val APP_VERSION = "1.0.0-SNAPSHOT"
+
   sealed trait Currency
 
   case class EUR(code: String) extends Currency
@@ -40,9 +43,9 @@ object ApiModel {
 
   def buildInfo(): BuildInfo =
     BuildInfo(
-      "tapir learn web application",
+      APP_NAME,
       LocalDateTime.now(Clock.systemDefaultZone()).toString,
-      "1.0.0-SNAPSHOT",
+      APP_VERSION,
       Success
     )
 }

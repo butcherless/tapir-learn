@@ -30,6 +30,9 @@ object Dependencies {
     "dev.zio" %% "zio" % zioVersion,
 
     "org.scalatest" %% "scalatest" % scalatestVersion % Test,
+    "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
+    "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
+
 
     "dev.zio" %% "zio-test" % zioVersion % "test",
     "dev.zio" %% "zio-test-sbt" % zioVersion % "test"
