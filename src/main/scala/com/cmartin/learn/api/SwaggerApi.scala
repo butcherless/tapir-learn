@@ -16,6 +16,7 @@ trait SwaggerApi {
   ).toOpenAPI("Tapir Learning Service API", "1.0.0-SNAPSHOT")
     .toYaml
 
+  //
   lazy val route: Route =
     pathPrefix(API_TEXT / API_VERSION) {
       new SwaggerAkka(docsAsYaml).routes

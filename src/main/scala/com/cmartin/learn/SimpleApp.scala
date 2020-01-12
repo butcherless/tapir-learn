@@ -1,11 +1,8 @@
 package com.cmartin.learn
 
-import com.cmartin.learn.Library._
-import org.slf4j.LoggerFactory
-import zio.{App, Task, ZIO}
-
 // uncomment lines below to run
 object SimpleApp
+
 /*
   extends App {
 

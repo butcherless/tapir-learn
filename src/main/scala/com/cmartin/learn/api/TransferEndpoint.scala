@@ -7,6 +7,7 @@ import sttp.tapir.json.circe._
 import sttp.tapir.{Endpoint, _}
 
 trait TransferEndpoint {
+  //json encode/decode via circe.generic.auto
   lazy val getTransferEndpoint: Endpoint[Unit, StatusCode, Transfer, Nothing] =
     endpoint
       .get

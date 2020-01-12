@@ -9,6 +9,7 @@ import sttp.tapir.{Endpoint, _}
 trait ActuatorEndpoint {
   type HealthInfo = BuildInfo
 
+  //json encode/decode via circe.generic.auto
   lazy val healthEndpoint: Endpoint[Unit, StatusCode, HealthInfo, Nothing] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "health")

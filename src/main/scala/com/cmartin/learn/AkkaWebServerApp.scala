@@ -16,8 +16,7 @@ object AkkaWebServerApp
   implicit val executionContext: ExecutionContext = system.dispatcher
   system.log.info(s"Starting WebServer")
 
-  // L A U N C H  W E B  S E R V E R
-
+  // L A U N C H  W E B  S E R V E R (actor based)
   val futureBinding: Future[Http.ServerBinding] =
     Http()
       .bindAndHandle(

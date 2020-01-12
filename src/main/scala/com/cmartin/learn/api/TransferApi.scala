@@ -8,6 +8,7 @@ import scala.concurrent.Future
 trait TransferApi {
   lazy val routes = getRoute // ~ add more routes
 
+  // tapir endpoint description to akka routes via .toRoute function
   lazy val getRoute: Route =
     TransferEndpoint.getTransferEndpoint.toRoute { _ =>
       Future.successful(Right(ApiModel.transferExample)) // simulating business logic function
