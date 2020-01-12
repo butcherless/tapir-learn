@@ -82,11 +82,11 @@ Exit Sbt
 
 ## Testing
 
-Rapid test cycle via continuous testing wirh a single suite test:
+Rapid test cycle via continuous testing with a single suite test:
 
     ~testOnly com.cmartin.learn.api.ActuatorApiSpec
 
-Rapid test cycle via continuous testing wirh a single test:
+Rapid test cycle via continuous testing with a single test:
 
     ~testOnly com.cmartin.learn.api.ActuatorApiSpec -- -z "keyword"
 
@@ -98,6 +98,8 @@ Links:
 ## Logback config
 
 Asynchronous non-blocking _appender_ config
+
+- http://logback.qos.ch/manual/appenders.html
 
 ## Akka config
 
