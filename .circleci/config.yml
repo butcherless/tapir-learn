@@ -21,4 +21,9 @@ jobs:
       - run:
           name: clean, compile
           command: |
-            sbt -mem 2048 clean compile
+            sbt clean compile
+
+      - run:
+          name: test
+          command: |
+            sbt test
