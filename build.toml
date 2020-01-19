@@ -1,0 +1,30 @@
+[project]
+scalaVersion = "2.13.1"
+testFrameworks = ["org.scalatest.tools.Framework", "zio.test.sbt.ZTestFramework"]
+
+[module.tapirlearn.jvm]
+root = "."
+sources = ["src/main/scala"]
+scalaDeps = [
+              ["com.typesafe.akka",  "akka-actor" , "2.6.1"],
+              ["com.typesafe.akka",  "akka-actor-typed" , "2.6.1"],
+              ["com.typesafe.akka",  "akka-stream" , "2.6.1"],
+              ["com.typesafe.akka",  "akka-http" , "10.1.11"],
+              ["dev.zio", "zio", "1.0.0-RC17"],
+              ["com.softwaremill.sttp.tapir" , "tapir-core" , "0.12.15"],
+              ["com.softwaremill.sttp.tapir" , "tapir-akka-http-server" , "0.12.15"],
+              ["com.softwaremill.sttp.tapir" , "tapir-json-circe" , "0.12.15"],
+              ["com.softwaremill.sttp.tapir" , "tapir-openapi-docs" , "0.12.15"],
+              ["com.softwaremill.sttp.tapir" , "tapir-openapi-circe-yaml" , "0.12.15"],
+              ["com.softwaremill.sttp.tapir" , "tapir-swagger-ui-akka-http" , "0.12.15"]
+            ]
+
+[module.tapirlearn.test.jvm]
+sources = ["src/test/scala"]
+resources = ["src/test/resources"]
+scalaDeps = [
+              ["org.scalatest", "scalatest", "3.1.0"],
+              ["com.typesafe.akka", "akka-http-testkit" , "10.1.11"],
+              ["com.typesafe.akka", "akka-testkit" , "2.6.1"],
+              ["dev.zio", "zio-test", "1.0.0-RC17"]
+]

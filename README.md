@@ -113,3 +113,15 @@ https://doc.akka.io/docs/akka/current/general/configuration.html
 
 https://tapir-scala.readthedocs.io/en/latest/index.html
 
+## Experimental
+
+CI tasks with Seed build tool:
+
+    docker run -it tindzk/seed:0.1.6 /bin/sh
+    apk add git
+    cd
+    git clone https://github.com/butcherless/tapir-learn.git
+    cd tapir-learn
+    bloop server &
+    seed bloop
+    bloop test tapirlearn
