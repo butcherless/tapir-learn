@@ -12,7 +12,8 @@ trait SwaggerApi {
   // add endpoints to the list for swagger documentation
   lazy val docsAsYaml: String = List(
     ActuatorEndpoint.healthEndpoint,
-    TransferEndpoint.getTransferEndpoint
+    TransferEndpoint.getTransferEndpoint,
+    TransferEndpoint.getACEntityEndpoint
   ).toOpenAPI("Tapir Learning Service API", "1.0.0-SNAPSHOT")
     .toYaml
 

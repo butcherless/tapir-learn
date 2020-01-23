@@ -28,6 +28,41 @@ object ApiModel {
 
   object Error extends Result
 
+  // NESTED ENTITIES
+  case class ACEntity(
+                       composedId: ComposedId,
+                       sids: Sids,
+                       output: Output
+                     )
+
+  case class ComposedId(tid: Long, aid: Long)
+
+  case class Sids(source: Source, state: Option[State]) // TODO Option state
+
+  sealed trait Sid {
+    val filter: String
+  }
+
+  case class Source(id: Long, filter: String, name: Output) extends Sid
+
+  case class State(id: Long, filter: String, name: Output, perStrategy: PerStrategy, procs: Processors) extends Sid
+
+  sealed trait Output
+
+  //case class ComOut(name: String) extends Output
+  case object ComOut extends Output
+
+  //case class ShaOut(name: String) extends Output
+  case object ShaOut extends Output
+
+  sealed trait PerStrategy
+
+  case object OveStrategy extends PerStrategy
+
+  case object ShaStrategy extends PerStrategy
+
+  case class Processors(ins: Seq[String], exs: Seq[String], trs: Seq[String])
+
   /*
     API Objects examples
    */
@@ -41,6 +76,16 @@ object ApiModel {
       "Viaje a Tenerife"
     )
 
+  val acEntityExample: ACEntity =
+    ACEntity(
+      ComposedId(11111111L, 22222222L),
+      Sids(
+        Source(1111L, "src-filter", ComOut), Some(State(2222L, "sta-filter", ComOut, ShaStrategy,
+          Processors(Seq("i1", "i2"), Seq.empty[String], Seq("t1", "t2", "t3"))))),
+      // ShaOut("sha-out")
+      ComOut
+    )
+
   def buildInfo(): BuildInfo =
     BuildInfo(
       APP_NAME,
@@ -48,4 +93,6 @@ object ApiModel {
       APP_VERSION,
       Success
     )
+
+
 }
