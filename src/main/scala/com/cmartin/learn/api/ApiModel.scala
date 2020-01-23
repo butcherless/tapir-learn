@@ -1,8 +1,33 @@
 package com.cmartin.learn.api
 
+import java.nio.charset.StandardCharsets
 import java.time.{Clock, LocalDateTime}
 
+import io.circe.generic.auto._
+import io.circe.syntax._
+import sttp.tapir.Codec.JsonCodec
+import sttp.tapir.DecodeResult.Value
+import sttp.tapir.json.circe.jsonPrinter
+import sttp.tapir.{CodecFormat, CodecMeta, DecodeResult, Schema, StringValueType, Validator}
+
 object ApiModel {
+
+  case class OutputHelper(value: String)
+
+  implicit val jc = new JsonCodec[Output] {
+    override def encode(t: Output): String = t match {
+      case ApiModel.ComOut =>
+        jsonPrinter.print(OutputHelper("ComOut").asJson)
+
+      case ApiModel.ShaOut =>
+        jsonPrinter.print(OutputHelper("ShaOutput").asJson)
+    }
+
+    override def rawDecode(s: String): DecodeResult[Output] = Value(ApiModel.ShaOut)
+
+    override def meta: CodecMeta[Output, CodecFormat.Json, String] =
+      CodecMeta(implicitly[Schema[Output]], CodecFormat.Json(), StringValueType(StandardCharsets.UTF_8), implicitly[Validator[Output]])
+  }
 
   val APP_NAME = "tapir learn web application"
   val APP_VERSION = "1.0.0-SNAPSHOT"
@@ -49,10 +74,8 @@ object ApiModel {
 
   sealed trait Output
 
-  //case class ComOut(name: String) extends Output
   case object ComOut extends Output
 
-  //case class ShaOut(name: String) extends Output
   case object ShaOut extends Output
 
   sealed trait PerStrategy
@@ -82,7 +105,6 @@ object ApiModel {
       Sids(
         Source(1111L, "src-filter", ComOut), Some(State(2222L, "sta-filter", ComOut, ShaStrategy,
           Processors(Seq("i1", "i2"), Seq.empty[String], Seq("t1", "t2", "t3"))))),
-      // ShaOut("sha-out")
       ComOut
     )
 
