@@ -2,7 +2,8 @@ package com.cmartin.learn.api
 
 import java.nio.charset.StandardCharsets
 
-import com.cmartin.learn.api.ApiModel.{ACEntity, Output, Transfer}
+import com.cmartin.learn.api.ApiModel._
+import io.circe.{Decoder, Encoder, HCursor, Json}
 import io.circe.generic.auto._
 import io.circe.syntax._
 import sttp.model.StatusCode
@@ -33,20 +34,36 @@ trait TransferEndpoint {
 
   case class OutputHelper(value: String)
 
-  implicit val jc = new JsonCodec[Output] {
-    override def encode(t: Output): String = t match {
-      case ApiModel.ComOut =>
-        jsonPrinter.print(OutputHelper("ComOut").asJson)
+//  implicit val jc = new JsonCodec[Output] {
+//    override def encode(t: Output): String = t match {
+//      case ApiModel.ComOut =>
+//        jsonPrinter.print(OutputHelper("ComOut").asJson)
+//
+//      case ApiModel.ShaOut =>
+//        jsonPrinter.print(OutputHelper("ShaOutput").asJson)
+//    }
+//
+//    override def rawDecode(s: String): DecodeResult[Output] = Value(ApiModel.ShaOut)
+//
+//    override def meta: CodecMeta[Output, CodecFormat.Json, String] =
+//      CodecMeta(implicitly[Schema[Output]], CodecFormat.Json(), StringValueType(StandardCharsets.UTF_8), implicitly[Validator[Output]])
+//  }
 
-      case ApiModel.ShaOut =>
-        jsonPrinter.print(OutputHelper("ShaOutput").asJson)
-    }
+  private[api] implicit lazy val seqAssetComposerCodec: JsonCodec[Output] =
+    implicitly[JsonCodec[Json]].map(json => json.as[Output](decodeAssetComposerStrategy) match {
+      case Left(_) => throw new RuntimeException("MessageParsingError")
+      case Right(value) => value
+    })(assetComposer => assetComposer.asJson(encodeAssetComposerStrategy))
 
-    override def rawDecode(s: String): DecodeResult[Output] = Value(ApiModel.ShaOut)
-
-    override def meta: CodecMeta[Output, CodecFormat.Json, String] =
-      CodecMeta(implicitly[Schema[Output]], CodecFormat.Json(), StringValueType(StandardCharsets.UTF_8), implicitly[Validator[Output]])
+  private implicit lazy val decodeAssetComposerStrategy: Decoder[Output] = (c: HCursor) => for {
+    strategy <- c.get[Output]("value")
+  } yield strategy match {
+    case a@ApiModel.ComOut => a
+    case b@ApiModel.ShaOut => b
   }
+
+  private implicit lazy val encodeAssetComposerStrategy: Encoder[Output] =
+    (s: Output) => Json.fromString(s.toString)
 
 
   //  def decode(s: String): DecodeResult[Output] = s match {
@@ -81,7 +98,7 @@ trait TransferEndpoint {
       .in(CommonEndpoint.baseEndpointInput / "acEntity")
       .name("get-acEntity-endpoint")
       .description("Get AC Entity Endpoint")
-      .out(jsonBody[ACEntity].example(ApiModel.acEntityExample))
+      .out(jsonBody[ACEntity].example(TransferEndpoint.acEntityExample))
       .errorOut(statusCode)
 
 
@@ -105,4 +122,13 @@ trait TransferEndpoint {
 
 }
 
-object TransferEndpoint extends TransferEndpoint
+object TransferEndpoint extends TransferEndpoint {
+  val acEntityExample: ACEntity =
+    ACEntity(
+      ComposedId(11111111L, 22222222L),
+      Sids(
+        Source(1111L, "src-filter", ComOut), Some(State(2222L, "sta-filter", ComOut, ShaStrategy,
+          Processors(Seq("i1", "i2"), Seq.empty[String], Seq("t1", "t2", "t3"))))),
+      ComOut
+    )
+}
