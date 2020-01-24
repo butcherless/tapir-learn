@@ -1,7 +1,5 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.api.ApiModel.{Currency, Result}
-import io.circe.{Encoder, Json}
 import sttp.tapir._
 
 object CommonEndpoint {

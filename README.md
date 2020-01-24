@@ -90,6 +90,14 @@ Rapid test cycle via continuous testing with a single test:
 
     ~testOnly com.cmartin.learn.api.ActuatorApiSpec -- -z "keyword"
 
+## Integration (httpie client)
+
+    http "http://localhost:8080/api/v1.0/health"
+    
+    http "http://localhost:8080/api/v1.0/transfers"
+    
+    http "http://localhost:8080/api/v1.0/acEntity"
+
 Links:
 
 - http://www.scalatest.org/at_a_glance/FlatSpec

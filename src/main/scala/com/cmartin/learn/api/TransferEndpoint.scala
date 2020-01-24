@@ -2,7 +2,6 @@ package com.cmartin.learn.api
 
 import com.cmartin.learn.api.ApiModel._
 import io.circe.generic.auto._
-import io.circe.{Decoder, HCursor}
 import sttp.model.StatusCode
 import sttp.tapir.json.circe._
 import sttp.tapir.{Endpoint, _}
@@ -12,42 +11,6 @@ trait TransferEndpoint
 
   import TransferEndpoint._
 
-  //  private[api] implicit lazy val outputCodec: JsonCodec[Output] =
-  //    buildCodec[Output](outputDecoder, genericEncoder[Output]())
-
-  // JSON => Object
-  //  private implicit lazy val outputDecoder: Decoder[Output] = (c: HCursor) => for {
-  //    strategy <- c.get[Output]("output")
-  //  } yield strategy match {
-  //    case ApiModel.ComOut => ComOut
-  //    case ApiModel.ShaOut => ShaOut
-  //  }
-
-
-  //  private implicit lazy val currencyDecoder: Decoder[Currency] = (c: HCursor) => for {
-  //    obj <- c.get[Currency]("currency")
-  //  } yield select(obj)
-
-  //  private[api] implicit lazy val resultCodec: JsonCodec[Result] =
-  //    buildCodec[Result](resultDecoder, genericEncoder[Result]())
-
-  private implicit lazy val resultDecoder: Decoder[Result] = (c: HCursor) => for {
-    obj <- c.get[Result]("result")
-  } yield select(obj)
-
-
-  //  def select(o: Currency): Currency = o match {
-  //    case ApiModel.EUR => EUR
-  //    case ApiModel.USD => USD
-  //  }
-
-  def select(o: Result): Result = o match {
-    case ApiModel.Success => Success
-    case ApiModel.Warning => Warning
-    case ApiModel.Error => Error
-  }
-
-
   /*
       E N D P O I N T S
    */
@@ -56,7 +19,7 @@ trait TransferEndpoint
   lazy val getTransferEndpoint: Endpoint[Unit, StatusCode, Transfer, Nothing] =
     endpoint
       .get
-      .in(CommonEndpoint.baseEndpointInput / "transfers")
+      .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
       .name("get-transfer-endpoint")
       .description("Get Transfer Endpoint")
       .out(jsonBody[Transfer].example(ApiModel.transferExample))
@@ -93,6 +56,7 @@ trait TransferEndpoint
 }
 
 object TransferEndpoint extends TransferEndpoint {
+  val TRANSFERS_TEXT = "transfers"
   //  def buildCodec[T](decoder: Decoder[T], encoder: Encoder[T]): JsonCodec[T] =
   //    implicitly[JsonCodec[Json]].map(json => json.as[T](decoder) match {
   //      case Left(_) => throw new RuntimeException("ParsingError")
@@ -105,7 +69,7 @@ object TransferEndpoint extends TransferEndpoint {
       ComposedId(11111111L, 22222222L),
       Sids(
         Source(1111L, "src-filter", ComOut), Some(State(2222L, "sta-filter", ComOut, ShaStrategy,
-          Processors(Seq("i1", "i2"), Seq.empty[String], Seq("t1", "t2", "t3"))))),
+          Processors(Seq("in1", "in2"), Seq("ex1", "ex2"), Seq("t1", "t2", "t3"))))),
       ComOut
     )
 }

@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.ContentTypes.`application/json`
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.cmartin.learn.api.ApiModel.BuildInfo
+import com.cmartin.learn.api.ApiModel.{BuildInfo, Transfer}
 import io.circe
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -16,6 +16,7 @@ final class ActuatorApiSpec
 
   import ActuatorApiSpec._
   import CommonEndpoint._
+  import TransferEndpoint._
 
   behavior of "Actuator API"
 
@@ -31,6 +32,7 @@ final class ActuatorApiSpec
         info => info.version == ApiModel.APP_VERSION && info.appName == ApiModel.APP_NAME)
     }
   }
+
 }
 
 object ActuatorApiSpec {
@@ -42,5 +44,6 @@ object ActuatorApiSpec {
 
   def parseBuildInfo(json: String): Either[circe.Error, BuildInfo] =
     decode[BuildInfo](json)
+
 
 }
