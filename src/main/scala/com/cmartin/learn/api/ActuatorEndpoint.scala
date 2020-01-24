@@ -6,7 +6,9 @@ import sttp.model.StatusCode
 import sttp.tapir.json.circe._
 import sttp.tapir.{Endpoint, _}
 
-trait ActuatorEndpoint {
+trait ActuatorEndpoint
+  extends ApiCodecs {
+
   type HealthInfo = BuildInfo
 
   //json encode/decode via circe.generic.auto

@@ -9,24 +9,22 @@ object ApiModel {
 
   sealed trait Currency
 
-  case class EUR(code: String) extends Currency
+  case object EUR extends Currency
 
-  case class USD(code: String) extends Currency
-
-  val eur = EUR("EUR")
-  val usd = USD("EUR")
+  case object USD extends Currency
 
   case class Transfer(sender: String, receiver: String, amount: Double, currency: Currency, desc: String)
 
-  case class BuildInfo(appName: String, date: String, version: String, result: Result)
 
   sealed trait Result
 
-  object Success extends Result
+  case object Success extends Result
 
-  object Warning extends Result
+  case object Warning extends Result
 
-  object Error extends Result
+  case object Error extends Result
+
+  case class BuildInfo(appName: String, date: String, version: String, result: Result)
 
   // NESTED ENTITIES
   case class ACEntity(
@@ -70,18 +68,10 @@ object ApiModel {
       "ES11 0182 1111 2222 3333 4444",
       "ES99 2038 9999 8888 7777 6666",
       100.00,
-      eur,
+      EUR,
       "Viaje a Tenerife"
     )
 
-  val acEntityExample: ACEntity =
-    ACEntity(
-      ComposedId(11111111L, 22222222L),
-      Sids(
-        Source(1111L, "src-filter", ComOut), Some(State(2222L, "sta-filter", ComOut, ShaStrategy,
-          Processors(Seq("i1", "i2"), Seq.empty[String], Seq("t1", "t2", "t3"))))),
-      ComOut
-    )
 
   def buildInfo(): BuildInfo =
     BuildInfo(

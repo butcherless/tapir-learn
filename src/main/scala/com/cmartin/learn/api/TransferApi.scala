@@ -17,7 +17,7 @@ trait TransferApi {
 
   lazy val getACEntityRoute: Route =
     TransferEndpoint.getACEntityEndpoint.toRoute { _ =>
-      Future.successful(Right(ApiModel.acEntityExample))
+      Future.successful(Right(TransferEndpoint.acEntityExample))
     }
 
 
