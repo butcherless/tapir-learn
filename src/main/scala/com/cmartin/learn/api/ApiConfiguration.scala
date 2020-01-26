@@ -8,5 +8,6 @@ trait ApiConfiguration {
   lazy val routes: Route =
     ActuatorApi.route ~
       TransferApi.routes ~
+      AircraftApi.routes ~
       SwaggerApi.route
 }

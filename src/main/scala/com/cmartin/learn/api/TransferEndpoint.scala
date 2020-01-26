@@ -21,9 +21,20 @@ trait TransferEndpoint
       .get
       .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
       .name("get-transfer-endpoint")
-      .description("Get Transfer Endpoint")
-      .out(jsonBody[Transfer].example(ApiModel.transferExample))
+      .description("Retrieve Transfer Endpoint")
+      .out(jsonBody[Transfer].example(transferExample))
       .errorOut(statusCode)
+
+  lazy val postTransferEndpoint: Endpoint[Transfer, StatusCode, Transfer, Nothing] =
+    endpoint
+      .post
+      .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
+      .name("post-transfer-endpoint")
+      .description(("Create Transfer Endpoint"))
+      .in(jsonBody[Transfer].example(transferExample))
+      .out(jsonBody[Transfer].example(transferExample))
+      .errorOut(statusCode)
+
 
   lazy val getACEntityEndpoint: Endpoint[Unit, StatusCode, ACEntity, Nothing] =
     endpoint
@@ -64,11 +75,22 @@ object TransferEndpoint extends TransferEndpoint {
   //    })(obj => obj.asJson(encoder))
   //
 
+  val transferExample =
+    Transfer(
+      "ES11 0182 1111 2222 3333 4444",
+      "ES99 2038 9999 8888 7777 6666",
+      100.00,
+      EUR,
+      "Viaje a Tenerife"
+    )
+
+
   val acEntityExample: ACEntity =
     ACEntity(
       ComposedId(11111111L, 22222222L),
       Sids(
-        Source(1111L, "src-filter", ComOut), Some(State(2222L, "sta-filter", ComOut, ShaStrategy,
+        Source(1111L, "src-filter", Merge, ComOut),
+        Some(State(2222L, "sta-filter", None, ComOut, ShaStrategy,
           Processors(Seq("in1", "in2"), Seq("ex1", "ex2"), Seq("t1", "t2", "t3"))))),
       ComOut
     )

@@ -1,6 +1,8 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.api.ApiModel.BuildInfo
+import java.time.{Clock, LocalDateTime}
+
+import com.cmartin.learn.api.ApiModel.{APP_NAME, APP_VERSION, ApiBuildInfo}
 import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir.json.circe._
@@ -9,7 +11,7 @@ import sttp.tapir.{Endpoint, _}
 trait ActuatorEndpoint
   extends ApiCodecs {
 
-  type HealthInfo = BuildInfo
+  type HealthInfo = ApiBuildInfo
 
   //json encode/decode via circe.generic.auto
   lazy val healthEndpoint: Endpoint[Unit, StatusCode, HealthInfo, Nothing] =
@@ -17,8 +19,16 @@ trait ActuatorEndpoint
       .in(CommonEndpoint.baseEndpointInput / "health")
       .name("health-endpoint")
       .description("Health Check Endpoint")
-      .out(jsonBody[HealthInfo].example(ApiModel.buildInfo))
+      .out(jsonBody[HealthInfo].example(ActuatorEndpoint.exampleApiBuildInfo))
       .errorOut(statusCode)
 }
 
-object ActuatorEndpoint extends ActuatorEndpoint
+object ActuatorEndpoint extends ActuatorEndpoint {
+  val exampleApiBuildInfo = ApiBuildInfo(
+    APP_NAME,
+    LocalDateTime.now(Clock.systemDefaultZone()).toString,
+    APP_VERSION,
+    "Success"
+  )
+
+}

@@ -1,7 +1,5 @@
 package com.cmartin.learn.api
 
-import java.time.{Clock, LocalDateTime}
-
 object ApiModel {
 
   val APP_NAME = "tapir learn web application"
@@ -13,18 +11,15 @@ object ApiModel {
 
   case object USD extends Currency
 
-  case class Transfer(sender: String, receiver: String, amount: Double, currency: Currency, desc: String)
+  case class Transfer(
+                       sender: String,
+                       receiver: String,
+                       amount: Double,
+                       currency: Currency,
+                       desc: String,
+                       id: Option[Long] = scala.None
+                     )
 
-
-  sealed trait Result
-
-  case object Success extends Result
-
-  case object Warning extends Result
-
-  case object Error extends Result
-
-  case class BuildInfo(appName: String, date: String, version: String, result: Result)
 
   // NESTED ENTITIES
   case class ACEntity(
@@ -38,18 +33,28 @@ object ApiModel {
   case class Sids(source: Source, state: Option[State]) // TODO Option state
 
   sealed trait Sid {
+    val id: Long
     val filter: String
+    val comStrategy: ComStrategy
   }
 
-  case class Source(id: Long, filter: String, name: Output) extends Sid
+  case class Source(id: Long, filter: String, comStrategy: ComStrategy, name: Output) extends Sid
 
-  case class State(id: Long, filter: String, name: Output, perStrategy: PerStrategy, procs: Processors) extends Sid
+  case class State(id: Long, filter: String, comStrategy: ComStrategy, name: Output, perStrategy: PerStrategy, processors: Processors) extends Sid
 
   sealed trait Output
 
   case object ComOut extends Output
 
   case object ShaOut extends Output
+
+  sealed trait ComStrategy
+
+  case object Append extends ComStrategy
+
+  case object Merge extends ComStrategy
+
+  case object None extends ComStrategy
 
   sealed trait PerStrategy
 
@@ -59,27 +64,24 @@ object ApiModel {
 
   case class Processors(ins: Seq[String], exs: Seq[String], trs: Seq[String])
 
-  /*
-    API Objects examples
-   */
 
-  val transferExample =
-    Transfer(
-      "ES11 0182 1111 2222 3333 4444",
-      "ES99 2038 9999 8888 7777 6666",
-      100.00,
-      EUR,
-      "Viaje a Tenerife"
-    )
+  // Actuator
+  case class ApiBuildInfo(
+                           appName: String,
+                           date: String,
+                           version: String,
+                           result: String
+                         )
 
 
-  def buildInfo(): BuildInfo =
-    BuildInfo(
-      APP_NAME,
-      LocalDateTime.now(Clock.systemDefaultZone()).toString,
-      APP_VERSION,
-      Success
-    )
+  // AVIATION MODEL
+  // ADT => String representation for Codec. Model ADT => String ADT representation
+  case class ApiAircraft(
+                          registration: String,
+                          age: Int,
+                          model: String,
+                          id: Option[Long] = scala.None
+                        )
 
 
 }

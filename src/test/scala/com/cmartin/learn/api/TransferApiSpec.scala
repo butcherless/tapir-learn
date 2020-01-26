@@ -20,7 +20,6 @@ class TransferApiSpec
 
   behavior of "Transfer API"
 
-
   it should "retrieve a Transfer via /transfers endpoint" in {
     // W H E N
     Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT") ~>
@@ -29,7 +28,7 @@ class TransferApiSpec
     check {
       status shouldBe StatusCodes.OK
       header[`Content-Type`] shouldBe Some(contentTypeJson)
-      parseTransfer(entityAs[String]) shouldBe ApiModel.transferExample //TODO move to Endpoint
+      parseTransfer(entityAs[String]) shouldBe TransferEndpoint.transferExample
     }
   }
 
