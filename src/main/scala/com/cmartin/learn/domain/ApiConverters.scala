@@ -1,7 +1,7 @@
 package com.cmartin.learn.domain
 
 import com.cmartin.learn.api.ApiModel.{ApiAircraft, ApiBuildInfo}
-import com.cmartin.learn.domain.DomainModel.{Aircraft, AircraftModel, Boeing737NG, Boeing788, BuildInfo, Error, Result, Success, Warning}
+import com.cmartin.learn.domain.DomainModel.{AirbusA320, AirbusA333, Aircraft, AircraftModel, Boeing737NG, Boeing788, BuildInfo, Error, Result, Success, Warning}
 
 trait ApiConverters {
 
@@ -26,8 +26,10 @@ trait ApiConverters {
 
   // AIRCRAFT
   implicit def stringToAircraftModel(s: String): AircraftModel = s match {
-    case "Boeing788" => Boeing788
+    case "AirbusA320" => AirbusA320
+    case "AirbusA333" => AirbusA333
     case "Boeing737NG" => Boeing737NG
+    case "Boeing788" => Boeing788
     case "" => throw CustomMappingError(s"empty value for aircraft model")
     case _ => throw CustomMappingError(s"invalid aircraft model: $s")
   }

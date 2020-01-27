@@ -50,4 +50,26 @@ class DomainModelSpec
     apiAircraft shouldBe ApiAircraft(registration, age, "Boeing788", Some(1L))
   }
 
+  it should "convert a string to a Result" in {
+    stringToResult("Success") shouldBe DomainModel.Success
+    stringToResult("Warning") shouldBe DomainModel.Warning
+    stringToResult("Error") shouldBe DomainModel.Error
+  }
+
+  it should "fail when trying to convert an invalid Result" in {
+    a[CustomMappingError] should be thrownBy stringToResult("invalid-result")
+  }
+
+  it should "fail when trying to convert an empty Result" in {
+    a[CustomMappingError] should be thrownBy stringToResult("")
+  }
+
+  it should "convert a string to an AircraftModel" in {
+    stringToAircraftModel("AirbusA320") shouldBe DomainModel.AirbusA320
+    stringToAircraftModel("AirbusA333") shouldBe DomainModel.AirbusA333
+    stringToAircraftModel("Boeing788") shouldBe DomainModel.Boeing788
+    stringToAircraftModel("Boeing737NG") shouldBe DomainModel.Boeing737NG
+  }
+
+
 }

@@ -21,15 +21,16 @@ final class ActuatorApiSpec
 
   it should "retrieve build information via /health endpoint" in {
     // W H E N
-    Get(s"$API_TEXT/$API_VERSION/health") ~>
-      ActuatorApi.route
-    // T H E N
-    check {
-      status shouldBe StatusCodes.OK
-      header[`Content-Type`] shouldBe Some(contentTypeJson)
-      parseBuildInfo(entityAs[String]).map(
-        info => info.version == ApiModel.APP_VERSION && info.appName == ApiModel.APP_NAME)
-    }
+    Get(s"$BASE_API/health") ~>
+      ActuatorApi.route ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.OK
+        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        parseBuildInfo(entityAs[String]).map(
+          info => info.version == ApiModel.APP_VERSION && info.appName == ApiModel.APP_NAME
+        )
+      }
   }
 
 }

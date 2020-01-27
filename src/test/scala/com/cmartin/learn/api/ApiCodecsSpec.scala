@@ -18,4 +18,5 @@ class ApiCodecsSpec
   it should "encode USD" in {
     currencyEncoder(ApiModel.USD) shouldBe Json.fromString(ApiModel.USD.toString)
   }
+
 }
