@@ -15,11 +15,13 @@ trait AircraftApi {
 
   lazy val routes =
     getRoute ~
+      getSeqRoute ~
       postRoute
 
 
   //TODO move to AircraftEndpoint companion object
   val apiAircraftExample = ApiAircraft("ec-nei", 1, "Boeing788", None)
+  val apiAircraft2Example = ApiAircraft("ec-lvl", 1, "Airbus333", None)
 
   lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, ApiAircraft, Nothing] =
     endpoint
@@ -29,6 +31,16 @@ trait AircraftApi {
       .description("Retrieve aircraft endpoint")
       .out(jsonBody[ApiAircraft].example(apiAircraftExample))
       .errorOut(statusCode)
+
+  lazy val getAircraftSeqEndpoint: Endpoint[Unit, StatusCode, Seq[ApiAircraft], Nothing] =
+    endpoint
+      .get
+      .in(CommonEndpoint.baseEndpointInput / "aircraft-list")
+      .name("get-aircraft-list-endpoint")
+      .description("Retrieve aircraft list endpoint")
+      .out(jsonBody[Seq[ApiAircraft]].example(Seq(apiAircraftExample, apiAircraft2Example)))
+      .errorOut(statusCode)
+
 
   lazy val postAircraftEndpoint: Endpoint[ApiAircraft, StatusCode, ApiAircraft, Nothing] =
     endpoint
@@ -44,6 +56,11 @@ trait AircraftApi {
   lazy val getRoute: Route =
     getAircraftEndpoint.toRoute { _ =>
       Future.successful(Right(apiAircraftExample))
+    }
+
+  lazy val getSeqRoute: Route =
+    getAircraftSeqEndpoint.toRoute { _ =>
+      Future.successful(Right(Seq(apiAircraftExample.copy(id = Some(1234)), apiAircraft2Example.copy(id = Some(5678)))))
     }
 
   lazy val postRoute: Route =

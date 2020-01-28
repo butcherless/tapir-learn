@@ -40,7 +40,6 @@ trait ApiCodecs {
   }
 
 
-
   implicit lazy val transferDecoder: Decoder[Transfer] = new Decoder[Transfer] {
     override def apply(c: HCursor): Decoder.Result[Transfer] = {
       for {
