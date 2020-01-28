@@ -66,7 +66,7 @@ class DomainModelSpec
 
   it should "convert a string to an AircraftModel" in {
     stringToAircraftModel("AirbusA320") shouldBe DomainModel.AirbusA320
-    stringToAircraftModel("AirbusA333") shouldBe DomainModel.AirbusA333
+    stringToAircraftModel("AirbusA332") shouldBe DomainModel.AirbusA332
     stringToAircraftModel("Boeing788") shouldBe DomainModel.Boeing788
     stringToAircraftModel("Boeing737NG") shouldBe DomainModel.Boeing737NG
   }

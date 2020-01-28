@@ -12,7 +12,7 @@ object DomainModel {
 
   case object AirbusA320 extends AircraftModel
 
-  case object AirbusA333 extends AircraftModel
+  case object AirbusA332 extends AircraftModel
 
   case object Boeing737NG extends AircraftModel
 
