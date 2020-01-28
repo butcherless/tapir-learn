@@ -10,9 +10,9 @@ trait ApiConverters {
   // ACTUATOR
 
   implicit def stringToResult(s: String): Result = s match {
-    case Success.toString => Success
-    case Warning.toString => Warning
-    case Error.toString => Error
+    case "Success" => Success
+    case "Warning" => Warning
+    case "Error" => Error
     case "" => throw CustomMappingError(s"empty value for result")
     case _ => throw CustomMappingError(s"invalid result value: $s")
   }
