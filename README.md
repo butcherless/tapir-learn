@@ -1,5 +1,6 @@
-# tapir-learn
+# tapir-learn ![Scala CI](https://github.com/butcherless/tapir-learn/workflows/Scala%20CI/badge.svg)
 Learning to build APIs with Scala Tapir
+
 
 ## Quick start up
 
