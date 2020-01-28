@@ -25,5 +25,3 @@ object SimpleApp
 
 
  */
-
-ERROR
