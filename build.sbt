@@ -28,12 +28,3 @@ lazy val templateProject = (project in file("."))
       name := "tapir-learn",
       testFrameworks ++= Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
   )  .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
-
-/*
-.configs(IntegrationTest)
-  .settings(
-    Defaults.itSettings,
-    libraryDependencies += scalatest % "it,test"
-    // other settings here
-  )
- */

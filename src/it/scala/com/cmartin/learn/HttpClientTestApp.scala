@@ -20,7 +20,7 @@ object HttpClientTestApp extends App {
     unsafeRun(AsyncHttpClientZioBackend())
   val urls = List.fill(fiberCount)(healthEndpoint)
 
-  // Ddummy method
+  // Dummy method
   def makeGet(uri: String) = for {
     number <- nextInt(1500)
     delay <- UIO(number + 500)
