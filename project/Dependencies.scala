@@ -3,6 +3,7 @@ import sbt._
 object Dependencies {
   lazy val akkaHttpVersion = "10.1.11"
   lazy val akkaVersion = "2.6.3"
+  lazy val sttpVersion = "2.0.0-RC7"
   lazy val tapirVersion = "0.12.18"
 
 
@@ -18,6 +19,10 @@ object Dependencies {
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
 
+    // S T T P
+    "com.softwaremill.sttp.client" %% "core" % sttpVersion % "it, test",
+    "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % sttpVersion % "it, test",
+
     // T A P I R
     "com.softwaremill.sttp.tapir" %% "tapir-core" % tapirVersion,
     "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server" % tapirVersion,
@@ -26,10 +31,10 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion,
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % tapirVersion,
 
-    "ch.qos.logback" % "logback-classic" % logbackVersion exclude ("org.slf4j", "slf4j-api"),
+    "ch.qos.logback" % "logback-classic" % logbackVersion exclude("org.slf4j", "slf4j-api"),
     "dev.zio" %% "zio" % zioVersion,
 
-    "org.scalatest" %% "scalatest" % scalatestVersion % Test,
+    "org.scalatest" %% "scalatest" % scalatestVersion % "it, test",
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
 
