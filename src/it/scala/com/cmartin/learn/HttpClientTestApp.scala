@@ -43,7 +43,7 @@ object HttpClientTestApp extends App {
   def doGet(endpoint: String) =
     for {
       response <- basicRequest.get(uri"$endpoint").send()
-      _ <- UIO(checkResponse(response))
+      _ <- putStrLn( checkResponse(response))
     } yield ()
 
   // main function, needs exit = 0 [OK] or exit > 0 [ERROR]
