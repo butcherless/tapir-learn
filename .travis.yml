@@ -1,0 +1,19 @@
+jdk:
+  - openjdk11
+
+language: scala
+#group: travis_lts
+scala:
+  - 2.13.1
+
+addons:
+  apt:
+    update: true
+
+script:
+  - sbt clean test
+  - sbt dependencyUpdates
+
+cache:
+  directories:
+    - $HOME/.sbt
