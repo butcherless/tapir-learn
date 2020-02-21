@@ -10,7 +10,7 @@ object Dependencies {
   lazy val logbackVersion = "1.2.3"
   lazy val zioVersion = "1.0.0-RC17"
 
-  lazy val scalatestVersion = "3.1.0"
+  lazy val scalatestVersion = "3.1.1"
 
   val mainAndTest = Seq(
     // A K K A
