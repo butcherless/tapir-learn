@@ -25,9 +25,9 @@ trait SwaggerApi {
 
   //
   lazy val route: Route =
-    pathPrefix(API_TEXT / API_VERSION) {
+    //pathPrefix(API_TEXT / API_VERSION) {
       new SwaggerAkka(docsAsYaml).routes
-    }
+    //}
 }
 
 object SwaggerApi extends SwaggerApi
