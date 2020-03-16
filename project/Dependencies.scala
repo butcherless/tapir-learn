@@ -2,13 +2,13 @@ import sbt._
 
 object Dependencies {
   lazy val akkaHttpVersion = "10.1.11"
-  lazy val akkaVersion = "2.6.3"
-  lazy val sttpVersion = "2.0.4"
+  lazy val akkaVersion = "2.6.4"
+  lazy val sttpVersion = "2.0.6"
   lazy val tapirVersion = "0.12.24"
 
 
   lazy val logbackVersion = "1.2.3"
-  lazy val zioVersion = "1.0.0-RC18-1"
+  lazy val zioVersion = "1.0.0-RC18-2"
 
   lazy val scalatestVersion = "3.1.1"
 
