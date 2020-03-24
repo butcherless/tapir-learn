@@ -6,7 +6,7 @@ object Dependencies {
   lazy val sttpVersion = "2.0.6"
   lazy val tapirVersion = "0.12.25"
 
-
+  lazy val json4sVersion = "3.6.7"
   lazy val logbackVersion = "1.2.3"
   lazy val zioVersion = "1.0.0-RC18-2"
 
@@ -34,6 +34,10 @@ object Dependencies {
     "ch.qos.logback" % "logback-classic" % logbackVersion exclude("org.slf4j", "slf4j-api"),
     "dev.zio" %% "zio" % zioVersion,
 
+    "org.json4s" %% "json4s-core" % json4sVersion,
+    "org.json4s" %% "json4s-native" % json4sVersion,
+
+    // T E S T
     "org.scalatest" %% "scalatest" % scalatestVersion % "it, test",
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
