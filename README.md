@@ -55,7 +55,7 @@ Start, stop the web server
 
 Check Swagger API
 
-http://localhost:8080/api/v1.0/docs
+http://localhost:8080/docs
 
 Check Health endpoint
 
