@@ -1,24 +1,68 @@
 package com.cmartin.learn.api
 
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
+import com.cmartin.learn.api.ApiModel._
 import sttp.tapir.server.akkahttp._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 trait TransferApi {
-  lazy val routes =
+
+  lazy val routes: Route =
     getRoute ~
       postRoute ~
       getComOutputRoute ~
       getShaOutputRoute ~
       getACEntityRoute // ~ add more routes
 
+
   // tapir endpoint description to akka routes via .toRoute function
   lazy val getRoute: Route =
-    TransferEndpoint.getTransferEndpoint.toRoute { _ =>
-      Future.successful(Right(TransferEndpoint.transferExample)) // simulating business logic function
+    TransferEndpoint.getTransferEndpoint.toRoute(
+      businessLogic _ andThen
+        handleErrors
+    )
+
+
+  case class BusinessException(code: Int, message: String = "Information not available") extends RuntimeException(message)
+
+  // simulating business logic function
+  def businessLogic(transferId: TransferId): Future[ApiModel.Transfer] =
+    transferId match {
+      case StatusCodes.BadRequest.intValue => Future.failed(BusinessException(StatusCodes.BadRequest.intValue, StatusCodes.BadRequest.defaultMessage))
+      case StatusCodes.NotFound.intValue => Future.failed(BusinessException(StatusCodes.NotFound.intValue, StatusCodes.NotFound.defaultMessage))
+      case StatusCodes.InternalServerError.intValue => Future.failed(BusinessException(StatusCodes.InternalServerError.intValue, StatusCodes.InternalServerError.defaultMessage))
+      case StatusCodes.ServiceUnavailable.intValue => Future.failed(BusinessException(StatusCodes.ServiceUnavailable.intValue, StatusCodes.ServiceUnavailable.defaultMessage))
+      case 666 => Future.failed(BusinessException(666, "Unknown error"))
+      case _ => Future.successful(TransferEndpoint.transferExample.copy(id = Some(transferId)))
     }
+
+  def handleErrors[T](f: Future[T]): Future[Either[ErrorInfo, T]] =
+    f.transform {
+      case Success(v) => Success(Right(v))
+      case Failure(BusinessException(code, message)) => code match {
+        case StatusCodes.BadRequest.intValue => Success(Left(BadRequestError("ENTITY_NOT_FOUND", message)))
+        case StatusCodes.NotFound.intValue => Success(Left(NotFoundError("ENTITY_NOT_FOUND", message)))
+        case StatusCodes.InternalServerError.intValue => Success(Left(ServerError("SERVER_ERROR", message)))
+        case StatusCodes.ServiceUnavailable.intValue => Success(Left(ServiceUnavailableError("SERVICE_UNAVAILABLE_ERROR", message)))
+        case _ => Success(Left(ApiModel.UnknowError("UNKNOWN_ERROR", message)))
+      }
+      case _ => Success(Left(ApiModel.UnknowError("UNKNOWN_ERROR", "No error description")))
+    }
+
+
+  /*
+endpoint
+.errorOut(plainBody[ErrorInfo])
+.out(plainBody[Int])
+.in(query[String]("name"))
+.toRoute((logic _).andThen(handleErrors))
+*/
+
 
   lazy val postRoute: Route =
     TransferEndpoint.postTransferEndpoint.toRoute { transfer =>
@@ -40,9 +84,14 @@ trait TransferApi {
     TransferEndpoint.getShaOutputEndpoint.toRoute { _ =>
       Future.successful(Right(ApiModel.ShaOut))
     }
-
-
 }
 
 object TransferApi extends TransferApi
 
+/*
+  def makeSuccessResult[T](t: T): Success[Right[Nothing, T]] =
+    Success(Right(t))
+
+  def makeFailureResult(e: AssetComposerError): Success[Left[AssetComposerError, Nothing]] =
+    Success(Left(e))
+  */

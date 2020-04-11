@@ -2,6 +2,8 @@ package com.cmartin.learn.api
 
 object ApiModel {
 
+  type TransferId = Long
+
   val APP_NAME = "tapir learn web application"
   val APP_VERSION = "1.0.0-SNAPSHOT"
 
@@ -83,5 +85,16 @@ object ApiModel {
                           id: Option[Long] = scala.None
                         )
 
+  sealed trait ErrorInfo
+
+  case class BadRequestError(code: String, message: String) extends ErrorInfo
+
+  case class NotFoundError(code: String, message: String) extends ErrorInfo
+
+  case class ServerError(code: String, message: String) extends ErrorInfo
+
+  case class ServiceUnavailableError(code: String, message: String) extends ErrorInfo
+
+  case class UnknowError(code: String, message: String) extends ErrorInfo
 
 }

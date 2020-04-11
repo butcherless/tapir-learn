@@ -20,23 +20,92 @@ class TransferApiSpec
 
   behavior of "Transfer API"
 
-  it should "retrieve a Transfer via /transfers endpoint" in {
-    // W H E N
-    Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT") ~>
-      TransferApi.routes
-    // T H E N
-    check {
-      status shouldBe StatusCodes.OK
-      header[`Content-Type`] shouldBe Some(contentTypeJson)
-      parseTransfer(entityAs[String]) shouldBe TransferEndpoint.transferExample
-    }
+  it should "T1 retrieve a Transfer via /transfers endpoint" in {
+    // G I V E N
+    Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/200") ~>
+      // W H E N
+      TransferApi.getRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.OK
+        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        parseTransfer(entityAs[String]) shouldBe Right(TransferEndpoint.transferExample)
+        info(entityAs[String])
+      }
+  }
+
+  it should "T2 get a not found via /transfers endpoint" in {
+    // G I V E N
+    Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/400") ~>
+      // W H E N
+      TransferApi.getRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.BadRequest
+        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        info(entityAs[String])
+      }
+  }
+
+  it should "T3 get a not found via /transfers endpoint" in {
+    // G I V E N
+    Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/404") ~>
+      // W H E N
+      TransferApi.getRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.NotFound
+        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        info(entityAs[String])
+      }
+  }
+
+  it should "T4 get a server error via /transfers endpoint" in {
+    // G I V E N
+    Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/500") ~>
+      // W H E N
+      TransferApi.getRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.InternalServerError
+        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        info(entityAs[String])
+      }
+  }
+
+  it should "T5 get an unavailable service error via /transfers endpoint" in {
+    // G I V E N
+    Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/503") ~>
+      // W H E N
+      TransferApi.getRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.ServiceUnavailable
+        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        info(entityAs[String])
+      }
+  }
+
+  it should "T6 get an unknown error via /transfers endpoint" in {
+    // G I V E N
+    Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/666") ~>
+      // W H E N
+      TransferApi.getRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.BadRequest
+        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        info(entityAs[String])
+      }
   }
 
 }
 
 object TransferApiSpec extends TransferApiSpec {
 
-  import io.circe.generic.auto._
+  //  import io.circe.generic.auto._
+
+  import ApiCodecs.transferDecoder
   import io.circe.parser._
 
   def parseTransfer(json: String): Either[circe.Error, Transfer] = {

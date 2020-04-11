@@ -1,11 +1,8 @@
 package com.cmartin.learn.api
 
-import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import com.cmartin.learn.api.CommonEndpoint._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.circe.yaml._
-import sttp.tapir.swagger.akkahttp.SwaggerAkka
 
 trait SwaggerApi {
 
@@ -25,9 +22,9 @@ trait SwaggerApi {
 
   //
   lazy val route: Route =
-    //pathPrefix(API_TEXT / API_VERSION) {
-      new SwaggerAkka(docsAsYaml).routes
-    //}
+  //pathPrefix(API_TEXT / API_VERSION) {
+    new CustomSwaggerAkka(docsAsYaml).routes
+  //}
 }
 
 object SwaggerApi extends SwaggerApi

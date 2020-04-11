@@ -1,6 +1,7 @@
 package com.cmartin.learn.api
 
 import com.cmartin.learn.api.ApiModel._
+import com.cmartin.learn.domain.DomainModel._
 import io.circe.{Decoder, Encoder, HCursor, Json}
 
 trait ApiCodecs {
@@ -19,15 +20,50 @@ trait ApiCodecs {
   implicit lazy val currencyEncoder: Encoder[Currency] =
     genericEncoder[Currency]()
 
-  // JSON => Object
-  implicit lazy val currencyDecoder: Decoder[Currency] = new Decoder[Currency] {
-    override def apply(c: HCursor): Decoder.Result[Currency] = {
-      println(c.values)
-      for {
-        obj <- c.get[Currency]("currency")
-      } yield select(obj)
+
+  implicit lazy val aircraftEncoder: Encoder[Aircraft] = new Encoder[Aircraft] {
+    override def apply(a: Aircraft): Json = {
+      Json.obj(
+        ("registration", Json.fromString(a.registration)),
+        ("age", Json.fromInt(a.age)),
+        ("model", Json.fromString(a.model.toString)),
+        ("id", Json.fromLong(a.id))
+      )
     }
   }
+
+  implicit class AircraftModelSelector(model: String) {
+    def toAircraftModel: AircraftModel =
+      model match {
+        case "AirbusA320" => AirbusA320
+        case "AirbusA332" => AirbusA332
+        case "Boeing737NG" => Boeing737NG
+        case "Boeing788" => Boeing788
+        // TODO error cases
+      }
+  }
+
+  implicit lazy val aircraftDecoder: Decoder[Aircraft] = new Decoder[Aircraft] {
+    override def apply(c: HCursor): Decoder.Result[Aircraft] = {
+      for {
+        registration <- c.get[String]("registration")
+        age <- c.get[Int]("age")
+        model <- c.get[String]("model")
+        id <- c.get[Long]("id")
+      } yield Aircraft(registration, age, model.toAircraftModel, id)
+    }
+  }
+
+
+  // JSON => Object
+  //  implicit lazy val currencyDecoder: Decoder[Currency] = new Decoder[Currency] {
+  //    override def apply(c: HCursor): Decoder.Result[Currency] = {
+  //      println(c.values)
+  //      for {
+  //        obj <- c.get[Currency]("currency")
+  //      } yield select(obj)
+  //    }
+  //  }
 
   implicit class CurrencySelector(currency: String) {
     def toCurrency: Currency =
@@ -111,3 +147,5 @@ trait ApiCodecs {
   }
 
 }
+
+object ApiCodecs extends ApiCodecs

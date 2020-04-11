@@ -2,7 +2,7 @@ package com.cmartin.learn
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import com.cmartin.learn.api.ApiConfiguration
+import com.cmartin.learn.configuration.ApiConfiguration
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -21,8 +21,8 @@ object AkkaWebServerApp
     Http()
       .bindAndHandle(
         routes, // Rest API routes
-        "localhost", //TODO configuration properties
-        8080
+        serverAddress, //TODO configuration properties
+        serverPort
       )
 
   // Web Server start up management
