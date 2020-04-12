@@ -72,7 +72,7 @@ object ApiModel {
 
   // AVIATION MODEL
   // ADT => String representation for Codec. Model ADT => String ADT representation
-  case class ApiAircraft(
+  case class AircraftDto(
                           registration: String,
                           age: Int,
                           model: String,

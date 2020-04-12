@@ -1,8 +1,8 @@
 package com.cmartin.learn.domain
 
 import com.cmartin.learn.api.ApiCodecs.CurrencySelector
-import com.cmartin.learn.api.ApiModel.{ApiAircraft, ApiBuildInfo, TransferDto}
-import com.cmartin.learn.domain.DomainModel.{AirbusA320, AirbusA332, Aircraft, AircraftModel, Boeing737NG, Boeing788, BuildInfo, Error, Result, Success, Transfer, Warning}
+import com.cmartin.learn.api.ApiModel.{AircraftDto, ApiBuildInfo, TransferDto}
+import com.cmartin.learn.domain.DomainModel.{AirbusA320, AirbusA332, Aircraft, AircraftModel, Boeing737NG, Boeing788, BuildInfo, Result, Transfer}
 
 trait ApiConverters {
 
@@ -11,9 +11,9 @@ trait ApiConverters {
   // ACTUATOR
 
   implicit def stringToResult(s: String): Result = s match {
-    case "Success" => Success
-    case "Warning" => Warning
-    case "Error" => Error
+    case "Success" => DomainModel.Success
+    case "Warning" => DomainModel.Warning
+    case "Error" => DomainModel.Error
     case "" => manageEmptyCase("result")
     case _ => manageDefaultCase("result", s)
   }
@@ -35,11 +35,11 @@ trait ApiConverters {
     case _ => manageDefaultCase("model", s)
   }
 
-  def apiToModel(a: ApiAircraft): Aircraft =
+  def apiToModel(a: AircraftDto): Aircraft =
     Aircraft(a.registration, a.age, a.model, a.id.getOrElse(0))
 
-  def modelToApi(a: Aircraft): ApiAircraft =
-    ApiAircraft(a.registration, a.age, a.model.toString, Some(a.id))
+  def modelToApi(a: Aircraft): AircraftDto =
+    AircraftDto(a.registration, a.age, a.model.toString, Some(a.id))
 
 
   // TRANSFER
@@ -67,6 +67,7 @@ trait ApiConverters {
 
   private def manageDefaultCase(entity: String, value: String) =
     throw CustomMappingError(s"invalid $entity value: $value")
+
 }
 
 object ApiConverters extends ApiConverters

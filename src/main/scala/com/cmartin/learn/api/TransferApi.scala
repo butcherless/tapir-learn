@@ -55,7 +55,7 @@ trait TransferApi {
     f.transform {
       case Success(v) => Success(Right(v))
       case Failure(BusinessException(code, message)) => code match {
-        case StatusCodes.BadRequest.intValue => Success(Left(BadRequestError("ENTITY_NOT_FOUND", message)))
+        case StatusCodes.BadRequest.intValue => Success(Left(BadRequestError("MISSING_INFO", message)))
         case StatusCodes.NotFound.intValue => Success(Left(NotFoundError("ENTITY_NOT_FOUND", message)))
         case StatusCodes.InternalServerError.intValue => Success(Left(ServerError("SERVER_ERROR", message)))
         case StatusCodes.ServiceUnavailable.intValue => Success(Left(ServiceUnavailableError("SERVICE_UNAVAILABLE_ERROR", message)))
@@ -83,11 +83,3 @@ trait TransferApi {
 }
 
 object TransferApi extends TransferApi
-
-/*
-  def makeSuccessResult[T](t: T): Success[Right[Nothing, T]] =
-    Success(Right(t))
-
-  def makeFailureResult(e: AssetComposerError): Success[Left[AssetComposerError, Nothing]] =
-    Success(Left(e))
-  */

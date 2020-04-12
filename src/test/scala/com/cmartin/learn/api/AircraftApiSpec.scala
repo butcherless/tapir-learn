@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
-import com.cmartin.learn.api.ApiModel.ApiAircraft
+import com.cmartin.learn.api.ApiModel.AircraftDto
 import com.cmartin.learn.api.CommonEndpoint.BASE_API
 import com.cmartin.learn.domain.DomainModel.Boeing788
 import io.circe
@@ -32,7 +32,7 @@ class AircraftApiSpec
         info(either.toString)
         either.isRight shouldBe true
         either.map { aircraft =>
-          aircraft shouldBe ApiAircraft("ec-nei", 1, Boeing788.toString, None)
+          aircraft shouldBe AircraftDto("ec-nei", 1, Boeing788.toString, None)
         }
       }
   }
@@ -44,6 +44,6 @@ object AircraftApiSpec {
   import io.circe.generic.auto._
   import io.circe.parser.decode
 
-  def parseAircraft(json: String): Either[circe.Error, ApiAircraft] =
-    decode[ApiAircraft](json)
+  def parseAircraft(json: String): Either[circe.Error, AircraftDto] =
+    decode[AircraftDto](json)
 }

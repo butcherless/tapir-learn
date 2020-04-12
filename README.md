@@ -98,9 +98,10 @@ Rapid test cycle via continuous testing with a single test:
 
     http "http://localhost:8080/api/v1.0/health"
     
-    http "http://localhost:8080/api/v1.0/transfers"
+    http "http://localhost:8080/api/v1.0/transfers/1"
+    http "http://localhost:8080/api/v1.0/transfers/404"
     
-    http "http://localhost:8080/api/v1.0/acEntity"
+    echo '{"sender":"ES11 0182 1111 2222 3333 4444","receiver":"ES99 2038 9999 8888 7777 6666","amount":100.0,"currency":"EUR","desc":"Viaje a Tenerife"}' |  http -v POST http://localhost:8080/api/v1.0/transfers
 
 Links:
 
