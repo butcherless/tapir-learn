@@ -4,8 +4,12 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
-import com.cmartin.learn.api.ApiModel.Transfer
+import com.cmartin.learn.api.ApiModel.TransferDto
+import com.cmartin.learn.domain.DomainModel.Transfer
+import com.cmartin.learn.domain.{ApiConverters, DomainModel}
 import io.circe
+import io.circe.generic.auto._
+import io.circe.syntax._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -99,17 +103,54 @@ class TransferApiSpec
       }
   }
 
+  it should "T7 create a transfer via /transfer endpoint" in {
+
+    Post(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT")
+      .withEntity(TransferEndpoint.transferExample.asJson.noSpaces) ~>
+      TransferApi.postRoute ~>
+      // THEN
+      check {
+        status shouldBe StatusCodes.Created
+        info(entityAs[String])
+        io.circe.parser.decode[TransferDto](entityAs[String]) shouldBe Right(TransferEndpoint.transferExample)
+      }
+  }
+
+  it should "T8 convert a transfer dto to a transfer" in {
+    // Given
+
+    // When
+    val convertedTransfer = ApiConverters.apiToModel(TransferEndpoint.transferExample)
+
+    // Then
+    convertedTransfer shouldBe transfer
+  }
+
+  it should "T9 convert a transfer to a transfer dto" in {
+    // Given
+
+    // When
+    val convertedTransfer = ApiConverters.modelToApi(transfer)
+
+    // Then
+    convertedTransfer shouldBe TransferEndpoint.transferExample
+  }
 }
 
-object TransferApiSpec extends TransferApiSpec {
+object TransferApiSpec {
 
-  //  import io.circe.generic.auto._
-
-  import ApiCodecs.transferDecoder
   import io.circe.parser._
 
-  def parseTransfer(json: String): Either[circe.Error, Transfer] = {
-    decode[Transfer](json)
+  val transfer = Transfer(
+    "ES11 0182 1111 2222 3333 4444",
+    "ES99 2038 9999 8888 7777 6666",
+    100.00,
+    DomainModel.EUR,
+    "Viaje a Tenerife"
+  )
+
+  def parseTransfer(json: String): Either[circe.Error, TransferDto] = {
+    decode[TransferDto](json)
   }
 
 }

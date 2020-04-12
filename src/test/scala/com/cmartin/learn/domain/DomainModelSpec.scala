@@ -19,7 +19,7 @@ class DomainModelSpec
     aType.toString shouldBe "AirbusA320"
   }
 
-  it should "convert api to model Aircrafts" in {
+  it should "convert api to model Aircraft" in {
     val registration = "EC-NBX"
     val age = 2
     val model = "Boeing788"

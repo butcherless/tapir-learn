@@ -1,7 +1,8 @@
 package com.cmartin.learn.domain
 
-import com.cmartin.learn.api.ApiModel.{ApiAircraft, ApiBuildInfo}
-import com.cmartin.learn.domain.DomainModel.{AirbusA320, AirbusA332, Aircraft, AircraftModel, Boeing737NG, Boeing788, BuildInfo, Error, Result, Success, Warning}
+import com.cmartin.learn.api.ApiCodecs.CurrencySelector
+import com.cmartin.learn.api.ApiModel.{ApiAircraft, ApiBuildInfo, TransferDto}
+import com.cmartin.learn.domain.DomainModel.{AirbusA320, AirbusA332, Aircraft, AircraftModel, Boeing737NG, Boeing788, BuildInfo, Error, Result, Success, Transfer, Warning}
 
 trait ApiConverters {
 
@@ -39,6 +40,26 @@ trait ApiConverters {
 
   def modelToApi(a: Aircraft): ApiAircraft =
     ApiAircraft(a.registration, a.age, a.model.toString, Some(a.id))
+
+
+  // TRANSFER
+  def apiToModel(dto: TransferDto): Transfer =
+    Transfer(
+      dto.sender,
+      dto.receiver,
+      dto.amount,
+      dto.currency.toCurrency,
+      dto.desc,
+    )
+
+  def modelToApi(entity: Transfer): TransferDto =
+    TransferDto(
+      entity.sender,
+      entity.receiver,
+      entity.amount,
+      entity.currency.toString,
+      entity.desc
+    )
 
 
   private def manageEmptyCase(entity: String) =

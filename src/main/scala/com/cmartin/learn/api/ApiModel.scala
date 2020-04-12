@@ -7,20 +7,14 @@ object ApiModel {
   val APP_NAME = "tapir learn web application"
   val APP_VERSION = "1.0.0-SNAPSHOT"
 
-  sealed trait Currency
 
-  case object EUR extends Currency
-
-  case object USD extends Currency
-
-  case class Transfer(
-                       sender: String,
-                       receiver: String,
-                       amount: Double,
-                       currency: Currency,
-                       desc: String,
-                       id: Option[Long] = scala.None
-                     )
+  case class TransferDto(
+                          sender: String,
+                          receiver: String,
+                          amount: Double,
+                          currency: String,
+                          desc: String,
+                        )
 
 
   // NESTED ENTITIES
@@ -85,7 +79,10 @@ object ApiModel {
                           id: Option[Long] = scala.None
                         )
 
-  sealed trait ErrorInfo
+  sealed trait ErrorInfo {
+    val code: String
+    val message: String
+  }
 
   case class BadRequestError(code: String, message: String) extends ErrorInfo
 
@@ -95,6 +92,6 @@ object ApiModel {
 
   case class ServiceUnavailableError(code: String, message: String) extends ErrorInfo
 
-  case class UnknowError(code: String, message: String) extends ErrorInfo
+  case class UnknownError(code: String, message: String) extends ErrorInfo
 
 }

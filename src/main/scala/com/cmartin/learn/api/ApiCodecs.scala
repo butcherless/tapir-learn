@@ -6,21 +6,6 @@ import io.circe.{Decoder, Encoder, HCursor, Json}
 
 trait ApiCodecs {
 
-
-  def genericEncoder[T](): Encoder[T] = new Encoder[T] {
-    override def apply(a: T): Json =
-      Json.fromString(a.toString())
-  }
-
-  /*
-      C U R R E N C Y   C O D E C
-  */
-
-  // Object => JSON
-  implicit lazy val currencyEncoder: Encoder[Currency] =
-    genericEncoder[Currency]()
-
-
   implicit lazy val aircraftEncoder: Encoder[Aircraft] = new Encoder[Aircraft] {
     override def apply(a: Aircraft): Json = {
       Json.obj(
@@ -55,16 +40,6 @@ trait ApiCodecs {
   }
 
 
-  // JSON => Object
-  //  implicit lazy val currencyDecoder: Decoder[Currency] = new Decoder[Currency] {
-  //    override def apply(c: HCursor): Decoder.Result[Currency] = {
-  //      println(c.values)
-  //      for {
-  //        obj <- c.get[Currency]("currency")
-  //      } yield select(obj)
-  //    }
-  //  }
-
   implicit class CurrencySelector(currency: String) {
     def toCurrency: Currency =
       currency match {
@@ -74,7 +49,6 @@ trait ApiCodecs {
         case _ => throw new RuntimeException(s"not a valid currency: $currency")
       }
   }
-
 
   implicit lazy val transferDecoder: Decoder[Transfer] = new Decoder[Transfer] {
     override def apply(c: HCursor): Decoder.Result[Transfer] = {
@@ -87,6 +61,31 @@ trait ApiCodecs {
       } yield Transfer(sender, receiver, amount, currency.toCurrency, desc)
     }
   }
+
+
+  def genericEncoder[T](): Encoder[T] = new Encoder[T] {
+    override def apply(a: T): Json =
+      Json.fromString(a.toString())
+  }
+
+  /*
+      C U R R E N C Y   C O D E C
+  */
+
+  // Object => JSON
+  implicit lazy val currencyEncoder: Encoder[Currency] =
+    genericEncoder[Currency]()
+
+
+  // JSON => Object
+  //  implicit lazy val currencyDecoder: Decoder[Currency] = new Decoder[Currency] {
+  //    override def apply(c: HCursor): Decoder.Result[Currency] = {
+  //      println(c.values)
+  //      for {
+  //        obj <- c.get[Currency]("currency")
+  //      } yield select(obj)
+  //    }
+  //  }
 
 
   //TODO refactor to generic select[T]

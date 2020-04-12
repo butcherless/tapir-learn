@@ -21,30 +21,30 @@ trait TransferEndpoint
   val nfeMapping: StatusMapping[NotFoundError] = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
   val iseMapping: StatusMapping[ServerError] = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
   val sueMapping: StatusMapping[ServiceUnavailableError] = statusMapping(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
-  val deMapping = statusDefaultMapping(jsonBody[UnknowError])
+  val deMapping = statusDefaultMapping(jsonBody[UnknownError])
 
   //json encode/decode via circe.generic.auto
-  lazy val getTransferEndpoint: Endpoint[TransferId, ErrorInfo, Transfer, Nothing] =
+  lazy val getTransferEndpoint: Endpoint[TransferId, ErrorInfo, TransferDto, Nothing] =
     endpoint
       .get
       .name("get-transfer-endpoint")
       .description("Retrieve Transfer Endpoint")
       .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
       .in(transferIdPath)
-      .out(jsonBody[Transfer].example(transferExample))
+      .out(jsonBody[TransferDto].example(transferExample))
       .errorOut(
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
 
 
-  lazy val postTransferEndpoint: Endpoint[Transfer, StatusCode, Transfer, Nothing] =
+  lazy val postTransferEndpoint: Endpoint[TransferDto, StatusCode, TransferDto, Nothing] =
     endpoint
       .post
       .name("post-transfer-endpoint")
       .description(("Create Transfer Endpoint"))
       .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
-      .in(jsonBody[Transfer].example(transferExample))
-      .out(jsonBody[Transfer].example(transferExample))
+      .in(jsonBody[TransferDto].example(transferExample))
+      .out(statusCode(StatusCode.Created).and(jsonBody[TransferDto].example(transferExample)))
       .errorOut(statusCode)
 
 
@@ -88,11 +88,11 @@ object TransferEndpoint extends TransferEndpoint {
   //
 
   val transferExample =
-    Transfer(
+    TransferDto(
       "ES11 0182 1111 2222 3333 4444",
       "ES99 2038 9999 8888 7777 6666",
       100.00,
-      EUR,
+      "EUR",
       "Viaje a Tenerife"
     )
 

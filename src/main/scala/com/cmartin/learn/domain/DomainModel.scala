@@ -7,6 +7,22 @@ import com.cmartin.learn.api.ApiModel.{APP_NAME, APP_VERSION}
 
 object DomainModel {
 
+  sealed trait Currency
+
+  case object EUR extends Currency
+
+  case object USD extends Currency
+
+  case class Transfer(
+                       sender: String,
+                       receiver: String,
+                       amount: Double,
+                       currency: Currency,
+                       desc: String,
+                       id: Option[Long] = scala.None
+                     )
+
+
   // ADT
   sealed trait AircraftModel
 
