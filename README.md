@@ -5,6 +5,8 @@ Learning to build APIs with Scala Tapir
 
 ![Scala CI](https://github.com/butcherless/tapir-learn/workflows/Scala%20CI/badge.svg)
 
+[![Build Status](https://semaphoreci.com/api/v1/butcherless/tapir-learn/branches/master/badge.svg)](https://semaphoreci.com/butcherless/tapir-learn)
+
 ## Quick start up
 
 Run the following commands for quick startup and check
