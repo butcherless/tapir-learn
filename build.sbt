@@ -15,7 +15,7 @@ lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
 
 lazy val commonSettings = Seq(
   organization := "com.cmartin.learn",
-  scalaVersion := "2.13.1",
+  scalaVersion := "2.13.2",
   libraryDependencies ++= mainAndTest,
   scalacOptions ++= basicScalacOptions,
   test in assembly := {},
