@@ -29,8 +29,8 @@ object GetAndParseJsonZioCirce extends App {
 
     program
       .repeat(
-        Schedule.spaced(1.second) *>
-        Schedule.recurs(5)
+        Schedule.exponential(20.milliseconds)  *>
+        Schedule.recurs(7)
       )
       .provideCustomLayer(AsyncHttpClientZioBackend.layer())
       .fold(
