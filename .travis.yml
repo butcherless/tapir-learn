@@ -11,7 +11,7 @@ addons:
     update: true
 
 script:
-  - sbt clean test
+  - sbt clean it:compile test
   - sbt dependencyUpdates
 
 cache:

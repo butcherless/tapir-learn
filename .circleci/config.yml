@@ -21,7 +21,7 @@ jobs:
       - run:
           name: clean, compile
           command: |
-            sbt clean compile
+            sbt clean it:compile
 
       - run:
           name: test
