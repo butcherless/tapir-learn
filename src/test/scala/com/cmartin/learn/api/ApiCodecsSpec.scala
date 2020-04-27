@@ -48,6 +48,14 @@ class ApiCodecsSpec
     decodedAircraft shouldBe aircraft
   }
 
+  it should "T4 parse a sequence of processors" in {
+    val parsedProcessors = parse(processorsJson)
+
+    parsedProcessors.isRight shouldBe true
+    parsedProcessors map { json =>
+      info(json.asArray.toString())
+    }
+  }
 }
 
 object ApiCodecsSpec {
@@ -61,5 +69,32 @@ object ApiCodecsSpec {
       |  "model" : "AirbusA332",
       |  "id" : 461
       |}
+      |""".stripMargin
+
+  val processorsJson =
+    """
+      |[
+      |  {
+      |    "type": "filter",
+      |    "predicate": "features.speed > 100"
+      |  },
+      |  {
+      |    "type": "jslt",
+      |    "transform": "let idparts = split(.id, \"-\")\nlet xxx = [for ($idparts) \"x\" * size(.)]\n{\"id\" : join($xxx, \"-\"),\"type\" : \"Anonymized-View\",\n* : .\n}\"\n}"
+      |  },
+      |  {
+      |    "type": "jolt",
+      |    "input": {
+      |      "id": 1234,
+      |      "name": "device name"
+      |    },
+      |    "spec": ""
+      |  },
+      |  {
+      |    "type": "rest",
+      |    "method": "get",
+      |    "url": "http://localhost:8080/health"
+      |  }
+      |]
       |""".stripMargin
 }

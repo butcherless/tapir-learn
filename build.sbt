@@ -28,5 +28,4 @@ lazy val templateProject = (project in file("."))
     Defaults.itSettings,
     commonSettings,
     name := "tapir-learn",
-    testFrameworks ++= Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
   ).settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
