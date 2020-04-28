@@ -27,15 +27,19 @@ object GetAndParseJsonZioCirce extends App {
       _ <- console.putStrLn(response.body.toString)
     } yield ()
 
+    val schedulePolicy =
+      Schedule
+        .exponential(50.milliseconds) *>
+        Schedule
+          .recurs(5)
+          .tapOutput(i => console.putStrLn(s"$i"))
+
     program
-      .repeat(
-        Schedule.exponential(20.milliseconds)  *>
-        Schedule.recurs(7)
-      )
+      .retry(schedulePolicy)
       .provideCustomLayer(AsyncHttpClientZioBackend.layer())
-      .fold(
-        _ => 1,
-        _ => 0
+      .foldM( // error management
+        e => console.putStrLn(e.getMessage) *> UIO(1),
+        _ => UIO(0)
       )
   }
 }
