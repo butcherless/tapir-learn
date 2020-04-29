@@ -12,18 +12,11 @@ object ProcessorModel {
     val name: String
   }
 
-  final case class FilterEvent(predicate: String) extends Event {
-    override val name: String = "filter"
-  }
+  final case class FilterEvent(predicate: String, name: String = "filter") extends Event
 
-  final case class JsltEvent(transform: String) extends Event {
-    override val name: String = "jslt"
-  }
+  final case class JsltEvent(transform: String, name: String = "jslt") extends Event
 
-  final case class RestEvent(getUrl: String) extends Event {
-    override val name: String = "rest"
-  }
-
+  final case class RestEvent(getUrl: String, name: String = "rest") extends Event
 
   trait Processor[E <: Event] {
     def handle(): Task[String]
@@ -56,9 +49,9 @@ object ProcessorModel {
   object GenericDerivation {
 
     implicit val encodeEvent: Encoder[Event] = Encoder.instance {
-      case filter@FilterEvent(_) => filter.asJson
-      case jslt@JsltEvent(_) => jslt.asJson
-      case rest@RestEvent(_) => rest.asJson
+      case filter@FilterEvent(_, _) => filter.asJson
+      case jslt@JsltEvent(_, _) => jslt.asJson
+      case rest@RestEvent(_, _) => rest.asJson
     }
 
     implicit val decodeEvent: Decoder[Event] =

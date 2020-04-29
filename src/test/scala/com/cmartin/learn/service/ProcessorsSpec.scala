@@ -1,8 +1,11 @@
 package com.cmartin.learn.service
 
+import com.cmartin.learn.domain.ProcessorModel.GenericDerivation.{decodeEvent, encodeEvent}
 import com.cmartin.learn.domain.ProcessorModel._
 import com.cmartin.learn.service.messaging.MyMessaging
 import io.circe
+import io.circe.parser.decode
+import io.circe.syntax._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import zio.ZIO
@@ -11,9 +14,19 @@ class ProcessorsSpec
   extends AnyFlatSpec
     with Matchers {
 
+  val filterEvent: Event = FilterEvent("features.speed > 100")
+  val jsltEvent: Event = JsltEvent("dummy jslt event")
+  val restEvent: Event = RestEvent("dummy rest event")
+
+  val filterEventJson = """{"predicate":"features.speed > 100","name":"filter"}"""
+  val jsltEventJson = """{"transform":"dummy jslt event","name":"jslt"}"""
+  val restEventJson = """{"getUrl":"dummy rest event","name":"rest"}"""
+
+  val eventsJson = s"""[$filterEventJson,$jsltEventJson,$restEventJson]"""
+
   val runtime = zio.Runtime.default
 
-  it should "handle a list of processors" in {
+  it should "T1 handle a list of processors" in {
     // given
     val filterEvent = FilterEvent("dummy filter event")
     val jsltEvent = JsltEvent("dummy jslt event")
@@ -38,34 +51,52 @@ class ProcessorsSpec
   }
 
 
-  it should "T2 encode" in {
-    import GenericDerivation.encodeEvent
-    import io.circe.syntax._
+  it should "T2 encode all Events" in {
 
-    val filterEvent: Event = FilterEvent("dummy filter event")
-    info(filterEvent.asJson.noSpaces)
+    val feJson = filterEvent.asJson.noSpaces
+    feJson shouldBe filterEventJson
 
-    val jsltEvent: Event = JsltEvent("dummy jslt event")
-    info(jsltEvent.asJson.noSpaces)
+    val jeJson = jsltEvent.asJson.noSpaces
+    jeJson shouldBe jsltEventJson
 
-    val restEvent: Event = RestEvent("dummy rest event")
-    info(restEvent.asJson.noSpaces)
+    val reJson = restEvent.asJson.noSpaces
+    reJson shouldBe restEventJson
+
+    val events = Seq(filterEvent, jsltEvent, restEvent).asJson.noSpaces
+    events shouldBe eventsJson
   }
 
-  it should "T3 decode a filter event" in {
-    import GenericDerivation.decodeEvent
-    import io.circe.parser.decode
+  it should "T3 decode all Events" in {
 
-    val expectedEvent = FilterEvent("features.speed > 100")
+    val filterEventEither: Either[circe.Error, Event] =
+      decode[Event](filterEventJson)
+    val fEvent: Event = getEvent(filterEventEither)
 
-    val eventEither: Either[circe.Error, Event] = decode[Event]("""{"type":"filter","predicate":"features.speed > 100"}""")
+    fEvent shouldBe filterEvent
 
-    eventEither.isRight shouldBe true
-    info(eventEither.toString)
+    val jsltEventEither: Either[circe.Error, Event] =
+      decode[Event](jsltEventJson)
+    val jEvent: Event = getEvent(jsltEventEither)
 
-    eventEither shouldBe Right(expectedEvent)
+    jEvent shouldBe jsltEvent
+
+    val restEventEither: Either[circe.Error, Event] =
+      decode[Event](restEventJson)
+    val rEvent: Event = getEvent(restEventEither)
+
+    rEvent shouldBe restEvent
+
+
+    val eventsEither: Either[circe.Error, Seq[Event]] =
+      decode[Seq[Event]](eventsJson)
+
+    val events: Seq[Event] = getEvent(eventsEither)
+
+    events shouldBe Seq(filterEvent, jsltEvent, restEvent)
   }
 
+  def getEvent[T](eventEither: Either[circe.Error, T]): T =
+    eventEither.fold(e => fail(e.getMessage), identity)
 
   def runProgram[T](p: ZIO[MyMessaging, Throwable, T]) =
     runtime
