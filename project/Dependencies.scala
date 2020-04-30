@@ -2,8 +2,8 @@ import sbt._
 
 object Dependencies {
   lazy val akkaHttpVersion = "10.1.11"
-  lazy val akkaVersion = "2.6.4"
-  lazy val sttpVersion = "2.1.0-RC1"
+  lazy val akkaVersion = "2.6.5"
+  lazy val sttpVersion = "2.1.0"
   lazy val tapirVersion = "0.14.3"
 
   lazy val json4sVersion = "3.6.7"
@@ -22,6 +22,7 @@ object Dependencies {
     // S T T P
     "com.softwaremill.sttp.client" %% "core" % sttpVersion % "it, test",
     "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % sttpVersion % "it, test",
+    "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % sttpVersion % "it, test",
     "com.softwaremill.sttp.client" %% "circe" % sttpVersion,
 
     // T A P I R
