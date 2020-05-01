@@ -26,5 +26,7 @@ scalaDeps = [
               ["org.scalatest", "scalatest", "3.1.1"],
               ["com.typesafe.akka", "akka-http-testkit" , "10.1.11"],
               ["com.typesafe.akka", "akka-testkit" , "2.6.5"],
-              ["dev.zio", "zio-test", "1.0.0-RC18-2"]
+              ["dev.zio", "zio-test", "1.0.0-RC18-2"],
+              ["org.json4s", "json4s-core", "3.6.7"],
+              ["org.json4s", "json4s-native", "3.6.7"]              
 ]
