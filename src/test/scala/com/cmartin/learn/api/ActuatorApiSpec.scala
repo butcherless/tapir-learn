@@ -4,8 +4,6 @@ import akka.http.scaladsl.model.ContentTypes.`application/json`
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.cmartin.learn.domain.DomainModel.BuildInfo
-import io.circe
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -27,9 +25,12 @@ final class ActuatorApiSpec
       check {
         status shouldBe StatusCodes.OK
         header[`Content-Type`] shouldBe Some(contentTypeJson)
-        parseBuildInfo(entityAs[String]).map(
-          info => info.version == ApiModel.APP_VERSION && info.appName == ApiModel.APP_NAME
-        )
+        val json = entityAs[String]
+        json.contains("gitCommit") shouldBe true
+        json.contains("name") shouldBe true
+        json.contains("scalaVersion") shouldBe true
+        json.contains("version") shouldBe true
+
       }
   }
 
@@ -37,13 +38,6 @@ final class ActuatorApiSpec
 
 object ActuatorApiSpec {
 
-  import io.circe.generic.auto._
-  import io.circe.parser._
-
   val contentTypeJson = `Content-Type`(`application/json`)
-
-  def parseBuildInfo(json: String): Either[circe.Error, BuildInfo] =
-    decode[BuildInfo](json)
-
 
 }
