@@ -62,6 +62,18 @@ object ApiModel {
 
 
   // Actuator
+
+  case class BuildInfoDto(
+                           name: String,
+                           version: String,
+                           scalaVersion: String,
+                           sbtVersion: String,
+                           gitCommit: String,
+                           builtAtString: String,
+                           builtAtMillis: String
+                         )
+
+
   case class ApiBuildInfo(
                            appName: String,
                            date: String,

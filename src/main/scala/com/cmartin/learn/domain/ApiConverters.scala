@@ -1,8 +1,9 @@
 package com.cmartin.learn.domain
 
 import com.cmartin.learn.api.ApiCodecs.CurrencySelector
-import com.cmartin.learn.api.ApiModel.{AircraftDto, ApiBuildInfo, TransferDto}
-import com.cmartin.learn.domain.DomainModel.{AirbusA320, AirbusA332, Aircraft, AircraftModel, Boeing737NG, Boeing788, BuildInfo, Result, Transfer}
+import com.cmartin.learn.api.ApiModel.{AircraftDto, BuildInfoDto, TransferDto}
+import com.cmartin.learn.api.BuildInfo
+import com.cmartin.learn.domain.DomainModel.{AirbusA320, AirbusA332, Aircraft, AircraftModel, Boeing737NG, Boeing788, Result, Transfer}
 
 trait ApiConverters {
 
@@ -17,13 +18,6 @@ trait ApiConverters {
     case "" => manageEmptyCase("result")
     case _ => manageDefaultCase("result", s)
   }
-
-  def apiToModel(info: ApiBuildInfo): BuildInfo =
-    BuildInfo(info.appName, info.date, info.version, info.result)
-
-  def modelToApi(info: BuildInfo): ApiBuildInfo =
-    ApiBuildInfo(info.appName, info.date, info.version, info.result.toString)
-
 
   // AIRCRAFT
   implicit def stringToAircraftModel(s: String): AircraftModel = s match {
@@ -62,12 +56,24 @@ trait ApiConverters {
     )
 
 
+  def modelToApi(): BuildInfoDto = {
+    BuildInfoDto(
+      BuildInfo.name,
+      BuildInfo.version,
+      BuildInfo.scalaVersion,
+      BuildInfo.sbtVersion,
+      BuildInfo.gitCommit,
+      BuildInfo.builtAtString,
+      BuildInfo.builtAtMillis.toString
+    )
+  }
+
+
   private def manageEmptyCase(entity: String) =
     throw CustomMappingError(s"empty value for $entity")
 
   private def manageDefaultCase(entity: String, value: String) =
     throw CustomMappingError(s"invalid $entity value: $value")
-
 }
 
 object ApiConverters extends ApiConverters

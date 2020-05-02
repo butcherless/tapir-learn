@@ -17,7 +17,7 @@ object GetStreamApp extends App {
     AsyncHttpClientZioStreamsBackend().flatMap { implicit backend =>
       val response: Task[Response[Either[String, Stream[Throwable, ByteBuffer]]]] =
         basicRequest
-          .post(uri"...")
+          .get(uri"http://127.0.0.1:8080/api/v1.0/tenants/848860983001616384/vertexes")
           .response(asStream[Stream[Throwable, ByteBuffer]])
           .readTimeout(Duration.Inf)
           .send()

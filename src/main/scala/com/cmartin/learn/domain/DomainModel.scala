@@ -52,20 +52,6 @@ object DomainModel {
   case object Error extends Result
 
 
-  case class BuildInfo(appName: String,
-                       date: String,
-                       version: String,
-                       result: Result
-                      )
-
-
   // HELPERS
-  def buildInfo(): BuildInfo =
-    BuildInfo(
-      APP_NAME,
-      LocalDateTime.now(Clock.systemDefaultZone()).toString,
-      APP_VERSION,
-      Success
-    )
 
 }

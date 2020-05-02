@@ -27,5 +27,11 @@ lazy val templateProject = (project in file("."))
   .settings(
     Defaults.itSettings,
     commonSettings,
-    name := "tapir-learn",
-  ).settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
+    name := "tapir-learn"
+  )
+  .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
+  .settings(BuildInfoSettings.value)
+  // plugins
+  .enablePlugins(BuildInfoPlugin)
+  .enablePlugins(GitVersioning)
+
