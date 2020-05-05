@@ -6,7 +6,7 @@ object Dependencies {
   lazy val sttpVersion = "2.1.1"
   lazy val tapirVersion = "0.14.3"
 
-  lazy val json4sVersion = "3.6.7"
+  lazy val json4sVersion = "3.6.8"
   lazy val logbackVersion = "1.2.3"
   lazy val zioVersion = "1.0.0-RC18-2"
 
