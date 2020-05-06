@@ -23,7 +23,7 @@ object ProcessorModel {
   }
 
   final class FilterProcessor(filterEvent: FilterEvent) extends Processor[Event] {
-    override def handle(): Task[String] = Task.effect(filterEvent.predicate.toString)
+    override def handle(): Task[String] = Task.effect(filterEvent.predicate)
   }
 
   object FilterProcessor {
@@ -31,7 +31,7 @@ object ProcessorModel {
   }
 
   final class JsltProcessor(jsltEvent: JsltEvent) extends Processor[Event] {
-    override def handle(): Task[String] = Task.effect(jsltEvent.transform.toString)
+    override def handle(): Task[String] = Task.effect(jsltEvent.transform)
   }
 
   object JsltProcessor {
@@ -39,7 +39,7 @@ object ProcessorModel {
   }
 
   final class RestProcessor(restEvent: RestEvent) extends Processor[Event] {
-    override def handle(): Task[String] = Task.effect(restEvent.getUrl.toString)
+    override def handle(): Task[String] = Task.effect(restEvent.getUrl)
   }
 
   object RestProcessor {
