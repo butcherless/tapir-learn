@@ -1,5 +1,3 @@
 package com.cmartin.learn.api
 
-trait AircraftEndpoint {
-
-}
+trait AircraftEndpoint {}

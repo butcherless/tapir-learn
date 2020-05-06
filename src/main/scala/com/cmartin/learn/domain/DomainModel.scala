@@ -4,7 +4,6 @@ import java.time.{Clock, LocalDateTime}
 
 import com.cmartin.learn.api.ApiModel.{APP_NAME, APP_VERSION}
 
-
 object DomainModel {
 
   sealed trait Currency
@@ -14,14 +13,13 @@ object DomainModel {
   case object USD extends Currency
 
   case class Transfer(
-                       sender: String,
-                       receiver: String,
-                       amount: Double,
-                       currency: Currency,
-                       desc: String,
-                       id: Option[Long] = scala.None
-                     )
-
+      sender: String,
+      receiver: String,
+      amount: Double,
+      currency: Currency,
+      desc: String,
+      id: Option[Long] = scala.None
+  )
 
   // ADT
   sealed trait AircraftModel
@@ -35,12 +33,11 @@ object DomainModel {
   case object Boeing788 extends AircraftModel
 
   case class Aircraft(
-                       registration: String,
-                       age: Int,
-                       model: AircraftModel,
-                       id: Long
-                     )
-
+      registration: String,
+      age: Int,
+      model: AircraftModel,
+      id: Long
+  )
 
   // Actuator
   sealed trait Result
@@ -50,7 +47,6 @@ object DomainModel {
   case object Warning extends Result
 
   case object Error extends Result
-
 
   // HELPERS
 

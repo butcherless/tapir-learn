@@ -17,12 +17,11 @@ trait SwaggerApi {
     AircraftApi.getAircraftEndpoint,
     AircraftApi.getAircraftSeqEndpoint,
     AircraftApi.postAircraftEndpoint
-  ).toOpenAPI("Tapir Learning Service API", "1.0.0-SNAPSHOT")
-    .toYaml
+  ).toOpenAPI("Tapir Learning Service API", "1.0.0-SNAPSHOT").toYaml
 
   //
   lazy val route: Route =
-  //pathPrefix(API_TEXT / API_VERSION) {
+    //pathPrefix(API_TEXT / API_VERSION) {
     new CustomSwaggerAkka(docsAsYaml).routes
   //}
 }

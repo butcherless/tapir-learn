@@ -49,9 +49,9 @@ object ProcessorModel {
   object GenericDerivation {
 
     implicit val encodeEvent: Encoder[Event] = Encoder.instance {
-      case filter@FilterEvent(_, _) => filter.asJson
-      case jslt@JsltEvent(_, _) => jslt.asJson
-      case rest@RestEvent(_, _) => rest.asJson
+      case filter @ FilterEvent(_, _) => filter.asJson
+      case jslt @ JsltEvent(_, _)     => jslt.asJson
+      case rest @ RestEvent(_, _)     => rest.asJson
     }
 
     implicit val decodeEvent: Decoder[Event] =

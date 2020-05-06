@@ -18,14 +18,12 @@ trait AircraftApi {
       getSeqRoute ~
       postRoute
 
-
   //TODO move to AircraftEndpoint companion object
-  val apiAircraftExample = AircraftDto("ec-nei", 1, "Boeing788", None)
+  val apiAircraftExample  = AircraftDto("ec-nei", 1, "Boeing788", None)
   val apiAircraft2Example = AircraftDto("ec-lvl", 1, "Airbus333", None)
 
   lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Nothing] =
-    endpoint
-      .get
+    endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "aircrafts")
       .name("get-aircraft-endpoint")
       .description("Retrieve aircraft endpoint")
@@ -33,25 +31,21 @@ trait AircraftApi {
       .errorOut(statusCode)
 
   lazy val getAircraftSeqEndpoint: Endpoint[Unit, StatusCode, Seq[AircraftDto], Nothing] =
-    endpoint
-      .get
+    endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "aircraft-list")
       .name("get-aircraft-list-endpoint")
       .description("Retrieve aircraft list endpoint")
       .out(jsonBody[Seq[AircraftDto]].example(Seq(apiAircraftExample, apiAircraft2Example)))
       .errorOut(statusCode)
 
-
   lazy val postAircraftEndpoint: Endpoint[AircraftDto, StatusCode, AircraftDto, Nothing] =
-    endpoint
-      .post
+    endpoint.post
       .in(CommonEndpoint.baseEndpointInput / "aircrafts")
       .name("post-aircraft-endpoint")
       .description(("Create Aircraft Endpoint"))
       .in(jsonBody[AircraftDto].example(apiAircraftExample))
       .out(jsonBody[AircraftDto].example(apiAircraftExample))
       .errorOut(statusCode)
-
 
   lazy val getRoute: Route =
     getAircraftEndpoint.toRoute { _ =>
@@ -69,5 +63,4 @@ trait AircraftApi {
     }
 }
 
-object AircraftApi extends AircraftApi {
-}
+object AircraftApi extends AircraftApi {}

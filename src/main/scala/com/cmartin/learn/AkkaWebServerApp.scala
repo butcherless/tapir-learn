@@ -7,12 +7,10 @@ import com.cmartin.learn.configuration.ApiConfiguration
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-object AkkaWebServerApp
-  extends App
-    with ApiConfiguration {
+object AkkaWebServerApp extends App with ApiConfiguration {
 
   // A K K A  A C T O R  S Y S T E M
-  implicit lazy val system: ActorSystem = ActorSystem("WebActorSystem")
+  implicit lazy val system: ActorSystem           = ActorSystem("WebActorSystem")
   implicit val executionContext: ExecutionContext = system.dispatcher
   system.log.info(s"Starting WebServer")
 
@@ -20,7 +18,7 @@ object AkkaWebServerApp
   val futureBinding: Future[Http.ServerBinding] =
     Http()
       .bindAndHandle(
-        routes, // Rest API routes
+        routes,        // Rest API routes
         serverAddress, //TODO configuration properties
         serverPort
       )

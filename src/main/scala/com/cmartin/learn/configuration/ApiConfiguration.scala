@@ -7,7 +7,7 @@ import com.cmartin.learn.api.{ActuatorApi, AircraftApi, SwaggerApi, TransferApi}
 trait ApiConfiguration {
 
   lazy val serverAddress: String = "localhost"
-  lazy val serverPort: Int = 8080
+  lazy val serverPort: Int       = 8080
 
   lazy val routes: Route =
     ActuatorApi.route ~

@@ -7,8 +7,7 @@ import sttp.tapir.EndpointOutput.StatusMapping
 import sttp.tapir.json.circe._
 import sttp.tapir.{Endpoint, _}
 
-trait TransferEndpoint
-  extends ApiCodecs {
+trait TransferEndpoint extends ApiCodecs {
 
   import TransferEndpoint._
 
@@ -16,17 +15,17 @@ trait TransferEndpoint
       E N D P O I N T S
    */
 
-  val transferIdPath = path[TransferId]("transferId")
+  val transferIdPath                             = path[TransferId]("transferId")
   val breMapping: StatusMapping[BadRequestError] = statusMapping(StatusCode.BadRequest, jsonBody[BadRequestError])
-  val nfeMapping: StatusMapping[NotFoundError] = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
-  val iseMapping: StatusMapping[ServerError] = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
-  val sueMapping: StatusMapping[ServiceUnavailableError] = statusMapping(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
+  val nfeMapping: StatusMapping[NotFoundError]   = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
+  val iseMapping: StatusMapping[ServerError]     = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
+  val sueMapping: StatusMapping[ServiceUnavailableError] =
+    statusMapping(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
   val deMapping = statusDefaultMapping(jsonBody[UnknownError])
 
   //json encode/decode via circe.generic.auto
   lazy val getTransferEndpoint: Endpoint[TransferId, ErrorInfo, TransferDto, Nothing] =
-    endpoint
-      .get
+    endpoint.get
       .name("get-transfer-endpoint")
       .description("Retrieve Transfer Endpoint")
       .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
@@ -36,10 +35,8 @@ trait TransferEndpoint
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
 
-
   lazy val postTransferEndpoint: Endpoint[TransferDto, StatusCode, TransferDto, Nothing] =
-    endpoint
-      .post
+    endpoint.post
       .name("post-transfer-endpoint")
       .description(("Create Transfer Endpoint"))
       .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
@@ -47,20 +44,16 @@ trait TransferEndpoint
       .out(statusCode(StatusCode.Created).and(jsonBody[TransferDto].example(transferExample)))
       .errorOut(statusCode)
 
-
   lazy val getACEntityEndpoint: Endpoint[Unit, StatusCode, ACEntity, Nothing] =
-    endpoint
-      .get
+    endpoint.get
       .name("get-acEntity-endpoint")
       .description("Get AC Entity Endpoint")
       .in(CommonEndpoint.baseEndpointInput / "acEntity")
       .out(jsonBody[ACEntity].example(acEntityExample))
       .errorOut(statusCode)
 
-
   lazy val getComOutputEndpoint: Endpoint[Unit, StatusCode, Output, Nothing] =
-    endpoint
-      .get
+    endpoint.get
       .name("get-com-output-endpoint")
       .description("Get Com Output Endpoint")
       .in(CommonEndpoint.baseEndpointInput / "com-output")
@@ -68,8 +61,7 @@ trait TransferEndpoint
       .errorOut(statusCode)
 
   lazy val getShaOutputEndpoint: Endpoint[Unit, StatusCode, Output, Nothing] =
-    endpoint
-      .get
+    endpoint.get
       .name("get-sha-out-endpoint")
       .description("Get Sha Output Endpoint")
       .in(CommonEndpoint.baseEndpointInput / "sha-output")
@@ -96,14 +88,22 @@ object TransferEndpoint extends TransferEndpoint {
       "Viaje a Tenerife"
     )
 
-
   val acEntityExample: ACEntity =
     ACEntity(
       ComposedId(11111111L, 22222222L),
       Sids(
         Source(1111L, "src-filter", Merge, ComOut),
-        Some(State(2222L, "sta-filter", None, ComOut, ShaStrategy,
-          Processors(Seq("in1", "in2"), Seq("ex1", "ex2"), Seq("t1", "t2", "t3"))))),
+        Some(
+          State(
+            2222L,
+            "sta-filter",
+            None,
+            ComOut,
+            ShaStrategy,
+            Processors(Seq("in1", "in2"), Seq("ex1", "ex2"), Seq("t1", "t2", "t3"))
+          )
+        )
+      ),
       ComOut
     )
 }
