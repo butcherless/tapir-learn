@@ -19,7 +19,8 @@ trait TransferApi {
       postRoute ~
       getComOutputRoute ~
       getShaOutputRoute ~
-      getACEntityRoute // ~ add more routes
+      getACEntityRoute ~ // ~ add more routes
+      postJsonRoute
 
   // tapir endpoint description to akka routes via .toRoute function
   lazy val getRoute: Route =
@@ -34,6 +35,11 @@ trait TransferApi {
       val transfer: Transfer  = ApiConverters.apiToModel(inDto)
       val outDto: TransferDto = ApiConverters.modelToApi(transfer)
       Future.successful(Right(outDto))
+    }
+
+  lazy val postJsonRoute: Route =
+    TransferEndpoint.postJsonEndpoint.toRoute { inDto =>
+      Future.successful(Right(inDto))
     }
 
   case class BusinessException(code: Int, message: String = "Information not available")

@@ -1,6 +1,7 @@
 package com.cmartin.learn.api
 
 import com.cmartin.learn.api.ApiModel._
+import io.circe.Json
 import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir.EndpointOutput.StatusMapping
@@ -41,7 +42,20 @@ trait TransferEndpoint extends ApiCodecs {
       .description(("Create Transfer Endpoint"))
       .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
       .in(jsonBody[TransferDto].example(transferExample))
-      .out(statusCode(StatusCode.Created).and(jsonBody[TransferDto].example(transferExample)))
+      .out(
+        statusCode(StatusCode.Created)
+          .and(jsonBody[TransferDto].example(transferExample))
+      )
+      .errorOut(statusCode)
+
+  lazy val postJsonEndpoint: Endpoint[Json, StatusCode, Json, Nothing] =
+    endpoint.post
+      .in(CommonEndpoint.baseEndpointInput / "edges")
+      .in(jsonBody[Json].example(jsonExample))
+      .out(
+        statusCode(StatusCode.Created)
+          .and(jsonBody[Json].example(jsonExample))
+      )
       .errorOut(statusCode)
 
   lazy val getACEntityEndpoint: Endpoint[Unit, StatusCode, ACEntity, Nothing] =
@@ -106,4 +120,8 @@ object TransferEndpoint extends TransferEndpoint {
       ),
       ComOut
     )
+
+  val jsonStringExample = """{"id": 1234}"""
+  val jsonExample       = io.circe.parser.parse(jsonStringExample).getOrElse(Json.Null)
+
 }
