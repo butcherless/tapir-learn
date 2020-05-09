@@ -50,7 +50,7 @@ trait TransferEndpoint extends ApiCodecs {
 
   lazy val postJsonEndpoint: Endpoint[Json, StatusCode, Json, Nothing] =
     endpoint.post
-      .in(CommonEndpoint.baseEndpointInput / "edges")
+      .in(CommonEndpoint.baseEndpointInput / "bananas")
       .in(jsonBody[Json].example(jsonExample))
       .out(
         statusCode(StatusCode.Created)
@@ -121,7 +121,7 @@ object TransferEndpoint extends TransferEndpoint {
       ComOut
     )
 
-  val jsonStringExample = """{"id": 1234}"""
+  val jsonStringExample = """{"id":1234}"""
   val jsonExample       = io.circe.parser.parse(jsonStringExample).getOrElse(Json.Null)
 
 }

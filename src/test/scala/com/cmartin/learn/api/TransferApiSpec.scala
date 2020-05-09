@@ -13,10 +13,7 @@ import io.circe.syntax._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class TransferApiSpec
-  extends AnyFlatSpec
-    with Matchers
-    with ScalatestRouteTest {
+class TransferApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest {
 
   import CommonEndpoint._
   import TransferApiSpec._
@@ -24,7 +21,7 @@ class TransferApiSpec
 
   behavior of "Transfer API"
 
-  it should "T1 retrieve a Transfer via /transfers endpoint" in {
+  it should "A1 retrieve a Transfer via /transfers endpoint" in {
     // G I V E N
     Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/200") ~>
       // W H E N
@@ -38,7 +35,7 @@ class TransferApiSpec
       }
   }
 
-  it should "T2 get a not found via /transfers endpoint" in {
+  it should "A2 get a not found via /transfers endpoint" in {
     // G I V E N
     Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/400") ~>
       // W H E N
@@ -51,7 +48,7 @@ class TransferApiSpec
       }
   }
 
-  it should "T3 get a not found via /transfers endpoint" in {
+  it should "A3 get a not found via /transfers endpoint" in {
     // G I V E N
     Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/404") ~>
       // W H E N
@@ -64,7 +61,7 @@ class TransferApiSpec
       }
   }
 
-  it should "T4 get a server error via /transfers endpoint" in {
+  it should "A4 get a server error via /transfers endpoint" in {
     // G I V E N
     Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/500") ~>
       // W H E N
@@ -77,7 +74,7 @@ class TransferApiSpec
       }
   }
 
-  it should "T5 get an unavailable service error via /transfers endpoint" in {
+  it should "A5 get an unavailable service error via /transfers endpoint" in {
     // G I V E N
     Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/503") ~>
       // W H E N
@@ -90,7 +87,7 @@ class TransferApiSpec
       }
   }
 
-  it should "T6 get an unknown error via /transfers endpoint" in {
+  it should "A6 get an unknown error via /transfers endpoint" in {
     // G I V E N
     Get(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT/666") ~>
       // W H E N
@@ -103,7 +100,7 @@ class TransferApiSpec
       }
   }
 
-  it should "T7 create a transfer via /transfer endpoint" in {
+  it should "B1 create a transfer via /transfer endpoint" in {
 
     Post(s"$API_TEXT/$API_VERSION/$TRANSFERS_TEXT")
       .withEntity(TransferEndpoint.transferExample.asJson.noSpaces) ~>
@@ -116,7 +113,20 @@ class TransferApiSpec
       }
   }
 
-  it should "T8 convert a transfer dto to a transfer" in {
+  it should "B2 create a JsonObject via /bananas endpoint" in {
+
+    Post(s"$API_TEXT/$API_VERSION/bananas")
+      .withEntity(TransferEndpoint.jsonStringExample) ~>
+      TransferApi.postJsonRoute ~>
+      // THEN
+      check {
+        status shouldBe StatusCodes.Created
+        info(entityAs[String])
+        entityAs[String] shouldBe TransferEndpoint.jsonStringExample
+      }
+  }
+
+  it should "C1 convert a transfer dto to a transfer" in {
     // Given
 
     // When
@@ -126,7 +136,7 @@ class TransferApiSpec
     convertedTransfer shouldBe transfer
   }
 
-  it should "T9 convert a transfer to a transfer dto" in {
+  it should "C2 convert a transfer to a transfer dto" in {
     // Given
 
     // When
