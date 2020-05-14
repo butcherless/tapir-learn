@@ -4,33 +4,35 @@ import com.cmartin.learn.domain.ProcessorModel.GenericDerivation.{decodeEvent, e
 import com.cmartin.learn.domain.ProcessorModel._
 import com.cmartin.learn.service.messaging.MyMessaging
 import io.circe
-import io.circe.parser.decode
+import io.circe.parser.{decode, parse}
 import io.circe.syntax._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import zio.ZIO
 
-class ProcessorsSpec
-  extends AnyFlatSpec
-    with Matchers {
+class ProcessorsSpec extends AnyFlatSpec with Matchers {
+
+  import ProcessorsSpec._
 
   val filterEvent: Event = FilterEvent("features.speed > 100")
-  val jsltEvent: Event = JsltEvent("dummy jslt event")
-  val restEvent: Event = RestEvent("dummy rest event")
+  val jsltEvent: Event   = JsltEvent("dummy jslt event")
+  val restEvent: Event   = RestEvent("dummy rest event")
 
   val filterEventJson = """{"predicate":"features.speed > 100","name":"filter"}"""
-  val jsltEventJson = """{"transform":"dummy jslt event","name":"jslt"}"""
-  val restEventJson = """{"getUrl":"dummy rest event","name":"rest"}"""
+  val jsltEventJson   = """{"transform":"dummy jslt event","name":"jslt"}"""
+  val restEventJson   = """{"getUrl":"dummy rest event","name":"rest"}"""
 
   val eventsJson = s"""[$filterEventJson,$jsltEventJson,$restEventJson]"""
 
   val runtime = zio.Runtime.default
 
+  behavior of "Processor Sequence"
+
   it should "T1 handle a list of processors" in {
     // given
     val filterEvent = FilterEvent("dummy filter event")
-    val jsltEvent = JsltEvent("dummy jslt event")
-    val restEvent = RestEvent("dummy rest event")
+    val jsltEvent   = JsltEvent("dummy jslt event")
+    val restEvent   = RestEvent("dummy rest event")
 
     val processors: Seq[Processor[Event]] =
       Seq(
@@ -49,7 +51,6 @@ class ProcessorsSpec
 
     result shouldBe Seq("dummy filter event", "dummy jslt event", "dummy rest event")
   }
-
 
   it should "T2 encode all Events" in {
 
@@ -74,25 +75,24 @@ class ProcessorsSpec
 
     fEvent shouldBe filterEvent
 
-    val jsltEventEither: Either[circe.Error, Event] =
-      decode[Event](jsltEventJson)
-    val jEvent: Event = getEvent(jsltEventEither)
-
+    val jEvent: Event = getEvent(decode[Event](jsltEventJson))
     jEvent shouldBe jsltEvent
-
-    val restEventEither: Either[circe.Error, Event] =
-      decode[Event](restEventJson)
-    val rEvent: Event = getEvent(restEventEither)
+    val rEvent: Event = getEvent(decode[Event](restEventJson))
 
     rEvent shouldBe restEvent
 
-
-    val eventsEither: Either[circe.Error, Seq[Event]] =
-      decode[Seq[Event]](eventsJson)
-
-    val events: Seq[Event] = getEvent(eventsEither)
+    val events: Seq[Event] = getEvent(decode[Seq[Event]](eventsJson))
 
     events shouldBe Seq(filterEvent, jsltEvent, restEvent)
+  }
+
+  it should "T4 parse a sequence of processors" in {
+    val parsedProcessors = parse(processorsJson)
+
+    parsedProcessors.isRight shouldBe true
+    parsedProcessors map { json =>
+      info(json.asArray.toString())
+    }
   }
 
   def getEvent[T](eventEither: Either[circe.Error, T]): T =
@@ -104,4 +104,33 @@ class ProcessorsSpec
         p.provideLayer(MyMessaging.live)
       )
 
+}
+
+object ProcessorsSpec {
+  val processorsJson =
+    """
+      |[
+      |  {
+      |    "type": "filter",
+      |    "predicate": "features.speed > 100"
+      |  },
+      |  {
+      |    "type": "jslt",
+      |    "transform": "let idparts = split(.id, \"-\")\nlet xxx = [for ($idparts) \"x\" * size(.)]\n{\"id\" : join($xxx, \"-\"),\"type\" : \"Anonymized-View\",\n* : .\n}\"\n}"
+      |  },
+      |  {
+      |    "type": "jolt",
+      |    "input": {
+      |      "id": 1234,
+      |      "name": "device name"
+      |    },
+      |    "spec": ""
+      |  },
+      |  {
+      |    "type": "rest",
+      |    "method": "get",
+      |    "url": "http://localhost:8080/health"
+      |  }
+      |]
+      |""".stripMargin
 }
