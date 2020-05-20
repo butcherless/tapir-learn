@@ -1,9 +1,5 @@
 package com.cmartin.learn.domain
 
-import java.time.{Clock, LocalDateTime}
-
-import com.cmartin.learn.api.ApiModel.{APP_NAME, APP_VERSION}
-
 object DomainModel {
 
   sealed trait Currency

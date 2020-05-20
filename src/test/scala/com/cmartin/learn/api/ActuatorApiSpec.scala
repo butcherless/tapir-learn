@@ -7,10 +7,7 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-final class ActuatorApiSpec
-  extends AnyFlatSpec
-    with Matchers
-    with ScalatestRouteTest {
+final class ActuatorApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest {
 
   import ActuatorApiSpec._
   import CommonEndpoint._

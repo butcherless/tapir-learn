@@ -5,9 +5,7 @@ import org.json4s.native.JsonMethods._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class JsonTagsSpec
-  extends AnyFlatSpec
-    with Matchers {
+class JsonTagsSpec extends AnyFlatSpec with Matchers {
 
   import JsonTagsSpec._
 

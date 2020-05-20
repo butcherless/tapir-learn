@@ -9,14 +9,31 @@ import zio.Task
 object ProcessorModel {
 
   sealed trait Event {
+    val inputPath: String
+    val resultPath: String
     val name: String
   }
 
-  final case class FilterEvent(predicate: String, name: String = "filter") extends Event
+  final case class FilterEvent(
+      predicate: String,
+      inputPath: String = "",
+      resultPath: String = "",
+      name: String = "filter"
+  ) extends Event
 
-  final case class JsltEvent(transform: String, name: String = "jslt") extends Event
+  final case class JsltEvent(
+      transform: String,
+      inputPath: String = "",
+      resultPath: String = "",
+      name: String = "jslt"
+  ) extends Event
 
-  final case class RestEvent(getUrl: String, name: String = "rest") extends Event
+  final case class RestEvent(
+      getUrl: String,
+      inputPath: String = "",
+      resultPath: String = "",
+      name: String = "rest"
+  ) extends Event
 
   trait Processor[E <: Event] {
     def handle(): Task[String]
@@ -48,13 +65,13 @@ object ProcessorModel {
 
   object GenericDerivation {
 
-    implicit val encodeEvent: Encoder[Event] = Encoder.instance {
-      case filter @ FilterEvent(_, _) => filter.asJson
-      case jslt @ JsltEvent(_, _)     => jslt.asJson
-      case rest @ RestEvent(_, _)     => rest.asJson
+    implicit val eventEncoder: Encoder[Event] = Encoder.instance {
+      case filter @ FilterEvent(_, _, _, _) => filter.asJson
+      case jslt @ JsltEvent(_, _, _, _)     => jslt.asJson
+      case rest @ RestEvent(_, _, _, _)     => rest.asJson
     }
 
-    implicit val decodeEvent: Decoder[Event] =
+    implicit val eventDecoder: Decoder[Event] =
       List[Decoder[Event]](
         Decoder[FilterEvent].widen,
         Decoder[JsltEvent].widen,
