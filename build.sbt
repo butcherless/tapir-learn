@@ -22,7 +22,7 @@ lazy val commonSettings = Seq(
   assemblyJarName in assembly := "webapp.jar"
 )
 
-lazy val templateProject = (project in file("."))
+lazy val tapirLearn = (project in file("."))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,

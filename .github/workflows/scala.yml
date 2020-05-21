@@ -14,6 +14,6 @@ jobs:
       with:
         java-version: 11
     - name: compile
-      run: sbt clean compile
+      run: sbt clean test:compile it:compile
     - name: tests
       run: sbt test
