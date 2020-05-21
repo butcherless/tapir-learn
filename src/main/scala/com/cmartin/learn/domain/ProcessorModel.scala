@@ -8,74 +8,140 @@ import zio.Task
 
 object ProcessorModel {
 
-  sealed trait Event {
+  sealed abstract class Base(ip:String="")
+
+  class Derived(ip:String) extends Base(ip) {
+    val x = ip
+  }
+
+  val x = new Derived("")
+
+  sealed trait ProcessorDefinition {
     val inputPath: String
     val resultPath: String
+    val outputPath: String
     val name: String
   }
 
-  final case class FilterEvent(
+  final case class FilterDefinition(
       predicate: String,
       inputPath: String = "",
       resultPath: String = "",
+      outputPath: String = "",
       name: String = "filter"
-  ) extends Event
+  ) extends ProcessorDefinition
 
-  final case class JsltEvent(
+  final case class JsltDefinition(
       transform: String,
       inputPath: String = "",
       resultPath: String = "",
+      outputPath: String = "",
       name: String = "jslt"
-  ) extends Event
+  ) extends ProcessorDefinition
 
-  final case class RestEvent(
-      getUrl: String,
+  final case class RestDefinition(
+      method: String,
+      url: String,
       inputPath: String = "",
       resultPath: String = "",
+      outputPath: String = "",
       name: String = "rest"
-  ) extends Event
+  ) extends ProcessorDefinition
 
-  trait Processor[E <: Event] {
-    def handle(): Task[String]
+  sealed trait Processor[E <: ProcessorDefinition] {
+
+    def doTask(message: String): Task[String]
+
   }
 
-  final class FilterProcessor(filterEvent: FilterEvent) extends Processor[Event] {
-    override def handle(): Task[String] = Task.effect(filterEvent.predicate)
+  abstract class BaseProcessor(definition: ProcessorDefinition) extends Processor[ProcessorDefinition] {
+    final def handle(message: String): Task[String] =
+      for {
+        ipMsg   <- doInputPath(message)
+        taskMsg <- doTask(ipMsg)
+        rpMsg   <- doResultPath(taskMsg)
+        opMsg   <- doOutputPath(rpMsg)
+      } yield opMsg
+
+    private def doInputPath(message: String): Task[String] =
+      Task {
+        val processedMessage = message + ".input#"
+        debugMessage(s".inputPath - ${definition.inputPath}", processedMessage)
+        processedMessage
+      }
+
+    private def doResultPath(message: String): Task[String] =
+      Task {
+        val processedMessage = message + ".result#"
+        debugMessage(s".resultPath - ${definition.resultPath}", processedMessage)
+        processedMessage
+      }
+
+    private def doOutputPath(message: String): Task[String] =
+      Task {
+        val processedMessage = message + ".output#"
+        debugMessage(s".outputPath - ${definition.outputPath}", processedMessage)
+        processedMessage
+      }
+
+  }
+
+  final class FilterProcessor(definition: FilterDefinition) extends BaseProcessor(definition) {
+    override def doTask(message: String): Task[String] =
+      Task {
+        val processedMessage = message + ".filtered#"
+        debugMessage(s".doFilter - predicate: ${definition.predicate}, message", processedMessage)
+        processedMessage
+      }
   }
 
   object FilterProcessor {
-    def apply(filterEvent: FilterEvent): FilterProcessor = new FilterProcessor(filterEvent)
+    def apply(definition: FilterDefinition): FilterProcessor = new FilterProcessor(definition)
   }
 
-  final class JsltProcessor(jsltEvent: JsltEvent) extends Processor[Event] {
-    override def handle(): Task[String] = Task.effect(jsltEvent.transform)
+  final class JsltProcessor(definition: JsltDefinition) extends Processor[ProcessorDefinition] {
+    override def doTask(message: String): Task[String] =
+      Task {
+        val processedMessage = message + ".transformed#"
+        debugMessage(s".doTransform - transformation: ${definition.transform}, message", processedMessage)
+        processedMessage
+      }
   }
 
   object JsltProcessor {
-    def apply(jsltEvent: JsltEvent): JsltProcessor = new JsltProcessor(jsltEvent)
+    def apply(definition: JsltDefinition): JsltProcessor = new JsltProcessor(definition)
   }
 
-  final class RestProcessor(restEvent: RestEvent) extends Processor[Event] {
-    override def handle(): Task[String] = Task.effect(restEvent.getUrl)
+  final class RestProcessor(definition: RestDefinition) extends Processor[ProcessorDefinition] {
+    override def doTask(message: String): Task[String] =
+      Task {
+        val processedMessage = message + ".response#"
+        debugMessage(s".doMethod - url: ${definition.url}, message", processedMessage)
+        processedMessage
+      }
   }
 
   object RestProcessor {
-    def apply(restEvent: RestEvent): RestProcessor = new RestProcessor(restEvent)
+    def apply(definition: RestDefinition): RestProcessor = new RestProcessor(definition)
   }
+
+  // h e l p e r s
+  def debugMessage(prefix: String, message: String) =
+    println(s"$prefix:\n |-> $message")
 
   object GenericDerivation {
 
-    implicit val eventEncoder: Encoder[Event] = Encoder.instance {
-      case filter @ FilterEvent(_, _, _, _) => filter.asJson
-      case jslt @ JsltEvent(_, _, _, _)     => jslt.asJson
-      case rest @ RestEvent(_, _, _, _)     => rest.asJson
+    implicit val eventEncoder: Encoder[ProcessorDefinition] = Encoder.instance {
+      case filter @ FilterDefinition(_, _, _, _, _) => filter.asJson
+      case jslt @ JsltDefinition(_, _, _, _, _)     => jslt.asJson
+      case rest @ RestDefinition(_, _, _, _, _, _)  => rest.asJson
     }
 
-    implicit val eventDecoder: Decoder[Event] =
-      List[Decoder[Event]](
-        Decoder[FilterEvent].widen,
-        Decoder[JsltEvent].widen,
-        Decoder[RestEvent].widen
+    implicit val eventDecoder: Decoder[ProcessorDefinition] =
+      List[Decoder[ProcessorDefinition]](
+        Decoder[FilterDefinition].widen,
+        Decoder[JsltDefinition].widen,
+        Decoder[RestDefinition].widen
       ).reduceLeft(_ or _)
   }
 

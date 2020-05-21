@@ -15,7 +15,7 @@ package object messaging {
 
       def send(message: String, topic: String): Task[String]
 
-      def handle(processors: Seq[Processor[Event]]): Task[Seq[String]]
+      def handle(processors: Seq[Processor[ProcessorDefinition]]): Task[Seq[String]]
     }
 
     val live: Layer[Nothing, Has[MyMessaging.Service]] =
@@ -29,8 +29,8 @@ package object messaging {
           override def send(message: String, topic: String): Task[String] =
             Task.effect(s"send message: $message -> to topic: $topic")
 
-          override def handle(processors: Seq[Processor[Event]]): Task[Seq[String]] =
-            ZIO.foreach(processors)(_.handle())
+          override def handle(processors: Seq[Processor[ProcessorDefinition]]): Task[Seq[String]] =
+            ZIO.foreach(processors)(_.doTask("dummy-message"))
         }
       )
 
@@ -40,7 +40,7 @@ package object messaging {
     def send(message: String, topic: String): ZIO[MyMessaging, Throwable, String] =
       ZIO.accessM(_.get.send(message, topic))
 
-    def handle(processors: Seq[Processor[Event]]): ZIO[MyMessaging, Throwable, Seq[String]] =
+    def handle(processors: Seq[Processor[ProcessorDefinition]]): ZIO[MyMessaging, Throwable, Seq[String]] =
       ZIO.accessM(_.get.handle(processors))
   }
 
