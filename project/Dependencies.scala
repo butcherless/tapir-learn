@@ -3,8 +3,8 @@ import sbt._
 object Dependencies {
   lazy val akkaHttpVersion = "10.1.12"
   lazy val akkaVersion = "2.6.5"
-  lazy val sttpVersion = "2.1.2"
-  lazy val tapirVersion = "0.15.1"
+  lazy val sttpVersion = "2.1.4"
+  lazy val tapirVersion = "0.15.2"
 
   lazy val json4sVersion = "3.6.8"
   lazy val logbackVersion = "1.2.3"
