@@ -1,20 +1,13 @@
 package com.cmartin.learn.domain
 
 import cats.syntax.functor._
-import io.circe.generic.auto._
+import io.circe.generic.extras.Configuration
+import io.circe.generic.extras.auto._
 import io.circe.syntax._
 import io.circe.{Decoder, Encoder}
 import zio.Task
 
 object ProcessorModel {
-
-  sealed abstract class Base(ip:String="")
-
-  class Derived(ip:String) extends Base(ip) {
-    val x = ip
-  }
-
-  val x = new Derived("")
 
   sealed trait ProcessorDefinition {
     val inputPath: String
@@ -66,7 +59,8 @@ object ProcessorModel {
     private def doInputPath(message: String): Task[String] =
       Task {
         val processedMessage = message + ".input#"
-        debugMessage(s".inputPath - ${definition.inputPath}", processedMessage)
+        val ip               = if (definition.inputPath.trim.isEmpty) "{*:.}" else definition.inputPath
+        debugMessage(s".inputPath - ${ip}", processedMessage)
         processedMessage
       }
 
@@ -99,7 +93,7 @@ object ProcessorModel {
     def apply(definition: FilterDefinition): FilterProcessor = new FilterProcessor(definition)
   }
 
-  final class JsltProcessor(definition: JsltDefinition) extends Processor[ProcessorDefinition] {
+  final class JsltProcessor(definition: JsltDefinition) extends BaseProcessor(definition) {
     override def doTask(message: String): Task[String] =
       Task {
         val processedMessage = message + ".transformed#"
@@ -112,7 +106,7 @@ object ProcessorModel {
     def apply(definition: JsltDefinition): JsltProcessor = new JsltProcessor(definition)
   }
 
-  final class RestProcessor(definition: RestDefinition) extends Processor[ProcessorDefinition] {
+  final class RestProcessor(definition: RestDefinition) extends BaseProcessor(definition) {
     override def doTask(message: String): Task[String] =
       Task {
         val processedMessage = message + ".response#"
@@ -125,11 +119,23 @@ object ProcessorModel {
     def apply(definition: RestDefinition): RestProcessor = new RestProcessor(definition)
   }
 
+  def processList(ps: Seq[BaseProcessor], message: String): Task[String] = {
+    if (ps.nonEmpty) {
+      for {
+        outputMsg <- ps.head.handle(message)
+        tailMsg   <- processList(ps.tail, outputMsg)
+      } yield tailMsg
+    } else {
+      Task.effectTotal(message)
+    }
+  }
+
   // h e l p e r s
   def debugMessage(prefix: String, message: String) =
     println(s"$prefix:\n |-> $message")
 
   object GenericDerivation {
+    implicit val config: Configuration = Configuration.default.withDefaults
 
     implicit val eventEncoder: Encoder[ProcessorDefinition] = Encoder.instance {
       case filter @ FilterDefinition(_, _, _, _, _) => filter.asJson

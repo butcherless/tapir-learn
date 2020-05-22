@@ -1,5 +1,6 @@
 package com.cmartin.learn.service
 
+import com.cmartin.learn.domain.ProcessorModel
 import com.cmartin.learn.domain.ProcessorModel.GenericDerivation.{eventDecoder, eventEncoder}
 import com.cmartin.learn.domain.ProcessorModel._
 import com.cmartin.learn.service.messaging.MyMessaging
@@ -9,22 +10,11 @@ import io.circe.parser.{decode, parse}
 import io.circe.syntax._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import zio.ZIO
+import zio.{Task, ZIO}
 
 class ProcessorsSpec extends AnyFlatSpec with Matchers {
 
   import ProcessorsSpec._
-
-  val filterEvent: ProcessorDefinition = FilterDefinition("features.speed > 100", "ip.filter", "rp.filter")
-  val jsltEvent: ProcessorDefinition   = JsltDefinition("dummy jslt event", "ip.jslt", "rp.jslt")
-  val restEvent: ProcessorDefinition   = RestDefinition("dummy rest event", "ip.rest", "rp.rest")
-
-  val filterEventJson =
-    """{"predicate":"features.speed > 100","inputPath":"ip.filter","resultPath":"rp.filter","name":"filter"}"""
-  val jsltEventJson = """{"transform":"dummy jslt event","inputPath":"ip.jslt","resultPath":"rp.jslt","name":"jslt"}"""
-  val restEventJson = """{"getUrl":"dummy rest event","inputPath":"ip.rest","resultPath":"rp.rest","name":"rest"}"""
-
-  val eventsJson = s"""[$filterEventJson,$jsltEventJson,$restEventJson]"""
 
   val runtime = zio.Runtime.default
 
@@ -86,12 +76,15 @@ class ProcessorsSpec extends AnyFlatSpec with Matchers {
 
   it should "C3 decode a rest event, json -> object" in {
     val rEvent: ProcessorDefinition = decodeProcessor(restDefinitionJson)
-    //info(rEvent.toString)
-
     rEvent shouldBe restDefinition
   }
 
-  it should "C4 decode all Events" in {
+  it should "C4 decode a filter event with missing properties, json -> object" in {
+    val fEvent: ProcessorDefinition = decodeProcessor(filterDefinitionMissingPropsJson)
+    fEvent shouldBe filterDefinitionMissingProps
+  }
+
+  it should "C5 decode all Events" in {
     val processors: Seq[ProcessorDefinition] = decodeProcessors(processorDefinitionsJson)
 
     processors shouldBe Seq(filterDefinition, jsltDefinition, restDefinition)
@@ -105,6 +98,18 @@ class ProcessorsSpec extends AnyFlatSpec with Matchers {
       info(json.asArray.toString())
     //TODO json.asArray shouldBe  Vector(filterEvent.asJson, jsltEvent.asJson, restEvent.asJson)
     }
+  }
+
+  it should "E1" in {
+    val p1: FilterProcessor            = FilterProcessor(FilterDefinition("features.speed > 100"))
+    val p2: JsltProcessor              = JsltProcessor(JsltDefinition("{ * : . }", "key1"))
+    val processors: Seq[BaseProcessor] = Seq(p1, p2)
+
+    val p: Task[String] = ProcessorModel.processList(processors, """{ "key" : "initial-message" }""")
+
+    val r: String = runtime.unsafeRun(p)
+
+    info(r)
   }
 
   def decodeProcessor(eventString: String): ProcessorDefinition =
@@ -133,6 +138,14 @@ class ProcessorsSpec extends AnyFlatSpec with Matchers {
 }
 
 object ProcessorsSpec {
+  val filterDefinitionMissingProps: ProcessorDefinition = FilterDefinition("features.speed > 100")
+  val filterDefinitionMissingPropsJson =
+    """
+      |{
+      |  "name": "filter",
+      |  "predicate": "features.speed > 100"
+      |}
+      |""".stripMargin
 
   val filterDefinition: ProcessorDefinition = FilterDefinition("features.speed > 100", "key1.key2", "key3", "key4")
   val filterDefinitionJson =

@@ -33,6 +33,8 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion,
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % tapirVersion,
 
+    "io.circe" %% "circe-generic-extras" % "0.13.0",
+
     "ch.qos.logback" % "logback-classic" % logbackVersion exclude("org.slf4j", "slf4j-api"),
     "dev.zio" %% "zio" % zioVersion,
 
