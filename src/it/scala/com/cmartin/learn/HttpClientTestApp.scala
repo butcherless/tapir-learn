@@ -7,7 +7,7 @@ import zio.clock.Clock
 import zio.console._
 import zio.duration._
 import zio.random._
-import zio.{App, Schedule, Task, UIO, ZIO}
+import zio.{App, ExitCode, Schedule, Task, UIO, ZIO}
 
 object HttpClientTestApp extends App {
 
@@ -50,8 +50,8 @@ object HttpClientTestApp extends App {
 
   // main function, needs exit = 0 [OK] or exit > 0 [ERROR]
   // Here the interpreter runs the program and performs side-effects
-  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] = {
-    (program as 0)
-      .catchAllCause(cause => putStrLn(s"${cause.prettyPrint}") as 1)
+  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, ExitCode] = {
+    (program as ExitCode.success)
+      .catchAllCause(cause => putStrLn(s"${cause.prettyPrint}") as ExitCode.failure)
   }
 }
