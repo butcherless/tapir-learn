@@ -1,9 +1,7 @@
 package com.cmartin.learn
 
-import java.nio.ByteBuffer
-
 import sttp.client._
-import sttp.client.asynchttpclient.ziostreams._
+import sttp.client.asynchttpclient.zio._
 import zio.stream._
 import zio.{App, ZIO, _}
 
@@ -13,21 +11,24 @@ object GetStreamApp extends App {
 
   override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, ExitCode] = {
 
-    AsyncHttpClientZioStreamsBackend()
-      .flatMap { implicit backend =>
-        val response: Task[Response[Either[String, Stream[Throwable, ByteBuffer]]]] =
-          basicRequest
-            .get(uri"http://127.0.0.1:8080/api/v1.0/tenants/848860983001616384/vertexes")
-            .response(asStream[Stream[Throwable, ByteBuffer]])
-            .readTimeout(Duration.Inf)
-            .send()
+    val request =
+      basicRequest
+        .get(uri"http://127.0.0.1:8080/api/v1.0/tenants/848860983001616384/vertexes")
+        .response(asStream[Stream[Throwable, Byte]])
+        .readTimeout(Duration.Inf)
 
-        response
-      }
-      .fold(
-        _ => ExitCode.failure,
-        _ => ExitCode.success
-      )
+    val response: ZIO[SttpClient, Throwable, Response[Either[String, Stream[Throwable, Byte]]]] =
+      SttpClient.send(request)
 
+    //TODO
+    val program: ZIO[SttpClient, Throwable, Long] = response.flatMap { either =>
+      either.body
+        .fold(
+          e => Task.fail(new RuntimeException(e)),
+          s => s.runCount
+        )
+    }
+
+    UIO.succeed(ExitCode.success)
   }
 }
