@@ -8,7 +8,7 @@ object Dependencies {
 
   lazy val json4sVersion  = "3.6.9"
   lazy val logbackVersion = "1.2.3"
-  lazy val zioVersion     = "1.0.0-RC21"
+  lazy val zioVersion     = "1.0.0-RC21-1"
 
   lazy val scalatestVersion = "3.2.0"
 
