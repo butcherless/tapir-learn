@@ -19,7 +19,7 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= mainAndTest,
   scalacOptions ++= basicScalacOptions,
   test in assembly := {},
-  assemblyJarName in assembly := "webapp.jar"
+  assemblyJarName in assembly := "tapir-learn-webapp.jar"
 )
 
 lazy val tapirLearn = (project in file("."))
