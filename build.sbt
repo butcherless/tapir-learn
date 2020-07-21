@@ -1,6 +1,10 @@
 import Dependencies._
 import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
 
+
+ThisBuild / scalaVersion := "2.13.3"
+ThisBuild / organization := "com.cmartin.learn"
+
 lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
   "-deprecation", // Emit warning and location for usages of deprecated APIs.
   "-encoding", "utf-8", // Specify character encoding used by source files.
@@ -14,8 +18,6 @@ lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
 )
 
 lazy val commonSettings = Seq(
-  organization := "com.cmartin.learn",
-  scalaVersion := "2.13.3",
   libraryDependencies ++= mainAndTest,
   scalacOptions ++= basicScalacOptions,
   test in assembly := {},
