@@ -29,7 +29,7 @@ object AircraftEndpoint extends AircraftEndpoint {
   lazy val jsonStringAircraft2Example: String =
     """
       |{
-      |  "registration" : "ec-mmg", qgdq
+      |  "registration" : "ec-mmg",
       |  "age" : 3,
       |  "model" : "AirbusA333",
       |  "id": 1747
