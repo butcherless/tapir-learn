@@ -17,7 +17,11 @@ trait SwaggerApi {
     AircraftApi.getAircraftEndpoint,
     AircraftApi.getAircraftSeqEndpoint,
     AircraftApi.postAircraftEndpoint,
-    TransferEndpoint.postJsonEndpoint
+    TransferEndpoint.postJsonEndpoint,
+    Json4sApi.getAircraftEndpoint,
+    Json4sApi.getJsonEndpoint,
+    Json4sApi.postJsonEndpoint,
+    Json4sApi.postEntityEndpoint
   ).toOpenAPI("Tapir Learning Service API", "1.0.0-SNAPSHOT").toYaml
 
   //

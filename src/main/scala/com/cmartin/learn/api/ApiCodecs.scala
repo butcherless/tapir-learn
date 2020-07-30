@@ -44,7 +44,7 @@ trait ApiCodecs {
       currency match {
         case "EUR" => EUR
         case "USD" => USD
-        case ""    => throw new RuntimeException(s"currency is mandadory")
+        case ""    => throw new RuntimeException(s"currency is mandatory")
         case _     => throw new RuntimeException(s"not a valid currency: $currency")
       }
   }
@@ -64,7 +64,7 @@ trait ApiCodecs {
   def genericEncoder[T](): Encoder[T] =
     new Encoder[T] {
       override def apply(a: T): Json =
-        Json.fromString(a.toString())
+        Json.fromString(a.toString)
     }
 
   /*

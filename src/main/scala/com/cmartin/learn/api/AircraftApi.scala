@@ -13,14 +13,14 @@ import scala.concurrent.Future
 
 trait AircraftApi {
 
-  lazy val routes =
+  lazy val routes: Route =
     getRoute ~
       getSeqRoute ~
       postRoute
 
   //TODO move to AircraftEndpoint companion object
-  val apiAircraftExample  = AircraftDto("ec-nei", 1, "Boeing788", None)
-  val apiAircraft2Example = AircraftDto("ec-lvl", 1, "Airbus333", None)
+  val apiAircraftExample  = AircraftDto("ec-mig", 3, "Boeing788", None)
+  val apiAircraft2Example = AircraftDto("ec-lvl", 1, "Airbus332", None)
 
   lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Nothing] =
     endpoint.get
