@@ -45,16 +45,4 @@ trait TapirJsonJson4s extends ComponentLogging {
         None
       )
     )
-
-  /*
-       H E L P E R S
-   */
-
-//  private def jValueToString(j: JValue): String = (render _ andThen compact _)(j)
-//  private def stringToJValue(s: String): JValue = parse(s)
-
-  /*
-
-   */
-
 }
