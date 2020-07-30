@@ -75,20 +75,18 @@ class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
       }
   }
 
-  it should "TODO: extract an aircraft as a case class" in {
-    val jvalue = JsonMethods.parse(AircraftEndpoint.jsonStringAircraftExample)
-    info(AircraftEndpoint.jsonStringAircraftExample)
-    info(jvalue.toString)
-    //val extraction = Extraction.extract[AircraftDto](jvalue)
-    val extraction = extract[AircraftDto](jvalue)
-    info(extraction.toString)
-    val jvalueExtraction = Extraction.extract[JValue](jvalue)
-    info(jvalueExtraction.toString)
+  it should "TODO: create an Aircraft via /j2values endpoint" in {
+    Post(s"$BASE_API/j2values")
+      .withEntity(AircraftEndpoint.jsonStringAircraft2Example) ~>
+      Json4sApi.postEntityRoute ~>
+      // THEN
+      check {
+        status shouldBe StatusCodes.Created
+        val response: JValue = JsonMethods.parse(entityAs[String])
+        response shouldBe AircraftEndpoint.j2ValueAircraftExample
+      }
   }
 
-  def extract[T](j: JValue)(implicit m:Manifest[T]): T = {
-    Extraction.extract[T](j)
-  }
 
 }
 

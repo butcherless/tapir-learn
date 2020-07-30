@@ -11,6 +11,7 @@ import sttp.tapir.{EndpointIO, _}
 import scala.util.{Failure, Success, Try}
 
 trait TapirJsonJson4s extends ComponentLogging {
+
   def jsonBody[T: Schema: Validator](implicit m: Manifest[T]): EndpointIO.Body[String, T] =
     anyFromUtf8StringBody(json4sCodec[T])
 
