@@ -7,8 +7,8 @@ import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
 import com.cmartin.learn.api.ApiModel.AircraftDto
 import com.cmartin.learn.api.CommonEndpoint.BASE_API
 import io.circe
-import org.json4s.{DefaultFormats, Extraction, JValue}
 import org.json4s.native.JsonMethods
+import org.json4s.{DefaultFormats, JValue}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -86,7 +86,6 @@ class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
         response shouldBe AircraftEndpoint.j2ValueAircraftExample
       }
   }
-
 
 }
 

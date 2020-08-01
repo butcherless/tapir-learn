@@ -3,7 +3,7 @@ package com.cmartin.learn.domain
 import com.cmartin.learn.api.ApiCodecs.CurrencySelector
 import com.cmartin.learn.api.ApiModel.{AircraftDto, BuildInfoDto, TransferDto}
 import com.cmartin.learn.api.BuildInfo
-import com.cmartin.learn.domain.DomainModel.{AirbusA320, AirbusA332, Aircraft, AircraftModel, Boeing737NG, Boeing788, Result, Transfer}
+import com.cmartin.learn.domain.DomainModel._
 
 trait ApiConverters {
 
@@ -25,6 +25,7 @@ trait ApiConverters {
     s match {
       case "AirbusA320"  => AirbusA320
       case "AirbusA332"  => AirbusA332
+      case "AirbusA333"  => AirbusA333
       case "Boeing737NG" => Boeing737NG
       case "Boeing788"   => Boeing788
       case ""            => manageEmptyCase("model")
