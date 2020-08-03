@@ -22,15 +22,15 @@ trait Json4sApi {
   // Json4s Codec for case class
   lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Nothing] =
     endpoint.get
-      .in(CommonEndpoint.baseEndpointInput / "json4s")
       .name("get-json4s-endpoint")
       .description("Retrieve aircraft json4s endpoint")
-      .out(jsonBody[AircraftDto].example(AircraftEndpoint.apiAircraftExample))
+      .in(CommonEndpoint.baseEndpointInput / "json4s")
+      .out(jsonBody[AircraftDto].example(AircraftEndpoint.apiAircraftMIGExample))
       .errorOut(statusCode)
 
   lazy val getRoute: Route =
     getAircraftEndpoint.toRoute { _ =>
-      Future.successful(Right(AircraftEndpoint.apiAircraftExample))
+      Future.successful(Right(AircraftEndpoint.apiAircraftMIGExample))
     }
 
   // Json4s Codec for JSON - get method
@@ -71,17 +71,17 @@ trait Json4sApi {
       .name("post-entity-endpoint")
       .description("Create entity aircraft json4s endpoint")
       .in(CommonEndpoint.baseEndpointInput / "j2values")
-      .in(jsonBody[AircraftDto].example(AircraftEndpoint.apiAircraftExample))
+      .in(jsonBody[AircraftDto].example(AircraftEndpoint.apiAircraftMIGExample))
       .out(
         statusCode(StatusCode.Created)
-          .and(jsonBody[AircraftDto].example(AircraftEndpoint.apiAircraftExample))
+          .and(jsonBody[AircraftDto].example(AircraftEndpoint.apiAircraftMIGExample))
       )
       .errorOut(statusCode)
 
   lazy val postEntityRoute: Route =
     postEntityEndpoint.toRoute { entity =>
       log.debug(s"postEntityRoute.request: $entity")
-      Future.successful(Right(AircraftEndpoint.apiAircraftExample))
+      Future.successful(Right(AircraftEndpoint.apiAircraftNFZExample))
     }
 
 }

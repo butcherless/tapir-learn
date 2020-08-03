@@ -24,6 +24,7 @@ trait ApiConverters {
   implicit def stringToAircraftModel(s: String): AircraftModel =
     s match {
       case "AirbusA320"  => AirbusA320
+      case "AirbusA320N" => AirbusA320N
       case "AirbusA332"  => AirbusA332
       case "AirbusA333"  => AirbusA333
       case "Boeing737NG" => Boeing737NG

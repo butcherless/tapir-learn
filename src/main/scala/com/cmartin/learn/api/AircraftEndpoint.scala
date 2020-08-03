@@ -8,7 +8,10 @@ trait AircraftEndpoint {}
 
 object AircraftEndpoint extends AircraftEndpoint {
 
-  lazy val apiAircraftExample = AircraftDto("EC-MMG", 3, "AirbusA333", Some(1747L))
+  //TODO move to AircraftEndpoint companion object
+  lazy val apiAircraftMIGExample  = AircraftDto("ec-mig", 3, "Boeing788", None)
+  lazy val apiAircraftLVLExample = AircraftDto("ec-lvl", 1, "Airbus332", None)
+  lazy val apiAircraftNFZExample = AircraftDto("EC-NFZ", 0, "AirbusA320N", Some(10002))
 
   lazy val jValueAircraftExample: JValue =
     parse(jsonStringAircraftExample)
@@ -29,10 +32,10 @@ object AircraftEndpoint extends AircraftEndpoint {
   lazy val jsonStringAircraft2Example: String =
     """
       |{
-      |  "registration" : "EC-MMG",
-      |  "age" : 3,
-      |  "model" : "AirbusA333",
-      |  "id": 1747
+      |  "registration" : "EC-NFZ",
+      |  "age" : 0,
+      |  "model" : "AirbusA320N",
+      |  "id": 10002
       |}
       |""".stripMargin
 

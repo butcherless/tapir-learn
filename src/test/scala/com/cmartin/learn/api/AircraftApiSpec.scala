@@ -31,7 +31,7 @@ class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
         val either = parseAircraft(entityAs[String])
         either.isRight shouldBe true
         either.map { aircraft =>
-          aircraft shouldBe AircraftApi.apiAircraftExample
+          aircraft shouldBe AircraftEndpoint.apiAircraftMIGExample
         }
       }
   }
@@ -58,7 +58,7 @@ class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
         status shouldBe StatusCodes.OK
         header[`Content-Type`] shouldBe Some(contentTypeJson)
         val response: JValue = JsonMethods.parse(entityAs[String])
-        response.extract[AircraftDto] shouldBe AircraftEndpoint.apiAircraftExample
+        response.extract[AircraftDto] shouldBe AircraftEndpoint.apiAircraftMIGExample
       }
   }
 
