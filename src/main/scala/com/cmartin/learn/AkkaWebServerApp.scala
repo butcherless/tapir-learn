@@ -15,16 +15,13 @@ object AkkaWebServerApp extends App with ApiConfiguration {
   system.log.info(s"Starting WebServer")
 
   // L A U N C H  W E B  S E R V E R (actor based)
-  val futureBinding: Future[Http.ServerBinding] =
+  val bindingFuture: Future[Http.ServerBinding] =
     Http()
-      .bindAndHandle(
-        routes,        // Rest API routes
-        serverAddress, //TODO configuration properties
-        serverPort
-      )
+      .newServerAt(serverAddress, serverPort)
+      .bind(routes)
 
   // Web Server start up management
-  futureBinding.onComplete {
+  bindingFuture.onComplete {
     case Success(binding) =>
       val address = binding.localAddress
       system.log.info("Server online at http://{}:{}/", address.getHostString, address.getPort)
