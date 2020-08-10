@@ -11,11 +11,12 @@
     </appender>
 
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="ASYNC"/>
     </root>
 
     <logger name="com.cmartin.learn" level="DEBUG"/>
+    <logger name="io.netty" level="ERROR"/>
     <logger name="sttp.tapir.json.json4s" level="DEBUG"/>
 
 </configuration>
