@@ -10,6 +10,7 @@ trait SwaggerApi {
   lazy val docsAsYaml: String = List(
     ActuatorEndpoint.healthEndpoint,
     TransferEndpoint.getTransferEndpoint,
+    TransferEndpoint.getFilteredTransferEndpoint,
     TransferEndpoint.postTransferEndpoint,
     TransferEndpoint.getComOutputEndpoint,
     TransferEndpoint.getShaOutputEndpoint,

@@ -81,7 +81,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
     response.code shouldBe StatusCode.InternalServerError
   }
 
-  it should "TODO: respond Created status for a Transfer POST request" in {
+  it should "respond Created status for a Transfer POST request" in {
     val request: Request[Either[String, String], Nothing] =
       basicRequest
         .body(TransferEndpoint.transferExample)
@@ -93,6 +93,37 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
     val response = runtime.unsafeRun(layeredDoGet)
 
     response.code shouldBe StatusCode.Created
+  }
+
+  it should "respond BadRequest status for an invalid Transfer POST request" in {
+    val request: Request[Either[String, String], Nothing] =
+      basicRequest
+        .body("""{ "key" : "invalid-transfer }""")
+        .post(uri"http://localhost:8080/api/v1.0/transfers/")
+
+    val doPost       = sendPostRequest[TransferDto](request)
+    val layeredDoGet = doPost.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+
+    val response = runtime.unsafeRun(layeredDoGet)
+
+    response.code shouldBe StatusCode.BadRequest
+  }
+
+  it should "TODO respond Ok status for a Trasnfer GET request with map params" in {
+    val paramMap = Map("sender" -> "ES11 0182 1111 2222 3333 4444")
+    val request =
+      basicRequest
+        .get(uri"http://localhost:8080/api/v1.0/transfers?$paramMap")
+        .response(asJson[TransferDto])
+
+    val doGet = sendRequest[TransferDto](request)
+
+    val layeredDoGet = doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+
+    val response = runtime.unsafeRun(layeredDoGet)
+
+    response.code shouldBe StatusCode.Ok
+
   }
 
   def sendRequest[T](request: RequestT[Identity, Either[ResponseError[circe.Error], T], Nothing]) =

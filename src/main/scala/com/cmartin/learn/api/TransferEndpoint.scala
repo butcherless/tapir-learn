@@ -36,6 +36,24 @@ trait TransferEndpoint extends ApiCodecs {
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
 
+  lazy val getFilteredTransferEndpoint =
+    endpoint.get
+      .name("get-filtered-transfer-endpoint")
+      .description("Retrieve Transfer List Endpoint")
+      .in(CommonEndpoint.baseEndpointInput / TRANSFERS_TEXT)
+      .in(query[Option[String]]("sender").example(Some("ES11 0182 1111 2222 3333 4444")))
+      .out(jsonBody[List[TransferDto]].example(transferListExample))
+      .errorOut(
+        oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
+      )
+
+
+  /*
+    private[api] lazy val assetsResourcePagination: EndpointInput[(Option[Long], Option[Int])] =
+    query[Option[Long]]("offset").and(query[Option[Int]]("limit"))
+
+   */
+
   lazy val postTransferEndpoint: Endpoint[TransferDto, StatusCode, TransferDto, Nothing] =
     endpoint.post
       .name("post-transfer-endpoint")
@@ -101,6 +119,17 @@ object TransferEndpoint extends TransferEndpoint {
       "EUR",
       "Viaje a Tenerife"
     )
+
+  val transfer2Example =
+    TransferDto(
+      "ES11 0182 1111 2222 3333 4444",
+      "ES99 2095 3333 4444 2222 6666",
+      250.00,
+      "EUR",
+      "Compra smartphone"
+    )
+
+  val transferListExample:List[TransferDto] = List(transferExample,transfer2Example)
 
   val acEntityExample: ACEntity =
     ACEntity(

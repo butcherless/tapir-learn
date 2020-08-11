@@ -16,10 +16,11 @@ trait TransferApi {
 
   lazy val routes: Route =
     getRoute ~
+      getFilteredRoute ~
       postRoute ~
       getComOutputRoute ~
       getShaOutputRoute ~
-      getACEntityRoute ~ // ~ add more routes
+      getACEntityRoute ~
       postJsonRoute
 
   // tapir endpoint description to akka routes via .toRoute function
@@ -28,6 +29,11 @@ trait TransferApi {
       businessLogic _ andThen
         handleErrors
     )
+
+  lazy val getFilteredRoute: Route =
+  TransferEndpoint.getFilteredTransferEndpoint.toRoute( _ =>
+    Future.successful(Right(TransferEndpoint.transferListExample))
+  )
 
   // dummy business process
   lazy val postRoute: Route =
