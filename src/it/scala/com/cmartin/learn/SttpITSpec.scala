@@ -44,7 +44,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
     info(res.body.toString)
   }
 
-  
+
   it should "respond Ok status for a health GET request" in {
     val request =
       basicRequest

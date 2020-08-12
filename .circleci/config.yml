@@ -30,6 +30,11 @@ jobs:
           command: |
             sbt test
 
+      - run:
+          name: coverage
+          command: |
+            bash <(curl -s https://codecov.io/bash)
+
       - save_cache:
           key: sbt-cache
           paths:
