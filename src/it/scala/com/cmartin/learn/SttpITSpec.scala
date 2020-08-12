@@ -2,6 +2,7 @@ package com.cmartin.learn
 
 import com.cmartin.learn.api.ApiModel.{BuildInfoDto, TransferDto}
 import com.cmartin.learn.api.TransferEndpoint
+import com.cmartin.learn.domain.ApiConverters
 import io.circe
 import io.circe.generic.auto._
 import org.scalatest.flatspec.AnyFlatSpec
@@ -9,7 +10,7 @@ import org.scalatest.matchers.should.Matchers
 import sttp.client.asynchttpclient.zio.{AsyncHttpClientZioBackend, SttpClient}
 import sttp.client.circe._
 import sttp.client.{basicRequest, _}
-import sttp.model.StatusCode
+import sttp.model.{Method, StatusCode}
 import zio.{UIO, ZIO}
 
 class SttpITSpec extends AnyFlatSpec with Matchers {
@@ -18,15 +19,43 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
 
   behavior of "REST API"
 
+  //TODO move to unit tests
+  it should "TODO respond Ok status stub backend" in {
+    val dtoResponse: BuildInfoDto = ApiConverters.modelToApi()
+
+    val testingBackend = AsyncHttpClientZioBackend.stub
+      .whenRequestMatches(_.method == Method.GET)
+      .thenRespond(dtoResponse)
+
+    val request =
+      basicRequest
+        .get(uri"http://localhost:8080/api/v1.0/health")
+        .response(asJson[BuildInfoDto])
+
+    val prog = testingBackend.send(request)
+    val res: Response[Either[ResponseError[circe.Error], BuildInfoDto]] =
+      runtime
+        .unsafeRun(
+          testingBackend.send(request)
+        )
+
+    res.code shouldBe StatusCode.Ok
+    res.body shouldBe dtoResponse
+    info(res.body.toString)
+  }
+
+  
   it should "respond Ok status for a health GET request" in {
     val request =
       basicRequest
         .get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[BuildInfoDto])
 
-    val doGet: ZIO[SttpClient, Throwable, Response[Either[ResponseError[circe.Error], BuildInfoDto]]] = sendRequest[BuildInfoDto](request)
+    val doGet: ZIO[SttpClient, Throwable, Response[Either[ResponseError[circe.Error], BuildInfoDto]]] =
+      sendRequest[BuildInfoDto](request)
 
-    val layeredDoGet: ZIO[zio.ZEnv, Throwable, Response[Either[ResponseError[circe.Error], BuildInfoDto]]] = doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+    val layeredDoGet: ZIO[zio.ZEnv, Throwable, Response[Either[ResponseError[circe.Error], BuildInfoDto]]] =
+      doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
 
     val response: Response[Either[ResponseError[circe.Error], BuildInfoDto]] = runtime.unsafeRun(layeredDoGet)
 
@@ -109,7 +138,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
     response.code shouldBe StatusCode.BadRequest
   }
 
-  it should "TODO respond Ok status for a Trasnfer GET request with map params" in {
+  it should "respond Ok status for a Trasnfer GET request with map params" in {
     val paramMap = Map("sender" -> "ES11 0182 1111 2222 3333 4444")
     val request =
       basicRequest
