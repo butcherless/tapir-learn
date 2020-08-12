@@ -33,7 +33,7 @@ jobs:
       - run:
           name: coverage
           command: |
-            bash <(curl -s https://codecov.io/bash)
+            bash <(curl -s https://codecov.io/bash) -t 741c6253-b971-4e3a-99d3-31fb4afa3e6b
 
       - save_cache:
           key: sbt-cache
