@@ -10,7 +10,7 @@ import sttp.client.asynchttpclient.zio.{AsyncHttpClientZioBackend, SttpClient}
 import sttp.client.circe._
 import sttp.client.{basicRequest, _}
 import sttp.model.StatusCode
-import zio.UIO
+import zio.{UIO, ZIO}
 
 class SttpITSpec extends AnyFlatSpec with Matchers {
 
@@ -24,11 +24,11 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[BuildInfoDto])
 
-    val doGet = sendRequest[BuildInfoDto](request)
+    val doGet: ZIO[SttpClient, Throwable, Response[Either[ResponseError[circe.Error], BuildInfoDto]]] = sendRequest[BuildInfoDto](request)
 
-    val layeredDoGet = doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+    val layeredDoGet: ZIO[zio.ZEnv, Throwable, Response[Either[ResponseError[circe.Error], BuildInfoDto]]] = doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
 
-    val response = runtime.unsafeRun(layeredDoGet)
+    val response: Response[Either[ResponseError[circe.Error], BuildInfoDto]] = runtime.unsafeRun(layeredDoGet)
 
     response.code shouldBe StatusCode.Ok
   }
