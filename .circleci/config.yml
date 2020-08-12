@@ -28,7 +28,7 @@ jobs:
       - run:
           name: test
           command: |
-            sbt test
+            sbt clean coverage test coverageReport
 
       - run:
           name: coverage
