@@ -23,7 +23,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
   it should "respond Ok status stub backend for health request" in {
     val dtoResponse: BuildInfoDto = ApiConverters.modelToApi()
 
-    val testingBackend = AsyncHttpClientZioBackend.stub
+    val backend = AsyncHttpClientZioBackend.stub
       .whenRequestMatches { req =>
         req.method == Method.GET && req.uri.path.last == "health"
       }
@@ -34,17 +34,35 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[BuildInfoDto])
 
-    val res: Response[Either[ResponseError[circe.Error], BuildInfoDto]] =
+    val response: Response[Either[ResponseError[circe.Error], BuildInfoDto]] =
       runtime
         .unsafeRun(
-          testingBackend.send(request)
+          backend.send(request)
         )
 
-    res.code shouldBe StatusCode.Ok
-    res.body shouldBe dtoResponse
+    response.code shouldBe StatusCode.Ok
+    response.body shouldBe dtoResponse
   }
 
+  it should "respond Ok for an existent transfer identifier" in {
+    val dtoResponse: TransferDto = TransferEndpoint.transferExample
 
+    val backend = AsyncHttpClientZioBackend.stub
+      .whenRequestMatches { req =>
+        req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "1"
+      }
+      .thenRespond(dtoResponse)
+
+    val request =
+      basicRequest
+        .get(uri"http://localhost:8080/api/v1.0/transfers/1")
+        .response(asJson[TransferDto])
+
+    val response = runtime.unsafeRun(backend.send(request))
+
+    response.code shouldBe StatusCode.Ok
+    response.body shouldBe dtoResponse
+  }
 
   //TODO end
 
