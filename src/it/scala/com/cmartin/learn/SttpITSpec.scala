@@ -44,15 +44,18 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
     response.body shouldBe dtoResponse
   }
 
-  it should "respond Ok for an existent transfer identifier" in {
-    val dtoResponse: TransferDto = TransferEndpoint.transferExample
+  val backend = AsyncHttpClientZioBackend.stub
+    .whenRequestMatches { req =>
+      req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "1"
+    }
+    .thenRespond(TransferEndpoint.transferExample)
+    .whenRequestMatches { req =>
+      req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "400"
+    }
+    .thenRespond(Response("BAD_REQUEST", StatusCode.BadRequest))
 
-    val backend = AsyncHttpClientZioBackend.stub
-      .whenRequestMatches { req =>
-        req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "1"
-      }
-      .thenRespond(dtoResponse)
 
+  it should "TODO respond Ok for an existent transfer identifier" in {
     val request =
       basicRequest
         .get(uri"http://localhost:8080/api/v1.0/transfers/1")
@@ -61,7 +64,19 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
     val response = runtime.unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.Ok
-    response.body shouldBe dtoResponse
+    response.body shouldBe TransferEndpoint.transferExample
+  }
+
+  it should "TODO respond Bad Request for an invalid request" in {
+    val request =
+      basicRequest
+        .get(uri"http://localhost:8080/api/v1.0/transfers/400")
+        .response(asJson[TransferDto])
+
+    val response = runtime.unsafeRun(backend.send(request))
+
+    response.code shouldBe StatusCode.BadRequest
+    response.body.isLeft shouldBe true
   }
 
   //TODO end
