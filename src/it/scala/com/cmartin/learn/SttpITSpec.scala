@@ -20,11 +20,13 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
   behavior of "REST API"
 
   //TODO move to unit tests
-  it should "TODO respond Ok status stub backend" in {
+  it should "respond Ok status stub backend for health request" in {
     val dtoResponse: BuildInfoDto = ApiConverters.modelToApi()
 
     val testingBackend = AsyncHttpClientZioBackend.stub
-      .whenRequestMatches(_.method == Method.GET)
+      .whenRequestMatches { req =>
+        req.method == Method.GET && req.uri.path.last == "health"
+      }
       .thenRespond(dtoResponse)
 
     val request =
@@ -32,7 +34,6 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[BuildInfoDto])
 
-    val prog = testingBackend.send(request)
     val res: Response[Either[ResponseError[circe.Error], BuildInfoDto]] =
       runtime
         .unsafeRun(
@@ -41,9 +42,11 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
 
     res.code shouldBe StatusCode.Ok
     res.body shouldBe dtoResponse
-    info(res.body.toString)
   }
 
+
+
+  //TODO end
 
   it should "respond Ok status for a health GET request" in {
     val request =
