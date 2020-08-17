@@ -1,44 +1,34 @@
 import sbt._
 
 object Dependencies {
-  lazy val akkaHttpVersion = "10.2.0"
-  lazy val akkaVersion     = "2.6.8"
-  lazy val sttpVersion     = "2.2.4"
-  lazy val tapirVersion    = "0.16.15"
-
-  lazy val json4sVersion  = "3.6.9"
-  lazy val logbackVersion = "1.2.3"
-  lazy val zioVersion     = "1.0.0"
-
-  lazy val scalatestVersion = "3.2.1"
 
   val mainAndTest = Seq(
     // A K K A
-    "com.typesafe.akka" %% "akka-actor"       % akkaVersion,
-    "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
-    "com.typesafe.akka" %% "akka-http"        % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-stream"      % akkaVersion,
+    "com.typesafe.akka" %% "akka-actor"       % Versions.akka,
+    "com.typesafe.akka" %% "akka-actor-typed" % Versions.akka,
+    "com.typesafe.akka" %% "akka-http"        % Versions.akkaHttp,
+    "com.typesafe.akka" %% "akka-stream"      % Versions.akka,
     // S T T P
-    "com.softwaremill.sttp.client" %% "core"                          % sttpVersion % "it, test",
-    "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % sttpVersion % "it, test",
-    "com.softwaremill.sttp.client" %% "circe"                         % sttpVersion,
+    "com.softwaremill.sttp.client" %% "core"                          % Versions.sttp % "it, test",
+    "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % Versions.sttp % "it, test",
+    "com.softwaremill.sttp.client" %% "circe"                         % Versions.sttp,
     // T A P I R
-    "com.softwaremill.sttp.tapir" %% "tapir-core"                 % tapirVersion,
-    "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server"     % tapirVersion,
-    "com.softwaremill.sttp.tapir" %% "tapir-json-circe"           % tapirVersion,
-    "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"         % tapirVersion,
-    "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml"   % tapirVersion,
-    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % tapirVersion,
-    "io.circe"                    %% "circe-generic-extras"       % "0.13.0",
-    "ch.qos.logback"               % "logback-classic"            % logbackVersion exclude ("org.slf4j", "slf4j-api"),
-    "dev.zio"                     %% "zio"                        % zioVersion,
-    "org.json4s"                  %% "json4s-core"                % json4sVersion,
-    "org.json4s"                  %% "json4s-native"              % json4sVersion,
+    "com.softwaremill.sttp.tapir" %% "tapir-core"                 % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server"     % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-json-circe"           % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"         % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml"   % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % Versions.tapir,
+    "io.circe"                    %% "circe-generic-extras"       % Versions.circe,
+    "ch.qos.logback"               % "logback-classic"            % Versions.logback exclude ("org.slf4j", "slf4j-api"),
+    "dev.zio"                     %% "zio"                        % Versions.zio,
+    "org.json4s"                  %% "json4s-core"                % Versions.json4s,
+    "org.json4s"                  %% "json4s-native"              % Versions.json4s,
     // T E S T
-    "org.scalatest"     %% "scalatest"         % scalatestVersion % "it, test",
-    "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion  % Test,
-    "com.typesafe.akka" %% "akka-testkit"      % akkaVersion      % Test,
-    "dev.zio"           %% "zio-test"          % zioVersion       % "test",
-    "dev.zio"           %% "zio-test-sbt"      % zioVersion       % "test"
+    "org.scalatest"     %% "scalatest"         % Versions.scalatest % "it, test",
+    "com.typesafe.akka" %% "akka-http-testkit" % Versions.akkaHttp  % Test,
+    "com.typesafe.akka" %% "akka-testkit"      % Versions.akka      % Test,
+    "dev.zio"           %% "zio-test"          % Versions.zio       % "test",
+    "dev.zio"           %% "zio-test-sbt"      % Versions.zio       % "test"
   )
 }
