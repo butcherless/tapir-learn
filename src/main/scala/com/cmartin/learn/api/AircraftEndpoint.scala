@@ -9,9 +9,9 @@ trait AircraftEndpoint {}
 object AircraftEndpoint extends AircraftEndpoint {
 
   //TODO move to AircraftEndpoint companion object
-  lazy val apiAircraftMIGExample  = AircraftDto("ec-mig", 3, "Boeing788", None)
-  lazy val apiAircraftLVLExample = AircraftDto("ec-lvl", 1, "Airbus332", None)
-  lazy val apiAircraftNFZExample = AircraftDto("EC-NFZ", 0, "AirbusA320N", Some(10002))
+  lazy val apiAircraftMIGExample: AircraftDto = AircraftDto("ec-mig", 3, "Boeing788", None)
+  lazy val apiAircraftLVLExample: AircraftDto = AircraftDto("ec-lvl", 1, "Airbus332", None)
+  lazy val apiAircraftNFZExample: AircraftDto = AircraftDto("EC-NFZ", 0, "AirbusA320N", Some(10002))
 
   lazy val jValueAircraftExample: JValue =
     parse(jsonStringAircraftExample)
