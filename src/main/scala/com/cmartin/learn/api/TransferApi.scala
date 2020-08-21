@@ -17,6 +17,7 @@ trait TransferApi {
   lazy val routes: Route =
     getRoute ~
       getFilteredRoute ~
+      getWithHeaderRoute ~
       postRoute ~
       getComOutputRoute ~
       getShaOutputRoute ~
@@ -31,9 +32,13 @@ trait TransferApi {
     )
 
   lazy val getFilteredRoute: Route =
-  TransferEndpoint.getFilteredTransferEndpoint.toRoute( _ =>
-    Future.successful(Right(TransferEndpoint.transferListExample))
-  )
+    TransferEndpoint.getFilteredTransferEndpoint.toRoute(_ =>
+      Future.successful(Right(TransferEndpoint.transferListExample))
+    )
+
+  //
+  lazy val getWithHeaderRoute: Route =
+    TransferEndpoint.getWithHeaderTransferEndpoint.toRoute(_ => Future.successful(Right(())))
 
   // dummy business process
   lazy val postRoute: Route =

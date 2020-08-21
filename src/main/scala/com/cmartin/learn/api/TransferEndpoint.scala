@@ -47,6 +47,17 @@ trait TransferEndpoint extends ApiCodecs {
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
 
+  lazy val getWithHeaderTransferEndpoint: Endpoint[(TransferId, Int), ErrorInfo, Unit, Nothing] =
+    endpoint.get
+      .name("get-transfer-with-header-endpoint")
+      .description("Retrieve Transfer with Header Endpoint")
+      .in(CommonEndpoint.baseEndpointInput / s"$TRANSFERS_TEXT-with-header")
+      .in(transferIdPath)
+      .in(header[Int]("silent").example(1))
+      .out(statusCode(StatusCode.NoContent))
+      .errorOut(
+        oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
+      )
 
   /*
     private[api] lazy val assetsResourcePagination: EndpointInput[(Option[Long], Option[Int])] =
