@@ -20,7 +20,7 @@ object DomainModel {
   // ADT
   sealed trait AircraftModel
 
-  case object AirbusA320 extends AircraftModel
+  case object AirbusA320  extends AircraftModel
   case object AirbusA320N extends AircraftModel
 
   case object AirbusA332 extends AircraftModel

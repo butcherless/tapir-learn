@@ -140,7 +140,7 @@ object TransferEndpoint extends TransferEndpoint {
       "Compra smartphone"
     )
 
-  val transferListExample:List[TransferDto] = List(transferExample,transfer2Example)
+  val transferListExample: List[TransferDto] = List(transferExample, transfer2Example)
 
   val acEntityExample: ACEntity =
     ACEntity(
