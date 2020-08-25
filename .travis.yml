@@ -12,6 +12,7 @@ addons:
 
 script:
   - sbt clean it:compile test
+  - sbt assembly
   - sbt dependencyUpdates
 
 cache:

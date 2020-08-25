@@ -17,3 +17,5 @@ jobs:
       run: sbt clean test:compile it:compile
     - name: tests
       run: sbt test
+    - name: assembly
+      run: sbt assembly
