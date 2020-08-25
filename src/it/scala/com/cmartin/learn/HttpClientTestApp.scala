@@ -18,10 +18,10 @@ object HttpClientTestApp extends App {
   // http client backend
   implicit val backend: SttpBackend[Task, Nothing, Nothing] =
     unsafeRun(AsyncHttpClientZioBackend())
-  val urls = List.fill(fiberCount)(healthEndpoint)
+  val urls: Seq[String] = List.fill(fiberCount)(healthEndpoint)
 
   // Dummy method
-  def makeGet(uri: String) =
+  def makeGet(uri: String): ZIO[Clock with Random, Nothing, Unit] =
     for {
       number <- nextIntBetween(500, 2000)
       delay  <- UIO(number)
@@ -36,13 +36,13 @@ object HttpClientTestApp extends App {
     _      <- ZIO.foreachParN(fiberCount)(urls)(doGet) repeat Schedule.recurs(loopCount - 1)
   } yield ()
 
-  def checkResponse(response: Response[Either[String, String]]) =
+  def checkResponse(response: Response[Either[String, String]]): String =
     response.code match {
       case StatusCode.Ok => "Response Ok"
       case _             => "Response Error"
     }
 
-  def doGet(endpoint: String) =
+  def doGet(endpoint: String): ZIO[Console, Throwable, Unit] =
     for {
       response <- basicRequest.get(uri"$endpoint").send()
       _        <- putStrLn(checkResponse(response))
@@ -51,7 +51,7 @@ object HttpClientTestApp extends App {
   // main function, needs exit = 0 [OK] or exit > 0 [ERROR]
   // Here the interpreter runs the program and performs side-effects
   override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, ExitCode] = {
-    (program as ExitCode.success)
-      .catchAllCause(cause => putStrLn(s"${cause.prettyPrint}") as ExitCode.failure)
+    program.exitCode
+      .catchAllCause(cause => putStrLn(s"${cause.prettyPrint}").exitCode)
   }
 }

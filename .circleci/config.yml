@@ -26,12 +26,17 @@ jobs:
             sbt clean test:compile it:compile
 
       - run:
-          name: test
+          name: test, coverage
           command: |
-            sbt clean coverage test coverageReport
+            sbt coverage test coverageReport
 
       - run:
-          name: coverage
+          name: assembly
+          command: |
+            sbt assembly
+
+      - run:
+          name: coverage report
           command: |
             bash <(curl -s https://codecov.io/bash) -t 741c6253-b971-4e3a-99d3-31fb4afa3e6b
 
