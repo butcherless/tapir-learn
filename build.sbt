@@ -37,3 +37,5 @@ lazy val tapirLearn = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
+
+addCommandAlias("mycc", "clean;coverage;test;coverageReport")
