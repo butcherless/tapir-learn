@@ -25,7 +25,7 @@ trait TransferEndpoint extends ApiCodecs {
   val deMapping = statusDefaultMapping(jsonBody[UnknownError])
 
   //json encode/decode via circe.generic.auto
-  lazy val getTransferEndpoint: Endpoint[TransferId, ErrorInfo, TransferDto, Nothing] =
+  lazy val getTransferEndpoint: Endpoint[TransferId, ErrorInfo, TransferDto, Any] =
     endpoint.get
       .name("get-transfer-endpoint")
       .description("Retrieve Transfer Endpoint")
@@ -47,7 +47,7 @@ trait TransferEndpoint extends ApiCodecs {
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
 
-  lazy val getWithHeaderTransferEndpoint: Endpoint[(TransferId, Int), ErrorInfo, Unit, Nothing] =
+  lazy val getWithHeaderTransferEndpoint: Endpoint[(TransferId, Int), ErrorInfo, Unit, Any] =
     endpoint.get
       .name("get-transfer-with-header-endpoint")
       .description("Retrieve Transfer with Header Endpoint")
@@ -65,7 +65,7 @@ trait TransferEndpoint extends ApiCodecs {
 
    */
 
-  lazy val postTransferEndpoint: Endpoint[TransferDto, StatusCode, TransferDto, Nothing] =
+  lazy val postTransferEndpoint: Endpoint[TransferDto, StatusCode, TransferDto, Any] =
     endpoint.post
       .name("post-transfer-endpoint")
       .description(("Create Transfer Endpoint"))
@@ -77,7 +77,7 @@ trait TransferEndpoint extends ApiCodecs {
       )
       .errorOut(statusCode)
 
-  lazy val postJsonEndpoint: Endpoint[Json, StatusCode, Json, Nothing] =
+  lazy val postJsonEndpoint: Endpoint[Json, StatusCode, Json, Any] =
     endpoint.post
       .in(CommonEndpoint.baseEndpointInput / "bananas")
       .in(jsonBody[Json].example(jsonExample))
@@ -87,7 +87,7 @@ trait TransferEndpoint extends ApiCodecs {
       )
       .errorOut(statusCode)
 
-  lazy val getACEntityEndpoint: Endpoint[Unit, StatusCode, ACEntity, Nothing] =
+  lazy val getACEntityEndpoint: Endpoint[Unit, StatusCode, ACEntity, Any] =
     endpoint.get
       .name("get-acEntity-endpoint")
       .description("Get AC Entity Endpoint")
@@ -95,7 +95,7 @@ trait TransferEndpoint extends ApiCodecs {
       .out(jsonBody[ACEntity].example(acEntityExample))
       .errorOut(statusCode)
 
-  lazy val getComOutputEndpoint: Endpoint[Unit, StatusCode, Output, Nothing] =
+  lazy val getComOutputEndpoint: Endpoint[Unit, StatusCode, Output, Any] =
     endpoint.get
       .name("get-com-output-endpoint")
       .description("Get Com Output Endpoint")
@@ -103,7 +103,7 @@ trait TransferEndpoint extends ApiCodecs {
       .out(jsonBody[Output].example(ApiModel.ComOut))
       .errorOut(statusCode)
 
-  lazy val getShaOutputEndpoint: Endpoint[Unit, StatusCode, Output, Nothing] =
+  lazy val getShaOutputEndpoint: Endpoint[Unit, StatusCode, Output, Any] =
     endpoint.get
       .name("get-sha-out-endpoint")
       .description("Get Sha Output Endpoint")

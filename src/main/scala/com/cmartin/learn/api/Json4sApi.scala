@@ -20,7 +20,7 @@ trait Json4sApi {
       postEntityRoute
 
   // Json4s Codec for case class
-  lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Nothing] =
+  lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Any] =
     endpoint.get
       .name("get-json4s-endpoint")
       .description("Retrieve aircraft json4s endpoint")
@@ -34,7 +34,7 @@ trait Json4sApi {
     }
 
   // Json4s Codec for JSON - get method
-  lazy val getJsonEndpoint: Endpoint[Unit, StatusCode, JValue, Nothing] =
+  lazy val getJsonEndpoint: Endpoint[Unit, StatusCode, JValue, Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "jvalues")
       .name("get-jvalue-endpoint")
@@ -48,7 +48,7 @@ trait Json4sApi {
     }
 
   // any JSON document, no extracting case class
-  lazy val postJsonEndpoint: Endpoint[JValue, StatusCode, JValue, Nothing] = {
+  lazy val postJsonEndpoint: Endpoint[JValue, StatusCode, JValue, Any] = {
     endpoint.post
       .name("post-jvalue-endpoint")
       .description("Create JValue aircraft json4s endpoint")
@@ -66,7 +66,7 @@ trait Json4sApi {
       Future.successful(Right(AircraftEndpoint.jValueAircraftExample))
     }
 
-  lazy val postEntityEndpoint: Endpoint[AircraftDto, StatusCode, AircraftDto, Nothing] =
+  lazy val postEntityEndpoint: Endpoint[AircraftDto, StatusCode, AircraftDto, Any] =
     endpoint.post
       .name("post-entity-endpoint")
       .description("Create entity aircraft json4s endpoint")

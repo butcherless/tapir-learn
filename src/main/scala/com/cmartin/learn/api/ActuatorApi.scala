@@ -15,7 +15,6 @@ trait ActuatorApi {
         Right(ApiConverters.modelToApi())
       }
     }
-
 }
 
 object ActuatorApi extends ActuatorApi

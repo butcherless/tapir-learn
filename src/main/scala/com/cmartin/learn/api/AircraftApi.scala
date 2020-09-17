@@ -19,7 +19,7 @@ trait AircraftApi {
       getSeqRoute ~
       postRoute
 
-  lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Nothing] =
+  lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "aircrafts")
       .name("get-aircraft-endpoint")
@@ -27,7 +27,7 @@ trait AircraftApi {
       .out(jsonBody[AircraftDto].example(apiAircraftMIGExample))
       .errorOut(statusCode)
 
-  lazy val getAircraftSeqEndpoint: Endpoint[Unit, StatusCode, Seq[AircraftDto], Nothing] =
+  lazy val getAircraftSeqEndpoint: Endpoint[Unit, StatusCode, Seq[AircraftDto], Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "aircraft-list")
       .name("get-aircraft-list-endpoint")
@@ -35,11 +35,11 @@ trait AircraftApi {
       .out(jsonBody[Seq[AircraftDto]].example(Seq(apiAircraftMIGExample, apiAircraftLVLExample)))
       .errorOut(statusCode)
 
-  lazy val postAircraftEndpoint: Endpoint[AircraftDto, StatusCode, AircraftDto, Nothing] =
+  lazy val postAircraftEndpoint: Endpoint[AircraftDto, StatusCode, AircraftDto, Any] =
     endpoint.post
       .in(CommonEndpoint.baseEndpointInput / "aircrafts")
       .name("post-aircraft-endpoint")
-      .description(("Create Aircraft Endpoint"))
+      .description("Create Aircraft Endpoint")
       .in(jsonBody[AircraftDto].example(apiAircraftMIGExample))
       .out(jsonBody[AircraftDto].example(apiAircraftMIGExample))
       .errorOut(statusCode)
