@@ -38,5 +38,5 @@ class CustomSwaggerAkka(yaml: String, contextPath: String = "docs", yamlName: St
 }
 
 object CustomSwaggerAkka {
-  private val swaggerVersion = "3.32.5"
+  private val swaggerVersion = "3.34.0"
 }
