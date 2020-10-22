@@ -4,7 +4,7 @@ object Versions {
   val akka     = "2.6.10"
   val circe    = "0.13.0"
   val sttp     = "2.2.9"
-  val tapir    = "0.17.0-M3"
+  val tapir    = "0.17.0-M4"
 
   val json4s  = "3.6.10"
   val logback = "1.2.3"
