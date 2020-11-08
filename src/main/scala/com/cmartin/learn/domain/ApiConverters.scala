@@ -40,6 +40,29 @@ trait ApiConverters {
     AircraftDto(a.registration, a.age, a.model.toString, Some(a.id))
 
   // TRANSFER
+
+  implicit class TransferDtoOps(dto: TransferDto) {
+    def toModel: Transfer =
+      Transfer(
+        dto.sender,
+        dto.receiver,
+        dto.amount,
+        dto.currency.toCurrency,
+        dto.desc
+      )
+  }
+
+  implicit class TransferOps(entity: Transfer) {
+    def toApi: TransferDto =
+      TransferDto(
+        entity.sender,
+        entity.receiver,
+        entity.amount,
+        entity.currency.toString,
+        entity.desc
+      )
+  }
+
   def apiToModel(dto: TransferDto): Transfer =
     Transfer(
       dto.sender,

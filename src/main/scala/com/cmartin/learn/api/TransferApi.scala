@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.ApiModel._
-import com.cmartin.learn.domain.ApiConverters
+import com.cmartin.learn.domain.ApiConverters._
 import com.cmartin.learn.domain.DomainModel.Transfer
 import sttp.tapir.server.akkahttp._
 
@@ -43,8 +43,9 @@ trait TransferApi {
   // dummy business process
   lazy val postRoute: Route =
     TransferEndpoint.postTransferEndpoint.toRoute { inDto =>
-      val transfer: Transfer  = ApiConverters.apiToModel(inDto)
-      val outDto: TransferDto = ApiConverters.modelToApi(transfer)
+      val transfer: Transfer = inDto.toModel
+      // simulated business process
+      val outDto: TransferDto = transfer.toApi
       Future.successful(Right(outDto))
     }
 

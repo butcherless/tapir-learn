@@ -3,7 +3,7 @@ package com.cmartin.learn
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import com.cmartin.learn.configuration.ApiConfiguration
-
+import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
@@ -19,6 +19,7 @@ object AkkaWebServerApp extends App with ApiConfiguration {
     Http()
       .newServerAt(serverAddress, serverPort)
       .bind(routes)
+      .map(_.addToCoordinatedShutdown(hardTerminationDeadline = 10.seconds))
 
   // Web Server start up management
   bindingFuture.onComplete {
