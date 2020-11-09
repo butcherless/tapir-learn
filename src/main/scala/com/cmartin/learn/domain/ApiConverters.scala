@@ -48,6 +48,7 @@ trait ApiConverters {
         dto.receiver,
         dto.amount,
         dto.currency.toCurrency,
+        dto.date,
         dto.desc
       )
   }
@@ -59,6 +60,7 @@ trait ApiConverters {
         entity.receiver,
         entity.amount,
         entity.currency.toString,
+        entity.date,
         entity.desc
       )
   }
@@ -69,6 +71,7 @@ trait ApiConverters {
       dto.receiver,
       dto.amount,
       dto.currency.toCurrency,
+      dto.date,
       dto.desc
     )
 
@@ -78,6 +81,7 @@ trait ApiConverters {
       entity.receiver,
       entity.amount,
       entity.currency.toString,
+      entity.date,
       entity.desc
     )
 

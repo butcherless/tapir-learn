@@ -1,5 +1,7 @@
 package com.cmartin.learn.api
 
+import java.time.Instant
+
 object ApiModel {
 
   type TransferId = Long
@@ -12,6 +14,7 @@ object ApiModel {
       receiver: String,
       amount: Double,
       currency: String,
+      date: Instant,
       desc: String
   )
 

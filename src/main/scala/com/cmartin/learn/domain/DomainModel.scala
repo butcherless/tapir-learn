@@ -1,5 +1,7 @@
 package com.cmartin.learn.domain
 
+import java.time.Instant
+
 object DomainModel {
 
   sealed trait Currency
@@ -13,6 +15,7 @@ object DomainModel {
       receiver: String,
       amount: Double,
       currency: Currency,
+      date: Instant,
       desc: String,
       id: Option[Long] = scala.None
   )

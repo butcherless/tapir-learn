@@ -49,17 +49,20 @@ trait ApiCodecs {
       }
   }
 
-  implicit lazy val transferDecoder: Decoder[Transfer] = new Decoder[Transfer] {
-    override def apply(c: HCursor): Decoder.Result[Transfer] = {
-      for {
-        sender   <- c.get[String]("sender")
-        receiver <- c.get[String]("receiver")
-        amount   <- c.get[Double]("amount")
-        currency <- c.get[String]("currency")
-        desc     <- c.get[String]("desc")
-      } yield Transfer(sender, receiver, amount, currency.toCurrency, desc)
-    }
-  }
+//  Custom decoder
+
+//  implicit lazy val transferDecoder: Decoder[Transfer] = new Decoder[Transfer] {
+//    override def apply(c: HCursor): Decoder.Result[Transfer] = {
+//      for {
+//        sender   <- c.get[String]("sender")
+//        receiver <- c.get[String]("receiver")
+//        amount   <- c.get[Double]("amount")
+//        currency <- c.get[String]("currency")
+//        date     <- c.get[Instant]("date")
+//        desc     <- c.get[String]("desc")
+//      } yield Transfer(sender, receiver, amount, currency.toCurrency, date, desc)
+//    }
+//  }
 
   def genericEncoder[T](): Encoder[T] =
     new Encoder[T] {

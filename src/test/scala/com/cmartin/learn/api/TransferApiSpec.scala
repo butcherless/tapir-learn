@@ -156,6 +156,7 @@ object TransferApiSpec {
     "ES99 2038 9999 8888 7777 6666",
     100.00,
     DomainModel.EUR,
+    TransferEndpoint.transferDate,
     "Viaje a Tenerife"
   )
 

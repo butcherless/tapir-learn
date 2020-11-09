@@ -1,5 +1,7 @@
 package com.cmartin.learn.api
 
+import java.time.{Instant, LocalDateTime, ZoneOffset}
+
 import com.cmartin.learn.api.ApiModel._
 import io.circe.Json
 import io.circe.generic.auto._
@@ -122,12 +124,18 @@ object TransferEndpoint extends TransferEndpoint {
   //    })(obj => obj.asJson(encoder))
   //
 
+  val transferDate: Instant =
+    LocalDateTime
+      .of(2020, 11, 7, 8, 5, 13, 345 * 1000000)
+      .toInstant(ZoneOffset.UTC)
+
   val transferExample =
     TransferDto(
       "ES11 0182 1111 2222 3333 4444",
       "ES99 2038 9999 8888 7777 6666",
       100.00,
       "EUR",
+      transferDate,
       "Viaje a Tenerife"
     )
 
@@ -137,6 +145,7 @@ object TransferEndpoint extends TransferEndpoint {
       "ES99 2095 3333 4444 2222 6666",
       250.00,
       "EUR",
+      transferDate,
       "Compra smartphone"
     )
 
