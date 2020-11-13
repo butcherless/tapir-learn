@@ -10,12 +10,12 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Set up JDK 11
-      uses: actions/setup-java@v1
+      uses: olafurpg/setup-scala@v10
       with:
         java-version: 11
     - name: compile
-      run: sbt clean test:compile it:compile
+      run: sbt -v -Dfile.encoding=UTF-8 clean test:compile it:compile
     - name: tests
-      run: sbt test
+      run: sbt -v -Dfile.encoding=UTF-8 test
     - name: assembly
-      run: sbt assembly
+      run: sbt -v -Dfile.encoding=UTF-8 assembly
