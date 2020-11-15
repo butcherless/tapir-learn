@@ -19,21 +19,31 @@ jobs:
       - restore_cache:
           key: sbt-cache
 
-      # compiler, test & run
+      # compile, test & run
       - run:
-          name: clean, compile
+          name: compile
           command: |
-            sbt clean test:compile it:compile
+            sbt --client clean compile
+
+      - run:
+          name: test compile
+          command: |
+            sbt --client test:compile
+
+      - run:
+          name: integration test compile
+          command: |
+            sbt --client it:compile
 
       - run:
           name: test, coverage
           command: |
-            sbt coverage test coverageReport
+            sbt --client coverage test coverageReport
 
       - run:
           name: assembly
           command: |
-            sbt assembly
+            sbt --client assembly
 
       - run:
           name: coverage report
