@@ -6,6 +6,7 @@ import org.json4s.JsonAST.JValue
 import org.json4s.native.JsonMethods
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import sttp.tapir.generic.auto._
 
 class Json4sCodecSpec extends AnyFlatSpec with Matchers {
 
