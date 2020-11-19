@@ -2,7 +2,7 @@ import Dependencies._
 import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
 
 
-ThisBuild / scalaVersion := "2.13.3"
+ThisBuild / scalaVersion := "2.13.4"
 ThisBuild / organization := "com.cmartin.learn"
 
 lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
@@ -37,5 +37,5 @@ lazy val tapirLearn = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
-
+addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.4.0" cross CrossVersion.full)
 addCommandAlias("mycc", "clean;coverage;test;coverageReport")
