@@ -5,10 +5,8 @@ import java.time.{Clock, LocalDateTime}
 import com.cmartin.learn.api.ApiModel.{APP_NAME, APP_VERSION, ApiBuildInfo, BuildInfoDto}
 import com.cmartin.learn.domain.ApiConverters
 import io.circe.generic.auto._
-import sttp.tapir.generic.auto._
-import sttp.tapir.server.akkahttp._
-
 import sttp.model.StatusCode
+import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 import sttp.tapir.{Endpoint, endpoint, _}
 

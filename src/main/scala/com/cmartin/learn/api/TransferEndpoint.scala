@@ -4,14 +4,12 @@ import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 import com.cmartin.learn.api.ApiModel._
 import io.circe.Json
+import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir.EndpointOutput.StatusMapping
-import sttp.tapir.json.circe._
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
-import sttp.tapir.server.akkahttp._
-import io.circe.generic.auto._
 
 trait TransferEndpoint extends ApiCodecs {
 

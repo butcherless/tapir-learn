@@ -5,13 +5,10 @@ import akka.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.ApiModel.AircraftDto
 import org.json4s.JValue
 import sttp.model.StatusCode
-import sttp.tapir.json.json4s._
-import sttp.tapir.server.akkahttp._
 import sttp.tapir._
 import sttp.tapir.generic.auto._
-//import sttp.tapir.json.circe._
+import sttp.tapir.json.json4s._
 import sttp.tapir.server.akkahttp._
-import io.circe.generic.auto._
 
 import scala.concurrent.Future
 
