@@ -37,5 +37,5 @@ lazy val tapirLearn = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
-addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.4.0" cross CrossVersion.full)
+
 addCommandAlias("mycc", "clean;coverage;test;coverageReport")
