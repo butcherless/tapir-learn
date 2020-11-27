@@ -1,6 +1,6 @@
 package com.cmartin.learn
 
-import com.cmartin.learn.api.ApiModel.{BuildInfoDto, TransferDto}
+import com.cmartin.learn.api.Model.{BuildInfoDto, TransferDto}
 import com.cmartin.learn.api.TransferEndpoint
 import io.circe
 import io.circe.generic.auto._

@@ -3,7 +3,7 @@ package com.cmartin.learn.api
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.AircraftEndpoint.{apiAircraftLVLExample, apiAircraftMIGExample}
-import com.cmartin.learn.api.ApiModel.AircraftDto
+import com.cmartin.learn.api.Model.AircraftDto
 import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir._
@@ -20,9 +20,13 @@ trait AircraftApi {
       getSeqRoute ~
       postRoute
 
-  lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Any] =
+  val limitQuery =
+    query[Option[Int]]("limit")
+
+  lazy val getAircraftEndpoint: Endpoint[Option[Int], StatusCode, AircraftDto, Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "aircrafts")
+      .in(limitQuery.example(Some(20)))
       .name("get-aircraft-endpoint")
       .description("Retrieve aircraft endpoint")
       .out(jsonBody[AircraftDto].example(apiAircraftMIGExample))

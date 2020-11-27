@@ -1,6 +1,6 @@
 package com.cmartin.learn
 
-import com.cmartin.learn.api.ApiModel.ApiBuildInfo
+import com.cmartin.learn.api.Model.ApiBuildInfo
 import io.circe.generic.auto._
 import sttp.client._
 import sttp.client.asynchttpclient.zio._

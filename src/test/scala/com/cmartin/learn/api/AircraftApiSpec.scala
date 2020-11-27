@@ -4,8 +4,8 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
-import com.cmartin.learn.api.ApiModel.AircraftDto
 import com.cmartin.learn.api.CommonEndpoint.BASE_API
+import com.cmartin.learn.api.Model.AircraftDto
 import io.circe
 import org.json4s.native.JsonMethods
 import org.json4s.{DefaultFormats, JValue}

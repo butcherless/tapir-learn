@@ -1,9 +1,9 @@
 package com.cmartin.learn.domain
 
 import com.cmartin.learn.api.ApiCodecs.CurrencySelector
-import com.cmartin.learn.api.ApiModel.{AircraftDto, BuildInfoDto, TransferDto}
 import com.cmartin.learn.api.BuildInfo
-import com.cmartin.learn.domain.DomainModel._
+import com.cmartin.learn.api.Model.{AircraftDto, BuildInfoDto, TransferDto}
+import com.cmartin.learn.domain.Model._
 
 trait ApiConverters {
 
@@ -13,9 +13,9 @@ trait ApiConverters {
 
   implicit def stringToResult(s: String): Result =
     s match {
-      case "Success" => DomainModel.Success
-      case "Warning" => DomainModel.Warning
-      case "Error"   => DomainModel.Error
+      case "Success" => Model.Success
+      case "Warning" => Model.Warning
+      case "Error"   => Model.Error
       case ""        => manageEmptyCase("result")
       case _         => manageDefaultCase("result", s)
     }

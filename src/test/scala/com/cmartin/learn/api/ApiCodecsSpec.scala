@@ -1,6 +1,6 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.domain.DomainModel.{AirbusA332, Aircraft}
+import com.cmartin.learn.domain.Model.{AirbusA332, Aircraft}
 import io.circe.parser.{decode, parse}
 import io.circe.syntax._
 import io.circe.{Json, ParsingFailure}

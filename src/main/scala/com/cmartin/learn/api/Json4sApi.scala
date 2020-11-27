@@ -2,7 +2,7 @@ package com.cmartin.learn.api
 
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
-import com.cmartin.learn.api.ApiModel.AircraftDto
+import com.cmartin.learn.api.Model.AircraftDto
 import org.json4s.JValue
 import sttp.model.StatusCode
 import sttp.tapir._

@@ -1,7 +1,7 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.api.ApiModel._
-import com.cmartin.learn.domain.DomainModel._
+import com.cmartin.learn.api.Model._
+import com.cmartin.learn.domain.Model._
 import io.circe.{Decoder, Encoder, HCursor, Json}
 
 trait ApiCodecs {

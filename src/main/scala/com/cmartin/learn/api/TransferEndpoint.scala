@@ -2,7 +2,7 @@ package com.cmartin.learn.api
 
 import java.time.{Instant, LocalDateTime, ZoneOffset}
 
-import com.cmartin.learn.api.ApiModel._
+import com.cmartin.learn.api.Model._
 import io.circe.Json
 import io.circe.generic.auto._
 import sttp.model.StatusCode
@@ -19,7 +19,10 @@ trait TransferEndpoint extends ApiCodecs {
       E N D P O I N T S
    */
 
-  val transferIdPath                             = path[TransferId]("transferId")
+  val transferIdPath =
+    path[TransferId]("transferId")
+      .validate(Validator.min(1))
+
   val breMapping: StatusMapping[BadRequestError] = statusMapping(StatusCode.BadRequest, jsonBody[BadRequestError])
   val nfeMapping: StatusMapping[NotFoundError]   = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
   val iseMapping: StatusMapping[ServerError]     = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
@@ -103,7 +106,7 @@ trait TransferEndpoint extends ApiCodecs {
       .name("get-com-output-endpoint")
       .description("Get Com Output Endpoint")
       .in(CommonEndpoint.baseEndpointInput / "com-output")
-      .out(jsonBody[Output].example(ApiModel.ComOut))
+      .out(jsonBody[Output].example(Model.ComOut))
       .errorOut(statusCode)
 
   lazy val getShaOutputEndpoint: Endpoint[Unit, StatusCode, Output, Any] =
@@ -111,7 +114,7 @@ trait TransferEndpoint extends ApiCodecs {
       .name("get-sha-out-endpoint")
       .description("Get Sha Output Endpoint")
       .in(CommonEndpoint.baseEndpointInput / "sha-output")
-      .out(jsonBody[Output].example(ApiModel.ShaOut))
+      .out(jsonBody[Output].example(Model.ShaOut))
       .errorOut(statusCode)
 
 }
@@ -172,6 +175,9 @@ object TransferEndpoint extends TransferEndpoint {
     )
 
   val jsonStringExample = """{"id":1234}"""
-  val jsonExample       = io.circe.parser.parse(jsonStringExample).getOrElse(Json.Null)
+  val jsonExample =
+    io.circe.parser
+      .parse(jsonStringExample)
+      .fold(e => throw e.underlying, json => json)
 
 }

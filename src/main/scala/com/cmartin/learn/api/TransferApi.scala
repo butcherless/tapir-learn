@@ -3,9 +3,9 @@ package com.cmartin.learn.api
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
-import com.cmartin.learn.api.ApiModel._
+import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.ApiConverters._
-import com.cmartin.learn.domain.DomainModel.Transfer
+import com.cmartin.learn.domain.Model.Transfer
 import sttp.tapir.server.akkahttp._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -86,9 +86,9 @@ trait TransferApi {
           case StatusCodes.InternalServerError.intValue => Success(Left(ServerError("SERVER_ERROR", message)))
           case StatusCodes.ServiceUnavailable.intValue =>
             Success(Left(ServiceUnavailableError("SERVICE_UNAVAILABLE_ERROR", message)))
-          case _ => Success(Left(ApiModel.UnknownError("UNKNOWN_ERROR", message)))
+          case _ => Success(Left(Model.UnknownError("UNKNOWN_ERROR", message)))
         }
-      case _ => Success(Left(ApiModel.UnknownError("UNKNOWN_ERROR", "No error description")))
+      case _ => Success(Left(Model.UnknownError("UNKNOWN_ERROR", "No error description")))
     }
 
   lazy val getACEntityRoute: Route =
@@ -98,12 +98,12 @@ trait TransferApi {
 
   lazy val getComOutputRoute: Route =
     TransferEndpoint.getComOutputEndpoint.toRoute { _ =>
-      Future.successful(Right(ApiModel.ComOut))
+      Future.successful(Right(Model.ComOut))
     }
 
   lazy val getShaOutputRoute: Route =
     TransferEndpoint.getShaOutputEndpoint.toRoute { _ =>
-      Future.successful(Right(ApiModel.ShaOut))
+      Future.successful(Right(Model.ShaOut))
     }
 }
 

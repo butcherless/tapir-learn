@@ -1,6 +1,6 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.api.ApiModel.AircraftDto
+import com.cmartin.learn.api.Model.AircraftDto
 import org.json4s.JValue
 import org.json4s.native.JsonMethods.parse
 

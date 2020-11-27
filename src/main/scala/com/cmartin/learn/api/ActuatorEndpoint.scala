@@ -1,8 +1,6 @@
 package com.cmartin.learn.api
 
-import java.time.{Clock, LocalDateTime}
-
-import com.cmartin.learn.api.ApiModel.{APP_NAME, APP_VERSION, ApiBuildInfo, BuildInfoDto}
+import com.cmartin.learn.api.Model.BuildInfoDto
 import com.cmartin.learn.domain.ApiConverters
 import io.circe.generic.auto._
 import sttp.model.StatusCode
@@ -24,12 +22,4 @@ trait ActuatorEndpoint extends ApiCodecs {
       .errorOut(statusCode)
 }
 
-object ActuatorEndpoint extends ActuatorEndpoint {
-  val exampleApiBuildInfo: ApiBuildInfo = ApiBuildInfo(
-    APP_NAME,
-    LocalDateTime.now(Clock.systemDefaultZone()).toString,
-    APP_VERSION,
-    "Success"
-  )
-
-}
+object ActuatorEndpoint extends ActuatorEndpoint

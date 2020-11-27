@@ -1,11 +1,11 @@
 package com.cmartin.learn.domain
 
-import com.cmartin.learn.api.ApiModel.AircraftDto
-import com.cmartin.learn.domain.DomainModel.{AirbusA320, Aircraft, AircraftModel, Boeing788}
+import com.cmartin.learn.api.Model.AircraftDto
+import com.cmartin.learn.domain.Model.{AirbusA320, Aircraft, AircraftModel, Boeing788}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class DomainModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
+class ModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
 
   behavior of "Aircraft model"
 
@@ -48,9 +48,9 @@ class DomainModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
   }
 
   it should "convert a string to a Result" in {
-    stringToResult("Success") shouldBe DomainModel.Success
-    stringToResult("Warning") shouldBe DomainModel.Warning
-    stringToResult("Error") shouldBe DomainModel.Error
+    stringToResult("Success") shouldBe Model.Success
+    stringToResult("Warning") shouldBe Model.Warning
+    stringToResult("Error") shouldBe Model.Error
   }
 
   it should "fail when trying to convert an invalid Result" in {
@@ -62,10 +62,10 @@ class DomainModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
   }
 
   it should "convert a string to an AircraftModel" in {
-    stringToAircraftModel("AirbusA320") shouldBe DomainModel.AirbusA320
-    stringToAircraftModel("AirbusA332") shouldBe DomainModel.AirbusA332
-    stringToAircraftModel("Boeing788") shouldBe DomainModel.Boeing788
-    stringToAircraftModel("Boeing737NG") shouldBe DomainModel.Boeing737NG
+    stringToAircraftModel("AirbusA320") shouldBe Model.AirbusA320
+    stringToAircraftModel("AirbusA332") shouldBe Model.AirbusA332
+    stringToAircraftModel("Boeing788") shouldBe Model.Boeing788
+    stringToAircraftModel("Boeing737NG") shouldBe Model.Boeing737NG
   }
 
 }

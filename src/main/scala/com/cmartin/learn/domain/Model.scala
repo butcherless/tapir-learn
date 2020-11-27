@@ -2,7 +2,7 @@ package com.cmartin.learn.domain
 
 import java.time.Instant
 
-object DomainModel {
+object Model {
 
   sealed trait Currency
 

@@ -4,9 +4,9 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
-import com.cmartin.learn.api.ApiModel.TransferDto
-import com.cmartin.learn.domain.DomainModel.Transfer
-import com.cmartin.learn.domain.{ApiConverters, DomainModel}
+import com.cmartin.learn.api.Model.TransferDto
+import com.cmartin.learn.domain.Model.Transfer
+import com.cmartin.learn.domain.{ApiConverters, Model}
 import io.circe
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -155,7 +155,7 @@ object TransferApiSpec {
     "ES11 0182 1111 2222 3333 4444",
     "ES99 2038 9999 8888 7777 6666",
     100.00,
-    DomainModel.EUR,
+    Model.EUR,
     TransferEndpoint.transferDate,
     "Viaje a Tenerife"
   )

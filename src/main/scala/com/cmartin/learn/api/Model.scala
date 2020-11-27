@@ -2,7 +2,7 @@ package com.cmartin.learn.api
 
 import java.time.Instant
 
-object ApiModel {
+object Model {
 
   type TransferId = Long
 
