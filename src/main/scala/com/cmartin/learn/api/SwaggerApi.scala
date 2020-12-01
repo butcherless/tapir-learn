@@ -30,7 +30,7 @@ trait SwaggerApi {
   //
   lazy val route: Route = {
     //new CustomSwaggerAkka(docsAsYaml,"mydocs").routes
-    new SwaggerAkka(docsAsYaml, "docs").routes
+    new SwaggerAkka(docsAsYaml, "api/v1.0/docs").routes
   }
 }
 
