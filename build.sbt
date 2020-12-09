@@ -38,4 +38,7 @@ lazy val tapirLearn = (project in file("."))
   .enablePlugins(GitVersioning)
 
 
-addCommandAlias("mycc", "clean;coverage;test;coverageReport")
+addCommandAlias("xcc", "clean;coverage;test;coverageReport")
+addCommandAlias("xreload", "clean;reload")
+addCommandAlias("xstart", "clean;reStart")
+addCommandAlias("xdup", "dependencyUpdates")
