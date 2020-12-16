@@ -1,18 +1,25 @@
 package sttp.tapir.json.json4s
 
-import com.cmartin.learn.configuration.ComponentLogging
-import org.json4s.native.JsonMethods
-import org.json4s.{DefaultFormats, Extraction, JValue}
-import sttp.tapir.Codec.JsonCodec
-import sttp.tapir.DecodeResult.{Error, Value}
-import sttp.tapir.SchemaType.{SCoproduct, SObjectInfo}
-import sttp.tapir.{EndpointIO, _}
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
-import scala.util.{Failure, Success, Try}
+import com.cmartin.learn.configuration.ComponentLogging
+import org.json4s.DefaultFormats
+import org.json4s.Extraction
+import org.json4s.JValue
+import org.json4s.native.JsonMethods
+import sttp.tapir.Codec.JsonCodec
+import sttp.tapir.DecodeResult.Error
+import sttp.tapir.DecodeResult.Value
+import sttp.tapir.EndpointIO
+import sttp.tapir.SchemaType.SCoproduct
+import sttp.tapir.SchemaType.SObjectInfo
+import sttp.tapir._
 
 trait TapirJsonJson4s extends ComponentLogging {
 
-  def jsonBody[T: Schema: Validator](implicit m: Manifest[T]): EndpointIO.Body[String, T] =
+  def jsonBody[T: Schema](implicit m: Manifest[T]): EndpointIO.Body[String, T] =
     anyFromUtf8StringBody(json4sCodec[T])
 
   implicit val formats = DefaultFormats
@@ -21,7 +28,7 @@ trait TapirJsonJson4s extends ComponentLogging {
     - decoder only for [JValue], todo extract to case class
     - encoder for [T]
    */
-  implicit def json4sCodec[T: Schema: Validator](implicit m: Manifest[T]): JsonCodec[T] =
+  implicit def json4sCodec[T: Schema](implicit m: Manifest[T]): JsonCodec[T] =
     Codec.json { s =>
       log.debug(s"json4s.codec.decode.string: $s")
       Try(JsonMethods.parse(s).extract[T]) match {

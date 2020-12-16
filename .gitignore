@@ -7,3 +7,7 @@
 .ivy2/
 .vscode/
 project/project/
+.idea/
+.metals/
+project/target/
+target/

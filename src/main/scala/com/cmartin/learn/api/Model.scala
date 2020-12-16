@@ -1,6 +1,7 @@
 package com.cmartin.learn.api
 
 import java.time.Instant
+import java.time.LocalDateTime
 
 object Model {
 
@@ -76,8 +77,7 @@ object Model {
       scalaVersion: String,
       sbtVersion: String,
       gitCommit: String,
-      builtAtString: String,
-      builtAtMillis: String
+      builtAtMillis: Instant
   )
 
   case class ApiBuildInfo(
