@@ -1,9 +1,12 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.domain.Model.{AirbusA332, Aircraft}
-import io.circe.parser.{decode, parse}
+import com.cmartin.learn.domain.Model.AirbusA332
+import com.cmartin.learn.domain.Model.Aircraft
+import io.circe.Json
+import io.circe.ParsingFailure
+import io.circe.parser.decode
+import io.circe.parser.parse
 import io.circe.syntax._
-import io.circe.{Json, ParsingFailure}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

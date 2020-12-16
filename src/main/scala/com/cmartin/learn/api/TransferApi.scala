@@ -1,5 +1,10 @@
 package com.cmartin.learn.api
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.Failure
+import scala.util.Success
+
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
@@ -7,10 +12,6 @@ import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.ApiConverters._
 import com.cmartin.learn.domain.Model.Transfer
 import sttp.tapir.server.akkahttp._
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import scala.util.{Failure, Success}
 
 trait TransferApi {
 

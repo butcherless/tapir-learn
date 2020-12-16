@@ -1,6 +1,8 @@
 package com.cmartin.learn.api
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 import com.cmartin.learn.api.Model._
 import io.circe.Json

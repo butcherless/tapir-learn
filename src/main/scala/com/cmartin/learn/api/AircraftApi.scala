@@ -1,8 +1,11 @@
 package com.cmartin.learn.api
 
+import scala.concurrent.Future
+
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
-import com.cmartin.learn.api.AircraftEndpoint.{apiAircraftLVLExample, apiAircraftMIGExample}
+import com.cmartin.learn.api.AircraftEndpoint.apiAircraftLVLExample
+import com.cmartin.learn.api.AircraftEndpoint.apiAircraftMIGExample
 import com.cmartin.learn.api.Model.AircraftDto
 import io.circe.generic.auto._
 import sttp.model.StatusCode
@@ -10,8 +13,6 @@ import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 import sttp.tapir.server.akkahttp._
-
-import scala.concurrent.Future
 
 trait AircraftApi {
 

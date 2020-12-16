@@ -1,7 +1,6 @@
 package com.cmartin.learn.domain
 
-import java.time.Instant
-import java.time.LocalDateTime
+import java.time._
 
 import com.cmartin.learn.api.ApiCodecs.CurrencySelector
 import com.cmartin.learn.api.BuildInfo
@@ -97,7 +96,11 @@ trait ApiConverters {
       BuildInfo.scalaVersion,
       BuildInfo.sbtVersion,
       BuildInfo.gitCommit,
-      Instant.ofEpochMilli(BuildInfo.builtAtMillis)
+      LocalDateTime
+        .ofInstant(
+          Instant.ofEpochMilli(BuildInfo.builtAtMillis),
+          ZoneId.systemDefault()
+        )
     )
   }
 

@@ -77,7 +77,7 @@ object Model {
       scalaVersion: String,
       sbtVersion: String,
       gitCommit: String,
-      builtAtMillis: Instant
+      builtAtMillis: LocalDateTime
   )
 
   case class ApiBuildInfo(

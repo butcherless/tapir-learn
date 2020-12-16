@@ -1,7 +1,10 @@
 package com.cmartin.learn.domain
 
 import com.cmartin.learn.api.Model.AircraftDto
-import com.cmartin.learn.domain.Model.{AirbusA320, Aircraft, AircraftModel, Boeing788}
+import com.cmartin.learn.domain.Model.AirbusA320
+import com.cmartin.learn.domain.Model.Aircraft
+import com.cmartin.learn.domain.Model.AircraftModel
+import com.cmartin.learn.domain.Model.Boeing788
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
