@@ -1,10 +1,5 @@
 package com.cmartin.learn.api
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
@@ -12,6 +7,10 @@ import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.ApiConverters._
 import com.cmartin.learn.domain.Model.Transfer
 import sttp.tapir.server.akkahttp._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 trait TransferApi {
 
@@ -54,9 +53,18 @@ trait TransferApi {
     TransferEndpoint.postJsonEndpoint.toRoute { inDto =>
       Future.successful(Right(inDto))
     }
-
-  case class BusinessException(code: Int, message: String = "Information not available")
-      extends RuntimeException(message)
+  lazy val getACEntityRoute: Route =
+    TransferEndpoint.getACEntityEndpoint.toRoute { _ =>
+      Future.successful(Right(TransferEndpoint.acEntityExample))
+    }
+  lazy val getComOutputRoute: Route =
+    TransferEndpoint.getComOutputEndpoint.toRoute { _ =>
+      Future.successful(Right(Model.ComOut))
+    }
+  lazy val getShaOutputRoute: Route =
+    TransferEndpoint.getShaOutputEndpoint.toRoute { _ =>
+      Future.successful(Right(Model.ShaOut))
+    }
 
   // simulating business logic function
   def businessLogic(transferId: TransferId): Future[TransferDto] =
@@ -74,7 +82,7 @@ trait TransferApi {
           BusinessException(StatusCodes.ServiceUnavailable.intValue, StatusCodes.ServiceUnavailable.defaultMessage)
         )
       case 666 => Future.failed(BusinessException(666, "Unknown error"))
-      case _   => Future.successful(TransferEndpoint.transferExample)
+      case _ => Future.successful(TransferEndpoint.transferExample)
     }
 
   def handleErrors[T](f: Future[T]): Future[Either[ErrorInfo, T]] =
@@ -82,8 +90,8 @@ trait TransferApi {
       case Success(v) => Success(Right(v))
       case Failure(BusinessException(code, message)) =>
         code match {
-          case StatusCodes.BadRequest.intValue          => Success(Left(BadRequestError("MISSING_INFO", message)))
-          case StatusCodes.NotFound.intValue            => Success(Left(NotFoundError("ENTITY_NOT_FOUND", message)))
+          case StatusCodes.BadRequest.intValue => Success(Left(BadRequestError("MISSING_INFO", message)))
+          case StatusCodes.NotFound.intValue => Success(Left(NotFoundError("ENTITY_NOT_FOUND", message)))
           case StatusCodes.InternalServerError.intValue => Success(Left(ServerError("SERVER_ERROR", message)))
           case StatusCodes.ServiceUnavailable.intValue =>
             Success(Left(ServiceUnavailableError("SERVICE_UNAVAILABLE_ERROR", message)))
@@ -92,20 +100,8 @@ trait TransferApi {
       case _ => Success(Left(Model.UnknownError("UNKNOWN_ERROR", "No error description")))
     }
 
-  lazy val getACEntityRoute: Route =
-    TransferEndpoint.getACEntityEndpoint.toRoute { _ =>
-      Future.successful(Right(TransferEndpoint.acEntityExample))
-    }
-
-  lazy val getComOutputRoute: Route =
-    TransferEndpoint.getComOutputEndpoint.toRoute { _ =>
-      Future.successful(Right(Model.ComOut))
-    }
-
-  lazy val getShaOutputRoute: Route =
-    TransferEndpoint.getShaOutputEndpoint.toRoute { _ =>
-      Future.successful(Right(Model.ShaOut))
-    }
+  case class BusinessException(code: Int, message: String = "Information not available")
+    extends RuntimeException(message)
 }
 
 object TransferApi extends TransferApi

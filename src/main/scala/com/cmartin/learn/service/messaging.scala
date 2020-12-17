@@ -1,22 +1,14 @@
 package com.cmartin.learn.service
 
-import java.util.UUID
-
 import com.cmartin.learn.domain.ProcessorModel._
-import zio.{Has, Layer, Task, ZIO, ZLayer}
+import zio._
+
+import java.util.UUID
 
 package object messaging {
   type MyMessaging = Has[MyMessaging.Service]
 
   object MyMessaging {
-
-    trait Service {
-      def receive(topic: String): Task[String]
-
-      def send(message: String, topic: String): Task[String]
-
-      def handle(processors: Seq[Processor[ProcessorDefinition]]): Task[Seq[String]]
-    }
 
     val live: Layer[Nothing, Has[MyMessaging.Service]] =
       ZLayer.succeed(
@@ -42,6 +34,14 @@ package object messaging {
 
     def handle(processors: Seq[Processor[ProcessorDefinition]]): ZIO[MyMessaging, Throwable, Seq[String]] =
       ZIO.accessM(_.get.handle(processors))
+
+    trait Service {
+      def receive(topic: String): Task[String]
+
+      def send(message: String, topic: String): Task[String]
+
+      def handle(processors: Seq[Processor[ProcessorDefinition]]): Task[Seq[String]]
+    }
   }
 
 }

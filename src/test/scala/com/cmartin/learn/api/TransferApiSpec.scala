@@ -5,9 +5,8 @@ import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
 import com.cmartin.learn.api.Model.TransferDto
-import com.cmartin.learn.domain.ApiConverters
-import com.cmartin.learn.domain.Model
 import com.cmartin.learn.domain.Model.Transfer
+import com.cmartin.learn.domain.{ApiConverters, Model}
 import io.circe
 import io.circe.generic.auto._
 import io.circe.syntax._

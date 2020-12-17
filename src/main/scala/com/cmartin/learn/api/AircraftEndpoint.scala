@@ -18,13 +18,13 @@ object AircraftEndpoint extends AircraftEndpoint {
 
   lazy val jsonStringAircraftExample: String =
     """
-            |{
-            |  "registration" : "EC-LVL",
-            |  "age" : 18,
-            |  "model" : "AirbusA332",
-            |  "id" : 461
-            |}
-            |""".stripMargin
+      |{
+      |  "registration" : "EC-LVL",
+      |  "age" : 18,
+      |  "model" : "AirbusA332",
+      |  "id" : 461
+      |}
+      |""".stripMargin
 
   lazy val j2ValueAircraftExample: JValue =
     parse(jsonStringAircraft2Example)

@@ -1,10 +1,7 @@
 package com.cmartin.learn.domain
 
 import com.cmartin.learn.api.Model.AircraftDto
-import com.cmartin.learn.domain.Model.AirbusA320
-import com.cmartin.learn.domain.Model.Aircraft
-import com.cmartin.learn.domain.Model.AircraftModel
-import com.cmartin.learn.domain.Model.Boeing788
+import com.cmartin.learn.domain.Model.{AirbusA320, Aircraft, AircraftModel, Boeing788}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -21,9 +18,9 @@ class ModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
 
   it should "convert api to model Aircraft" in {
     val registration = "EC-NBX"
-    val age          = 2
-    val model        = "Boeing788"
-    val apiAircraft  = AircraftDto(registration, age, model, Some(1L))
+    val age = 2
+    val model = "Boeing788"
+    val apiAircraft = AircraftDto(registration, age, model, Some(1L))
 
     val aircraft = apiToModel(apiAircraft)
 
@@ -32,18 +29,18 @@ class ModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
 
   it should "fail when trying to decode invalid aircraft model" in {
     val registration = "EC-NBX"
-    val age          = 2
-    val model        = "InvalidModel"
-    val apiAircraft  = AircraftDto(registration, age, model)
+    val age = 2
+    val model = "InvalidModel"
+    val apiAircraft = AircraftDto(registration, age, model)
 
     a[CustomMappingError] should be thrownBy apiToModel(apiAircraft)
   }
 
   it should "convert model to api Aircrafts" in {
     val registration = "EC-NBX"
-    val age          = 2
-    val model        = Boeing788
-    val aircraft     = Aircraft(registration, age, model, 1L)
+    val age = 2
+    val model = Boeing788
+    val aircraft = Aircraft(registration, age, model, 1L)
 
     val apiAircraft = modelToApi(aircraft)
 

@@ -23,7 +23,7 @@ class ProcessorsSpec extends AnyFlatSpec with Matchers {
   it should "A1 handle a list of processors" in {
     // given
     val filterEvent = FilterDefinition("dummy filter event")
-    val jsltEvent   = JsltDefinition("dummy jslt event")
+    val jsltEvent = JsltDefinition("dummy jslt event")
     //val restEvent   = RestEvent("dummy rest event")
 
     val processors: Seq[Processor[ProcessorDefinition]] =
@@ -96,13 +96,13 @@ class ProcessorsSpec extends AnyFlatSpec with Matchers {
     parsedProcessors.isRight shouldBe true
     parsedProcessors map { json =>
       info(json.asArray.toString())
-    //TODO json.asArray shouldBe  Vector(filterEvent.asJson, jsltEvent.asJson, restEvent.asJson)
+      //TODO json.asArray shouldBe  Vector(filterEvent.asJson, jsltEvent.asJson, restEvent.asJson)
     }
   }
 
   it should "E1" in {
-    val p1: FilterProcessor            = FilterProcessor(FilterDefinition("features.speed > 100"))
-    val p2: JsltProcessor              = JsltProcessor(JsltDefinition("{ * : . }", "key1"))
+    val p1: FilterProcessor = FilterProcessor(FilterDefinition("features.speed > 100"))
+    val p2: JsltProcessor = JsltProcessor(JsltDefinition("{ * : . }", "key1"))
     val processors: Seq[BaseProcessor] = Seq(p1, p2)
 
     val p: Task[String] = ProcessorModel.processList(processors, """{ "key" : "initial-message" }""")
@@ -175,15 +175,15 @@ object ProcessorsSpec {
     RestDefinition("get", "http://localhost:8080/health", "key1.key2", "key3", "key4")
   val restDefinitionJson =
     """
-    |{
-    |  "name": "rest",
-    |  "method": "get",
-    |  "url": "http://localhost:8080/health",
-    |  "inputPath": "key1.key2",
-    |  "resultPath": "key3",
-    |  "outputPath": "key4"
-    |}
-    |""".stripMargin
+      |{
+      |  "name": "rest",
+      |  "method": "get",
+      |  "url": "http://localhost:8080/health",
+      |  "inputPath": "key1.key2",
+      |  "resultPath": "key3",
+      |  "outputPath": "key4"
+      |}
+      |""".stripMargin
 
   val processorDefinitionsJson =
     s"""

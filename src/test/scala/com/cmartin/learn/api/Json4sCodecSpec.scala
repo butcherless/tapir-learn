@@ -1,12 +1,12 @@
 package com.cmartin.learn.api
 
-import java.util.Date
-
 import org.json4s.JsonAST.JValue
 import org.json4s.native.JsonMethods
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import sttp.tapir.generic.auto._
+
+import java.util.Date
 
 class Json4sCodecSpec extends AnyFlatSpec with Matchers {
 
@@ -22,12 +22,12 @@ class Json4sCodecSpec extends AnyFlatSpec with Matchers {
     val bookInput: EndpointIO[Book] = jsonBody[Book]
   }
 
-  case class MyId(id: Int)
-
-  val number   = 1234L
-  val idJson   = """{"id":1234}"""
+  val number = 1234L
+  val idJson = """{"id":1234}"""
   val idJValue = JsonMethods.parse(idJson)
-  val myId     = MyId(1234)
+  val myId = MyId(1234)
+
+  case class MyId(id: Int)
 
   it should "decode a json to a JValue" in {
     val decoded = json4sCodec[JValue].decode(idJson)
@@ -65,7 +65,7 @@ class Json4sCodecSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "encode a JValue" in {
-    val id      = idJValue
+    val id = idJValue
     val encoded = json4sCodec[JValue].encode(id)
     encoded shouldBe idJson
   }

@@ -1,10 +1,10 @@
 package com.cmartin.learn.api
 
-import scala.concurrent.Future
-
 import akka.http.scaladsl.server.Route
 import com.cmartin.learn.domain.ApiConverters
 import sttp.tapir.server.akkahttp._
+
+import scala.concurrent.Future
 
 trait ActuatorApi {
 

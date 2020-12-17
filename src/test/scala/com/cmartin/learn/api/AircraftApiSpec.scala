@@ -7,9 +7,8 @@ import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
 import com.cmartin.learn.api.CommonEndpoint.BASE_API
 import com.cmartin.learn.api.Model.AircraftDto
 import io.circe
-import org.json4s.DefaultFormats
-import org.json4s.JValue
 import org.json4s.native.JsonMethods
+import org.json4s.{DefaultFormats, JValue}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

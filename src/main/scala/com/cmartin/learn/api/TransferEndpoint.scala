@@ -1,9 +1,5 @@
 package com.cmartin.learn.api
 
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-
 import com.cmartin.learn.api.Model._
 import io.circe.Json
 import io.circe.generic.auto._
@@ -13,6 +9,8 @@ import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 
+import java.time.{Instant, LocalDateTime, ZoneOffset}
+
 trait TransferEndpoint extends ApiCodecs {
 
   import TransferEndpoint._
@@ -20,17 +18,6 @@ trait TransferEndpoint extends ApiCodecs {
   /*
       E N D P O I N T S
    */
-
-  val transferIdPath =
-    path[TransferId]("transferId")
-      .validate(Validator.min(1))
-
-  val breMapping: StatusMapping[BadRequestError] = statusMapping(StatusCode.BadRequest, jsonBody[BadRequestError])
-  val nfeMapping: StatusMapping[NotFoundError]   = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
-  val iseMapping: StatusMapping[ServerError]     = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
-  val sueMapping: StatusMapping[ServiceUnavailableError] =
-    statusMapping(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
-  val deMapping = statusDefaultMapping(jsonBody[UnknownError])
 
   //json encode/decode via circe.generic.auto
   lazy val getTransferEndpoint: Endpoint[TransferId, ErrorInfo, TransferDto, Any] =
@@ -43,7 +30,6 @@ trait TransferEndpoint extends ApiCodecs {
       .errorOut(
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
-
   lazy val getFilteredTransferEndpoint =
     endpoint.get
       .name("get-filtered-transfer-endpoint")
@@ -54,7 +40,6 @@ trait TransferEndpoint extends ApiCodecs {
       .errorOut(
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
-
   lazy val getWithHeaderTransferEndpoint: Endpoint[(TransferId, Int), ErrorInfo, Unit, Any] =
     endpoint.get
       .name("get-transfer-with-header-endpoint")
@@ -66,13 +51,6 @@ trait TransferEndpoint extends ApiCodecs {
       .errorOut(
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
-
-  /*
-    private[api] lazy val assetsResourcePagination: EndpointInput[(Option[Long], Option[Int])] =
-    query[Option[Long]]("offset").and(query[Option[Int]]("limit"))
-
-   */
-
   lazy val postTransferEndpoint: Endpoint[TransferDto, StatusCode, TransferDto, Any] =
     endpoint.post
       .name("post-transfer-endpoint")
@@ -84,7 +62,6 @@ trait TransferEndpoint extends ApiCodecs {
           .and(jsonBody[TransferDto].example(transferExample))
       )
       .errorOut(statusCode)
-
   lazy val postJsonEndpoint: Endpoint[Json, StatusCode, Json, Any] =
     endpoint.post
       .in(CommonEndpoint.baseEndpointInput / "bananas")
@@ -94,7 +71,6 @@ trait TransferEndpoint extends ApiCodecs {
           .and(jsonBody[Json].example(jsonExample))
       )
       .errorOut(statusCode)
-
   lazy val getACEntityEndpoint: Endpoint[Unit, StatusCode, ACEntity, Any] =
     endpoint.get
       .name("get-acEntity-endpoint")
@@ -102,7 +78,6 @@ trait TransferEndpoint extends ApiCodecs {
       .in(CommonEndpoint.baseEndpointInput / "acEntity")
       .out(jsonBody[ACEntity].example(acEntityExample))
       .errorOut(statusCode)
-
   lazy val getComOutputEndpoint: Endpoint[Unit, StatusCode, Output, Any] =
     endpoint.get
       .name("get-com-output-endpoint")
@@ -110,7 +85,6 @@ trait TransferEndpoint extends ApiCodecs {
       .in(CommonEndpoint.baseEndpointInput / "com-output")
       .out(jsonBody[Output].example(Model.ComOut))
       .errorOut(statusCode)
-
   lazy val getShaOutputEndpoint: Endpoint[Unit, StatusCode, Output, Any] =
     endpoint.get
       .name("get-sha-out-endpoint")
@@ -118,6 +92,21 @@ trait TransferEndpoint extends ApiCodecs {
       .in(CommonEndpoint.baseEndpointInput / "sha-output")
       .out(jsonBody[Output].example(Model.ShaOut))
       .errorOut(statusCode)
+  val transferIdPath =
+    path[TransferId]("transferId")
+      .validate(Validator.min(1))
+
+  /*
+    private[api] lazy val assetsResourcePagination: EndpointInput[(Option[Long], Option[Int])] =
+    query[Option[Long]]("offset").and(query[Option[Int]]("limit"))
+
+   */
+  val breMapping: StatusMapping[BadRequestError] = statusMapping(StatusCode.BadRequest, jsonBody[BadRequestError])
+  val nfeMapping: StatusMapping[NotFoundError] = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
+  val iseMapping: StatusMapping[ServerError] = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
+  val sueMapping: StatusMapping[ServiceUnavailableError] =
+    statusMapping(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
+  val deMapping = statusDefaultMapping(jsonBody[UnknownError])
 
 }
 

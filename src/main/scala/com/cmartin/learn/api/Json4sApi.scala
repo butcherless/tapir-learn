@@ -1,7 +1,5 @@
 package com.cmartin.learn.api
 
-import scala.concurrent.Future
-
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.Model.AircraftDto
@@ -11,6 +9,8 @@ import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.json4s._
 import sttp.tapir.server.akkahttp._
+
+import scala.concurrent.Future
 
 trait Json4sApi {
 

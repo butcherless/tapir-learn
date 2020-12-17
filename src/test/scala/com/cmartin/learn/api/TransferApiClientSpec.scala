@@ -1,21 +1,15 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.api.Model.BuildInfoDto
-import com.cmartin.learn.api.Model.TransferDto
+import com.cmartin.learn.api.Model.{BuildInfoDto, TransferDto}
 import com.cmartin.learn.domain.ApiConverters
 import io.circe
 import io.circe.generic.auto._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import sttp.client.Response
-import sttp.client.ResponseError
-import sttp.client._
 import sttp.client.asynchttpclient.zio.AsyncHttpClientZioBackend
-import sttp.client.basicRequest
-import sttp.client.circe._
-import sttp.client.circe.asJson
-import sttp.model.Method
-import sttp.model.StatusCode
+import sttp.client.circe.{asJson, _}
+import sttp.client.{Response, ResponseError, basicRequest, _}
+import sttp.model.{Method, StatusCode}
 
 class TransferApiClientSpec extends AnyFlatSpec with Matchers {
 
@@ -168,19 +162,19 @@ object TransferApiClientSpec {
      */
     .whenRequestMatches { req =>
       req.method == Method.POST && req.uri.path.contains("transfers") &&
-      req.body.toString.contains("invalid")
+        req.body.toString.contains("invalid")
     }
     .thenRespond(Response("BAD_REQUEST", StatusCode.BadRequest))
     //
     .whenRequestMatches { req =>
       req.method == Method.POST && req.uri.path.contains("transfers") &&
-      req.body.toString.contains("duplicate")
+        req.body.toString.contains("duplicate")
     }
     .thenRespond(Response("CONFLICT", StatusCode.Conflict))
     //
     .whenRequestMatches { req =>
       req.method == Method.POST && req.uri.path.contains("transfers") &&
-      req.body.toString.contains("server-error")
+        req.body.toString.contains("server-error")
     }
     .thenRespond(Response("SERVER_ERROR", StatusCode.InternalServerError))
     //

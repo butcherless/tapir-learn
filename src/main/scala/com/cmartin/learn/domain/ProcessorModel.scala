@@ -9,37 +9,27 @@ import zio.Task
 
 object ProcessorModel {
 
+  def processList(ps: Seq[BaseProcessor], message: String): Task[String] = {
+    if (ps.nonEmpty) {
+      for {
+        outputMsg <- ps.head.handle(message)
+        tailMsg <- processList(ps.tail, outputMsg)
+      } yield tailMsg
+    } else {
+      Task.effectTotal(message)
+    }
+  }
+
+  // h e l p e r s
+  def debugMessage(prefix: String, message: String) =
+    println(s"$prefix:\n |-> $message")
+
   sealed trait ProcessorDefinition {
     val inputPath: String
     val resultPath: String
     val outputPath: String
     val name: String
   }
-
-  final case class FilterDefinition(
-      predicate: String,
-      inputPath: String = "",
-      resultPath: String = "",
-      outputPath: String = "",
-      name: String = "filter"
-  ) extends ProcessorDefinition
-
-  final case class JsltDefinition(
-      transform: String,
-      inputPath: String = "",
-      resultPath: String = "",
-      outputPath: String = "",
-      name: String = "jslt"
-  ) extends ProcessorDefinition
-
-  final case class RestDefinition(
-      method: String,
-      url: String,
-      inputPath: String = "",
-      resultPath: String = "",
-      outputPath: String = "",
-      name: String = "rest"
-  ) extends ProcessorDefinition
 
   sealed trait Processor[E <: ProcessorDefinition] {
 
@@ -50,16 +40,16 @@ object ProcessorModel {
   abstract class BaseProcessor(definition: ProcessorDefinition) extends Processor[ProcessorDefinition] {
     final def handle(message: String): Task[String] =
       for {
-        ipMsg   <- doInputPath(message)
+        ipMsg <- doInputPath(message)
         taskMsg <- doTask(ipMsg)
-        rpMsg   <- doResultPath(taskMsg)
-        opMsg   <- doOutputPath(rpMsg)
+        rpMsg <- doResultPath(taskMsg)
+        opMsg <- doOutputPath(rpMsg)
       } yield opMsg
 
     private def doInputPath(message: String): Task[String] =
       Task {
         val processedMessage = message + ".input#"
-        val ip               = if (definition.inputPath.trim.isEmpty) "{*:.}" else definition.inputPath
+        val ip = if (definition.inputPath.trim.isEmpty) "{*:.}" else definition.inputPath
         debugMessage(s".inputPath - ${ip}", processedMessage)
         processedMessage
       }
@@ -80,6 +70,31 @@ object ProcessorModel {
 
   }
 
+  final case class FilterDefinition(
+                                     predicate: String,
+                                     inputPath: String = "",
+                                     resultPath: String = "",
+                                     outputPath: String = "",
+                                     name: String = "filter"
+                                   ) extends ProcessorDefinition
+
+  final case class JsltDefinition(
+                                   transform: String,
+                                   inputPath: String = "",
+                                   resultPath: String = "",
+                                   outputPath: String = "",
+                                   name: String = "jslt"
+                                 ) extends ProcessorDefinition
+
+  final case class RestDefinition(
+                                   method: String,
+                                   url: String,
+                                   inputPath: String = "",
+                                   resultPath: String = "",
+                                   outputPath: String = "",
+                                   name: String = "rest"
+                                 ) extends ProcessorDefinition
+
   final class FilterProcessor(definition: FilterDefinition) extends BaseProcessor(definition) {
     override def doTask(message: String): Task[String] =
       Task {
@@ -87,10 +102,6 @@ object ProcessorModel {
         debugMessage(s".doFilter - predicate: ${definition.predicate}, message", processedMessage)
         processedMessage
       }
-  }
-
-  object FilterProcessor {
-    def apply(definition: FilterDefinition): FilterProcessor = new FilterProcessor(definition)
   }
 
   final class JsltProcessor(definition: JsltDefinition) extends BaseProcessor(definition) {
@@ -102,10 +113,6 @@ object ProcessorModel {
       }
   }
 
-  object JsltProcessor {
-    def apply(definition: JsltDefinition): JsltProcessor = new JsltProcessor(definition)
-  }
-
   final class RestProcessor(definition: RestDefinition) extends BaseProcessor(definition) {
     override def doTask(message: String): Task[String] =
       Task {
@@ -115,32 +122,25 @@ object ProcessorModel {
       }
   }
 
+  object FilterProcessor {
+    def apply(definition: FilterDefinition): FilterProcessor = new FilterProcessor(definition)
+  }
+
+  object JsltProcessor {
+    def apply(definition: JsltDefinition): JsltProcessor = new JsltProcessor(definition)
+  }
+
   object RestProcessor {
     def apply(definition: RestDefinition): RestProcessor = new RestProcessor(definition)
   }
-
-  def processList(ps: Seq[BaseProcessor], message: String): Task[String] = {
-    if (ps.nonEmpty) {
-      for {
-        outputMsg <- ps.head.handle(message)
-        tailMsg   <- processList(ps.tail, outputMsg)
-      } yield tailMsg
-    } else {
-      Task.effectTotal(message)
-    }
-  }
-
-  // h e l p e r s
-  def debugMessage(prefix: String, message: String) =
-    println(s"$prefix:\n |-> $message")
 
   object GenericDerivation {
     implicit val config: Configuration = Configuration.default.withDefaults
 
     implicit val eventEncoder: Encoder[ProcessorDefinition] = Encoder.instance {
-      case filter @ FilterDefinition(_, _, _, _, _) => filter.asJson
-      case jslt @ JsltDefinition(_, _, _, _, _)     => jslt.asJson
-      case rest @ RestDefinition(_, _, _, _, _, _)  => rest.asJson
+      case filter@FilterDefinition(_, _, _, _, _) => filter.asJson
+      case jslt@JsltDefinition(_, _, _, _, _) => jslt.asJson
+      case rest@RestDefinition(_, _, _, _, _, _) => rest.asJson
     }
 
     implicit val eventDecoder: Decoder[ProcessorDefinition] =

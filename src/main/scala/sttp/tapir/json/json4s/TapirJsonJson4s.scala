@@ -1,21 +1,14 @@
 package sttp.tapir.json.json4s
 
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
-
 import com.cmartin.learn.configuration.ComponentLogging
-import org.json4s.DefaultFormats
-import org.json4s.Extraction
-import org.json4s.JValue
-import org.json4s.native.JsonMethods
+import org.json4s.native.{JsonMethods, Serialization}
+import org.json4s.{DefaultFormats, JValue}
 import sttp.tapir.Codec.JsonCodec
-import sttp.tapir.DecodeResult.Error
-import sttp.tapir.DecodeResult.Value
-import sttp.tapir.EndpointIO
-import sttp.tapir.SchemaType.SCoproduct
-import sttp.tapir.SchemaType.SObjectInfo
-import sttp.tapir._
+import sttp.tapir.DecodeResult.{Error, Value}
+import sttp.tapir.SchemaType.{SCoproduct, SObjectInfo}
+import sttp.tapir.{EndpointIO, _}
+
+import scala.util.{Failure, Success, Try}
 
 trait TapirJsonJson4s extends ComponentLogging {
 
@@ -33,15 +26,11 @@ trait TapirJsonJson4s extends ComponentLogging {
       log.debug(s"json4s.codec.decode.string: $s")
       Try(JsonMethods.parse(s).extract[T]) match {
         case Success(value) => Value(value)
-        case Failure(e)     => Error("json4s decoder failed", e)
+        case Failure(e) => Error("json4s decoder failed", e)
       }
     } { t =>
       log.debug(s"json4s.codec.encode.type: ${t.getClass.getName}")
-      JsonMethods.compact(
-        JsonMethods.render(
-          Extraction.decompose(t)
-        )
-      )
+      Serialization.write(t)
     }
 
   // Json is a coproduct with unknown implementations
