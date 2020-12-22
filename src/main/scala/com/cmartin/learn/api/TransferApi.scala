@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.ApiConverters._
 import com.cmartin.learn.domain.Model.Transfer
-import sttp.tapir.server.akkahttp._
+import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -26,45 +26,60 @@ trait TransferApi {
 
   // tapir endpoint description to akka routes via .toRoute function
   lazy val getRoute: Route =
-    TransferEndpoint.getTransferEndpoint.toRoute(
-      businessLogic _ andThen
-        handleErrors
-    )
+    AkkaHttpServerInterpreter
+      .toRoute(
+        TransferEndpoint.getTransferEndpoint
+      )(
+        businessLogic _ andThen
+          handleErrors
+      )
 
   lazy val getFilteredRoute: Route =
-    TransferEndpoint.getFilteredTransferEndpoint.toRoute(_ =>
-      Future.successful(Right(TransferEndpoint.transferListExample))
-    )
+    AkkaHttpServerInterpreter
+      .toRoute(
+        TransferEndpoint.getFilteredTransferEndpoint
+      )(_ => Future.successful(Right(TransferEndpoint.transferListExample)))
 
   //
   lazy val getWithHeaderRoute: Route =
-    TransferEndpoint.getWithHeaderTransferEndpoint.toRoute(_ => Future.successful(Right(())))
+    AkkaHttpServerInterpreter
+      .toRoute(
+        TransferEndpoint.getWithHeaderTransferEndpoint
+      )(_ => Future.successful(Right(())))
 
   // dummy business process
   lazy val postRoute: Route =
-    TransferEndpoint.postTransferEndpoint.toRoute { inDto =>
-      val transfer: Transfer = inDto.toModel
-      // simulated business process
-      val outDto: TransferDto = transfer.toApi
-      Future.successful(Right(outDto))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        TransferEndpoint.postTransferEndpoint
+      ) { inDto =>
+        val transfer: Transfer = inDto.toModel
+        // simulated business process
+        val outDto: TransferDto = transfer.toApi
+        Future.successful(Right(outDto))
+      }
 
   lazy val postJsonRoute: Route =
-    TransferEndpoint.postJsonEndpoint.toRoute { inDto =>
-      Future.successful(Right(inDto))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        TransferEndpoint.postJsonEndpoint
+      )(inDto => Future.successful(Right(inDto)))
+
   lazy val getACEntityRoute: Route =
-    TransferEndpoint.getACEntityEndpoint.toRoute { _ =>
-      Future.successful(Right(TransferEndpoint.acEntityExample))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        TransferEndpoint.getACEntityEndpoint
+      )(_ => Future.successful(Right(TransferEndpoint.acEntityExample)))
+
   lazy val getComOutputRoute: Route =
-    TransferEndpoint.getComOutputEndpoint.toRoute { _ =>
-      Future.successful(Right(Model.ComOut))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(TransferEndpoint.getComOutputEndpoint)(_ => Future.successful(Right(Model.ComOut)))
+
   lazy val getShaOutputRoute: Route =
-    TransferEndpoint.getShaOutputEndpoint.toRoute { _ =>
-      Future.successful(Right(Model.ShaOut))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        TransferEndpoint.getShaOutputEndpoint
+      )(_ => Future.successful(Right(Model.ShaOut)))
 
   // simulating business logic function
   def businessLogic(transferId: TransferId): Future[TransferDto] =
@@ -82,7 +97,7 @@ trait TransferApi {
           BusinessException(StatusCodes.ServiceUnavailable.intValue, StatusCodes.ServiceUnavailable.defaultMessage)
         )
       case 666 => Future.failed(BusinessException(666, "Unknown error"))
-      case _ => Future.successful(TransferEndpoint.transferExample)
+      case _   => Future.successful(TransferEndpoint.transferExample)
     }
 
   def handleErrors[T](f: Future[T]): Future[Either[ErrorInfo, T]] =
@@ -90,8 +105,8 @@ trait TransferApi {
       case Success(v) => Success(Right(v))
       case Failure(BusinessException(code, message)) =>
         code match {
-          case StatusCodes.BadRequest.intValue => Success(Left(BadRequestError("MISSING_INFO", message)))
-          case StatusCodes.NotFound.intValue => Success(Left(NotFoundError("ENTITY_NOT_FOUND", message)))
+          case StatusCodes.BadRequest.intValue          => Success(Left(BadRequestError("MISSING_INFO", message)))
+          case StatusCodes.NotFound.intValue            => Success(Left(NotFoundError("ENTITY_NOT_FOUND", message)))
           case StatusCodes.InternalServerError.intValue => Success(Left(ServerError("SERVER_ERROR", message)))
           case StatusCodes.ServiceUnavailable.intValue =>
             Success(Left(ServiceUnavailableError("SERVICE_UNAVAILABLE_ERROR", message)))
@@ -101,7 +116,7 @@ trait TransferApi {
     }
 
   case class BusinessException(code: Int, message: String = "Information not available")
-    extends RuntimeException(message)
+      extends RuntimeException(message)
 }
 
 object TransferApi extends TransferApi

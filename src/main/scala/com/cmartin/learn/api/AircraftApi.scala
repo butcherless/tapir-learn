@@ -9,7 +9,7 @@ import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
-import sttp.tapir.server.akkahttp._
+import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
 import scala.concurrent.Future
 
@@ -47,23 +47,30 @@ trait AircraftApi {
       .errorOut(statusCode)
 
   lazy val getRoute: Route =
-    getAircraftEndpoint.toRoute { _ =>
-      Future.successful(Right(apiAircraftMIGExample))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        getAircraftEndpoint
+      )(_ => Future.successful(Right(apiAircraftMIGExample)))
 
   lazy val getSeqRoute: Route =
-    getAircraftSeqEndpoint.toRoute { _ =>
-      Future.successful(
-        Right(Seq(apiAircraftMIGExample.copy(id = Some(1234)), apiAircraftLVLExample.copy(id = Some(5678))))
+    AkkaHttpServerInterpreter
+      .toRoute(
+        getAircraftSeqEndpoint
+      )(_ =>
+        Future.successful(
+          Right(
+            Seq(apiAircraftMIGExample.copy(id = Some(1234)), apiAircraftLVLExample.copy(id = Some(5678)))
+          )
+        )
       )
-    }
 
   lazy val postRoute: Route =
-    postAircraftEndpoint.toRoute { aircraft =>
-      Future.successful(Right(aircraft.copy(id = Some(1234L))))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        postAircraftEndpoint
+      )(aircraft => Future.successful(Right(aircraft.copy(id = Some(1234L)))))
 
-  val limitQuery =
+  val limitQuery: EndpointInput.Query[Option[Int]] =
     query[Option[Int]]("limit")
 }
 
