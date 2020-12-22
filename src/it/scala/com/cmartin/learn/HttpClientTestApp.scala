@@ -3,17 +3,17 @@ package com.cmartin.learn
 import sttp.client._
 import sttp.client.asynchttpclient.zio.AsyncHttpClientZioBackend
 import sttp.model.StatusCode
+import zio._
 import zio.clock.Clock
 import zio.console._
 import zio.duration._
 import zio.random._
-import zio._
 
 object HttpClientTestApp extends App {
 
   val healthEndpoint = "http://localhost:8080/api/v1.0/health"
-  val fiberCount = 20
-  val loopCount = 500
+  val fiberCount     = 20
+  val loopCount      = 500
 
   // http client backend
   implicit val backend: SttpBackend[Task, Nothing, Nothing] =
@@ -21,30 +21,30 @@ object HttpClientTestApp extends App {
   val urls: Seq[String] = List.fill(fiberCount)(healthEndpoint)
   val program: ZIO[Clock with zio.ZEnv, Throwable, Unit] = for {
     number <- nextIntBetween(500, 2000)
-    delay <- UIO(number)
-    _ <- ZIO.sleep(delay.milliseconds)
-    _ <- ZIO.foreachParN(fiberCount)(urls)(doGet) repeat Schedule.recurs(loopCount - 1)
+    delay  <- UIO(number)
+    _      <- ZIO.sleep(delay.milliseconds)
+    _      <- ZIO.foreachParN(fiberCount)(urls)(doGet) repeat Schedule.recurs(loopCount - 1)
   } yield ()
 
   // Dummy method
   def makeGet(uri: String): ZIO[Clock with Random, Nothing, Unit] =
     for {
       number <- nextIntBetween(500, 2000)
-      delay <- UIO(number)
-      _ <- ZIO.sleep(delay.milliseconds)
-      _ <- UIO(println(s"sleep[$delay]: $uri"))
+      delay  <- UIO(number)
+      _      <- ZIO.sleep(delay.milliseconds)
+      _      <- UIO(println(s"sleep[$delay]: $uri"))
     } yield ()
 
   def doGet(endpoint: String): ZIO[Console, Throwable, Unit] =
     for {
       response <- basicRequest.get(uri"$endpoint").send()
-      _ <- putStrLn(checkResponse(response))
+      _        <- putStrLn(checkResponse(response))
     } yield ()
 
   def checkResponse(response: Response[Either[String, String]]): String =
     response.code match {
       case StatusCode.Ok => "Response Ok"
-      case _ => "Response Error"
+      case _             => "Response Error"
     }
 
   // main function, needs exit = 0 [OK] or exit > 0 [ERROR]

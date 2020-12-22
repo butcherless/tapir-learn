@@ -8,7 +8,7 @@ import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.json4s._
-import sttp.tapir.server.akkahttp._
+import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
 import scala.concurrent.Future
 
@@ -30,9 +30,10 @@ trait Json4sApi {
       .errorOut(statusCode)
 
   lazy val getRoute: Route =
-    getAircraftEndpoint.toRoute { _ =>
-      Future.successful(Right(AircraftEndpoint.apiAircraftMIGExample))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        getAircraftEndpoint
+      )(_ => Future.successful(Right(AircraftEndpoint.apiAircraftMIGExample)))
 
   // Json4s Codec for JSON - get method
   lazy val getJsonEndpoint: Endpoint[Unit, StatusCode, JValue, Any] =
@@ -44,9 +45,10 @@ trait Json4sApi {
       .errorOut(statusCode)
 
   lazy val getJsonRoute: Route =
-    getJsonEndpoint.toRoute { _ =>
-      Future.successful(Right(AircraftEndpoint.jValueAircraftExample))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        getJsonEndpoint
+      )(_ => Future.successful(Right(AircraftEndpoint.jValueAircraftExample)))
 
   // any JSON document, no extracting case class
   lazy val postJsonEndpoint: Endpoint[JValue, StatusCode, JValue, Any] = {
@@ -63,9 +65,10 @@ trait Json4sApi {
   }
 
   lazy val postJsonRoute: Route =
-    postJsonEndpoint.toRoute { _ =>
-      Future.successful(Right(AircraftEndpoint.jValueAircraftExample))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        postJsonEndpoint
+      )(_ => Future.successful(Right(AircraftEndpoint.jValueAircraftExample)))
 
   lazy val postEntityEndpoint: Endpoint[AircraftDto, StatusCode, AircraftDto, Any] =
     endpoint.post
@@ -80,10 +83,13 @@ trait Json4sApi {
       .errorOut(statusCode)
 
   lazy val postEntityRoute: Route =
-    postEntityEndpoint.toRoute { entity =>
-      log.debug(s"postEntityRoute.request: $entity")
-      Future.successful(Right(AircraftEndpoint.apiAircraftNFZExample))
-    }
+    AkkaHttpServerInterpreter
+      .toRoute(
+        postEntityEndpoint
+      ) { entity =>
+        log.debug(s"postEntityRoute.request: $entity")
+        Future.successful(Right(AircraftEndpoint.apiAircraftNFZExample))
+      }
 
 }
 

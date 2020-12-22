@@ -102,8 +102,8 @@ trait TransferEndpoint extends ApiCodecs {
 
    */
   val breMapping: StatusMapping[BadRequestError] = statusMapping(StatusCode.BadRequest, jsonBody[BadRequestError])
-  val nfeMapping: StatusMapping[NotFoundError] = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
-  val iseMapping: StatusMapping[ServerError] = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
+  val nfeMapping: StatusMapping[NotFoundError]   = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
+  val iseMapping: StatusMapping[ServerError]     = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
   val sueMapping: StatusMapping[ServiceUnavailableError] =
     statusMapping(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
   val deMapping = statusDefaultMapping(jsonBody[UnknownError])
