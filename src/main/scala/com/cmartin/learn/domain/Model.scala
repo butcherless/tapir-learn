@@ -13,21 +13,21 @@ object Model {
   sealed trait Result
 
   case class Transfer(
-                       sender: String,
-                       receiver: String,
-                       amount: Double,
-                       currency: Currency,
-                       date: Instant,
-                       desc: String,
-                       id: Option[Long] = scala.None
-                     )
+      sender: String,
+      receiver: String,
+      amount: Double,
+      currency: Currency,
+      date: Instant,
+      desc: String,
+      id: Option[Long] = scala.None
+  )
 
   case class Aircraft(
-                       registration: String,
-                       age: Int,
-                       model: AircraftModel,
-                       id: Long
-                     )
+      registration: String,
+      age: Int,
+      model: AircraftModel,
+      id: Long
+  )
 
   case object EUR extends Currency
 

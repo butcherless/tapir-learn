@@ -162,19 +162,19 @@ object TransferApiClientSpec {
      */
     .whenRequestMatches { req =>
       req.method == Method.POST && req.uri.path.contains("transfers") &&
-        req.body.toString.contains("invalid")
+      req.body.toString.contains("invalid")
     }
     .thenRespond(Response("BAD_REQUEST", StatusCode.BadRequest))
     //
     .whenRequestMatches { req =>
       req.method == Method.POST && req.uri.path.contains("transfers") &&
-        req.body.toString.contains("duplicate")
+      req.body.toString.contains("duplicate")
     }
     .thenRespond(Response("CONFLICT", StatusCode.Conflict))
     //
     .whenRequestMatches { req =>
       req.method == Method.POST && req.uri.path.contains("transfers") &&
-        req.body.toString.contains("server-error")
+      req.body.toString.contains("server-error")
     }
     .thenRespond(Response("SERVER_ERROR", StatusCode.InternalServerError))
     //

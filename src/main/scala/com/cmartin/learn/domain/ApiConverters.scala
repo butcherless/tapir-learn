@@ -18,22 +18,22 @@ trait ApiConverters {
     s match {
       case "Success" => Model.Success
       case "Warning" => Model.Warning
-      case "Error" => Model.Error
-      case "" => manageEmptyCase("result")
-      case _ => manageDefaultCase("result", s)
+      case "Error"   => Model.Error
+      case ""        => manageEmptyCase("result")
+      case _         => manageDefaultCase("result", s)
     }
 
   // AIRCRAFT
   implicit def stringToAircraftModel(s: String): AircraftModel =
     s match {
-      case "AirbusA320" => AirbusA320
+      case "AirbusA320"  => AirbusA320
       case "AirbusA320N" => AirbusA320N
-      case "AirbusA332" => AirbusA332
-      case "AirbusA333" => AirbusA333
+      case "AirbusA332"  => AirbusA332
+      case "AirbusA333"  => AirbusA333
       case "Boeing737NG" => Boeing737NG
-      case "Boeing788" => Boeing788
-      case "" => manageEmptyCase("model")
-      case _ => manageDefaultCase("model", s)
+      case "Boeing788"   => Boeing788
+      case ""            => manageEmptyCase("model")
+      case _             => manageDefaultCase("model", s)
     }
 
   def modelToApi(a: Aircraft): AircraftDto =

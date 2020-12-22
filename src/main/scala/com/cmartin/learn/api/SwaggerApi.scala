@@ -9,6 +9,15 @@ import sttp.tapir.swagger.akkahttp.SwaggerAkka
 
 trait SwaggerApi {
 
+  // add endpoints to the list for swagger documentation
+  lazy val docsAsYaml: String =
+    OpenAPIDocsInterpreter
+      .toOpenAPI(endpoints, info)
+      .toYaml
+  lazy val route: Route = {
+    new SwaggerAkka(docsAsYaml, s"$BASE_API/docs").routes
+  }
+  val info = Info("Tapir Learning Service API", "1.0.0-SNAPSHOT", Some("Researching about Tapir library"))
   private val endpoints = List(
     ActuatorEndpoint.healthEndpoint,
     TransferEndpoint.getTransferEndpoint,
@@ -27,18 +36,6 @@ trait SwaggerApi {
     Json4sApi.postJsonEndpoint,
     Json4sApi.postEntityEndpoint
   )
-
-  val info = Info("Tapir Learning Service API", "1.0.0-SNAPSHOT", Some("Researching about Tapir library"))
-
-  // add endpoints to the list for swagger documentation
-  lazy val docsAsYaml: String =
-    OpenAPIDocsInterpreter
-      .toOpenAPI(endpoints, info)
-      .toYaml
-
-  lazy val route: Route = {
-    new SwaggerAkka(docsAsYaml, s"$BASE_API/docs").routes
-  }
 }
 
 object SwaggerApi extends SwaggerApi

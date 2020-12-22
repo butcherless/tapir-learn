@@ -89,7 +89,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .body(TransferEndpoint.transferExample)
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
-    val doPost = sendPostRequest[TransferDto](request)
+    val doPost       = sendPostRequest[TransferDto](request)
     val layeredDoGet = doPost.provideCustomLayer(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
@@ -103,7 +103,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .body("""{ "key" : "invalid-transfer }""")
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
-    val doPost = sendPostRequest[TransferDto](request)
+    val doPost       = sendPostRequest[TransferDto](request)
     val layeredDoGet = doPost.provideCustomLayer(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
@@ -131,15 +131,15 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
   def sendRequest[T](request: RequestT[Identity, Either[ResponseError[circe.Error], T], Nothing]) =
     for {
       response <- SttpClient.send(request)
-      _ <- UIO(info(s"response.code: ${response.code}"))
-      _ <- UIO(info(s"response.body: ${response.body}"))
+      _        <- UIO(info(s"response.code: ${response.code}"))
+      _        <- UIO(info(s"response.body: ${response.body}"))
     } yield response
 
   def sendPostRequest[T](request: Request[Either[String, String], Nothing]) =
     for {
       response <- SttpClient.send(request)
-      _ <- UIO(info(s"response.code: ${response.code}"))
-      _ <- UIO(info(s"response.body: ${response.body}"))
+      _        <- UIO(info(s"response.code: ${response.code}"))
+      _        <- UIO(info(s"response.body: ${response.body}"))
     } yield response
 
 }

@@ -26,7 +26,7 @@ trait TapirJsonJson4s extends ComponentLogging {
       log.debug(s"json4s.codec.decode.string: $s")
       Try(JsonMethods.parse(s).extract[T]) match {
         case Success(value) => Value(value)
-        case Failure(e) => Error("json4s decoder failed", e)
+        case Failure(e)     => Error("json4s decoder failed", e)
       }
     } { t =>
       log.debug(s"json4s.codec.encode.type: ${t.getClass.getName}")
