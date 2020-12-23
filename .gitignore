@@ -6,8 +6,9 @@
 .cache/
 .ivy2/
 .vscode/
-project/project/
 .idea/
 .metals/
+project/project/
 project/target/
+project/metals.sbt
 target/
