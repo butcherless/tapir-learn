@@ -1,4 +1,0 @@
--Xms512M
--Xmx3G
--Xss1M
--XX:NewRatio=8
