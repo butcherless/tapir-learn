@@ -75,7 +75,7 @@ class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
       }
   }
 
-  it should "TODO: create an Aircraft via /j2values endpoint" in {
+  it should "create an Aircraft via /j2values endpoint" in {
     Post(s"$BASE_API/j2values")
       .withEntity(AircraftEndpoint.jsonStringAircraft2Example) ~>
       Json4sApi.postEntityRoute ~>
