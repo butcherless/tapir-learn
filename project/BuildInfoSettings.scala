@@ -3,10 +3,12 @@ import sbt.Keys._
 import sbt.{Def, SettingKey}
 import sbtbuildinfo.BuildInfoKeys.buildInfoKeys
 import sbtbuildinfo.BuildInfoPlugin.autoImport.{BuildInfoKey, BuildInfoOption, buildInfoOptions, buildInfoPackage}
+import sbt.KeyRanks
 
 object BuildInfoSettings {
 
-  private val gitCommitString = SettingKey[String]("gitCommit")
+  private val gitCommitString = 
+  SettingKey[String]("gitCommit").withRank(KeyRanks.Invisible)
 
   val value: Seq[Def.Setting[_]] = Seq(
 
