@@ -9,4 +9,4 @@ addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.10.0")
 // G I T
 addSbtPlugin("com.typesafe.sbt" % "sbt-git"                   % "1.0.0")
 addSbtPlugin("com.github.cb372" % "sbt-explicit-dependencies" % "0.2.16")
-addSbtPlugin("ch.epfl.scala"    % "sbt-bloop"                 % "1.4.6-21-464e4ec4")
+addSbtPlugin("ch.epfl.scala"    % "sbt-bloop"                 % "1.4.7")
