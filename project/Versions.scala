@@ -1,4 +1,4 @@
-object Versions {
+XXXobject Versions {
 
   val akkaHttp = "10.2.4"
   val akka     = "2.6.12"
