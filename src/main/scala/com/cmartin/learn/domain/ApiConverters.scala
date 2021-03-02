@@ -6,11 +6,13 @@ import com.cmartin.learn.api.Model.{AircraftDto, BuildInfoDto, TransferDto}
 import com.cmartin.learn.domain.Model._
 
 import java.time._
+import com.cmartin.learn.api
 
 trait ApiConverters {
 
+  //TODO
   def apiToModel(a: AircraftDto): Aircraft =
-    Aircraft(a.registration, a.age, a.model, a.id.getOrElse(0))
+    Aircraft(a.registration, a.age, AirbusA320, a.id.getOrElse(0))
 
   // ACTUATOR
 
@@ -36,8 +38,9 @@ trait ApiConverters {
       case _             => manageDefaultCase("model", s)
     }
 
+  //TODO
   def modelToApi(a: Aircraft): AircraftDto =
-    AircraftDto(a.registration, a.age, a.model.toString, Some(a.id))
+    AircraftDto(a.registration, a.age, api.Model.AircraftType.Airbus332, Some(a.id))
 
   def apiToModel(dto: TransferDto): Transfer =
     Transfer(

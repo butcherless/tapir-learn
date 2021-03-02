@@ -30,6 +30,7 @@ trait SwaggerApi {
     TransferEndpoint.postJsonEndpoint,
     AircraftApi.getAircraftEndpoint,
     AircraftApi.getAircraftSeqEndpoint,
+    AircraftApi.getAircraftTypeEndpoint,
     AircraftApi.postAircraftEndpoint,
     Json4sApi.getAircraftEndpoint,
     Json4sApi.getJsonEndpoint,

@@ -1,6 +1,7 @@
 package com.cmartin.learn.api
 
 import java.time.{Instant, LocalDateTime}
+import sttp.tapir._
 
 object Model {
 
@@ -8,6 +9,22 @@ object Model {
 
   val APP_NAME    = "tapir learn web application"
   val APP_VERSION = "1.0.0-SNAPSHOT"
+
+  trait EnumHelper { e: Enumeration =>
+    import io.circe._
+
+    implicit val enumDecoder: Decoder[e.Value] = Decoder.decodeEnumeration(e)
+    implicit val enumEncoder: Encoder[e.Value] = Encoder.encodeEnumeration(e)
+
+    // needs to be a def or lazy val so that the enumeration values are available!
+    implicit def schemaForEnum: Schema[e.Value] =
+      Schema.string.validate(Validator.enum(e.values.toList, v => Option(v)))
+  }
+
+  object AircraftType extends Enumeration with EnumHelper {
+    type AircraftType = Value
+    val AirbusA320, AirbusA320N, Airbus332, AirbusA333, Boeing737NG, Boeing788, Boeing789 = Value
+  }
 
   sealed trait Sid {
     val id: Long
@@ -77,10 +94,11 @@ object Model {
 
   // AVIATION MODEL
   // ADT => String representation for Codec. Model ADT => String ADT representation
+  import AircraftType._
   case class AircraftDto(
       registration: String,
       age: Int,
-      model: String,
+      model: AircraftType,
       id: Option[Long] = scala.None
   )
 
