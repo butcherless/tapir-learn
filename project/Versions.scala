@@ -8,7 +8,7 @@ object Versions {
 
   val json4s  = "3.6.11"
   val logback = "1.2.3"
-  val zio     = "1.0.4-2"
+  val zio     = "1.0.5"
 
   val scalatest = "3.2.6"
 
