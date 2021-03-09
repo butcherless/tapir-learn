@@ -1,5 +1,6 @@
 package sttp.tapir.json.json4s
 
+import com.cmartin.learn.api.Model.AircraftType
 import com.cmartin.learn.configuration.ComponentLogging
 import org.json4s.native.{JsonMethods, Serialization}
 import org.json4s.{DefaultFormats, JValue}
@@ -7,6 +8,7 @@ import sttp.tapir.Codec.JsonCodec
 import sttp.tapir.DecodeResult.{Error, Value}
 import sttp.tapir.SchemaType.{SCoproduct, SObjectInfo}
 import sttp.tapir.{EndpointIO, _}
+import org.json4s.ext.EnumNameSerializer
 
 import scala.util.{Failure, Success, Try}
 
@@ -15,7 +17,7 @@ trait TapirJsonJson4s extends ComponentLogging {
   def jsonBody[T: Schema](implicit m: Manifest[T]): EndpointIO.Body[String, T] =
     anyFromUtf8StringBody(json4sCodec[T])
 
-  implicit val formats = DefaultFormats
+  implicit val formats = DefaultFormats + new EnumNameSerializer(AircraftType)
 
   /*
     - decoder only for [JValue], todo extract to case class

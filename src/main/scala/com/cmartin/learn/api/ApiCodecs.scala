@@ -17,28 +17,6 @@ trait ApiCodecs {
     }
   }
 
-  implicit class AircraftModelSelector(model: String) {
-    def toAircraftModel: AircraftModel =
-      model match {
-        case "AirbusA320"  => AirbusA320
-        case "AirbusA332"  => AirbusA332
-        case "Boeing737NG" => Boeing737NG
-        case "Boeing788"   => Boeing788
-        // TODO error cases
-      }
-  }
-
-  implicit lazy val aircraftDecoder: Decoder[Aircraft] = new Decoder[Aircraft] {
-    override def apply(c: HCursor): Decoder.Result[Aircraft] = {
-      for {
-        registration <- c.get[String]("registration")
-        age          <- c.get[Int]("age")
-        model        <- c.get[String]("model")
-        id           <- c.get[Long]("id")
-      } yield Aircraft(registration, age, model.toAircraftModel, id)
-    }
-  }
-
   implicit class CurrencySelector(currency: String) {
     def toCurrency: Currency =
       currency match {
@@ -49,20 +27,6 @@ trait ApiCodecs {
       }
   }
 
-  //  Custom decoder
-
-  //  implicit lazy val transferDecoder: Decoder[Transfer] = new Decoder[Transfer] {
-  //    override def apply(c: HCursor): Decoder.Result[Transfer] = {
-  //      for {
-  //        sender   <- c.get[String]("sender")
-  //        receiver <- c.get[String]("receiver")
-  //        amount   <- c.get[Double]("amount")
-  //        currency <- c.get[String]("currency")
-  //        date     <- c.get[Instant]("date")
-  //        desc     <- c.get[String]("desc")
-  //      } yield Transfer(sender, receiver, amount, currency.toCurrency, date, desc)
-  //    }
-  //  }
 
   def genericEncoder[T](): Encoder[T] =
     new Encoder[T] {
@@ -78,15 +42,6 @@ trait ApiCodecs {
   implicit lazy val currencyEncoder: Encoder[Currency] =
     genericEncoder[Currency]()
 
-  // JSON => Object
-  //  implicit lazy val currencyDecoder: Decoder[Currency] = new Decoder[Currency] {
-  //    override def apply(c: HCursor): Decoder.Result[Currency] = {
-  //      println(c.values)
-  //      for {
-  //        obj <- c.get[Currency]("currency")
-  //      } yield select(obj)
-  //    }
-  //  }
 
   //TODO refactor to generic select[T]
   def select(o: Currency): Currency =

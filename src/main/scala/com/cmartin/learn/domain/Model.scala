@@ -1,5 +1,7 @@
 package com.cmartin.learn.domain
 
+import com.cmartin.learn.domain.Model.AircraftModel.AircraftModel
+
 import java.time.Instant
 
 object Model {
@@ -7,7 +9,7 @@ object Model {
   sealed trait Currency
 
   // ADT
-  sealed trait AircraftModel
+  //sealed trait AircraftModel
 
   // Actuator
   sealed trait Result
@@ -33,24 +35,15 @@ object Model {
 
   case object USD extends Currency
 
-  case object AirbusA320 extends AircraftModel
-
-  case object AirbusA320N extends AircraftModel
-
-  case object AirbusA332 extends AircraftModel
-
-  case object AirbusA333 extends AircraftModel
-
-  case object Boeing737NG extends AircraftModel
-
-  case object Boeing788 extends AircraftModel
+  object AircraftModel extends Enumeration {
+    type AircraftModel = Value
+    val AirbusA320, AirbusA320N, AirbusA332, AirbusA333, Boeing737NG, Boeing788, Boeing789 = Value
+  }
 
   case object Success extends Result
 
   case object Warning extends Result
 
   case object Error extends Result
-
-  // HELPERS
 
 }

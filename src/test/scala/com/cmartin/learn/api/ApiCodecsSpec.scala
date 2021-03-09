@@ -1,6 +1,7 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.domain.Model.{AirbusA332, Aircraft}
+import com.cmartin.learn.api.Model.{AircraftDto, AircraftType}
+import io.circe.generic.auto._
 import io.circe.parser.{decode, parse}
 import io.circe.syntax._
 import io.circe.{Json, ParsingFailure}
@@ -21,7 +22,7 @@ class ApiCodecsSpec extends AnyFlatSpec with Matchers with ApiCodecs {
   }
 
   it should "T2 decode an Aircraft, json => object" in {
-    val decodedAircraft = decode[Aircraft](aircraftJsonString)
+    val decodedAircraft = decode[AircraftDto](aircraftJsonString)
     info(decodedAircraft.toString)
 
     decodedAircraft shouldBe Right(aircraft)
@@ -31,11 +32,11 @@ class ApiCodecsSpec extends AnyFlatSpec with Matchers with ApiCodecs {
     val parsedAircraft: Either[ParsingFailure, Json] = parse(aircraftJsonString)
     info(parsedAircraft.getOrElse("").toString)
 
-    val decodedAircraft: Aircraft =
+    val decodedAircraft: AircraftDto =
       parsedAircraft
         .fold(
           _ => throw new RuntimeException("parse error"),
-          json => json.as[Aircraft]
+          json => json.as[AircraftDto]
         )
         .fold(
           _ => throw new RuntimeException("decode error"),
@@ -48,14 +49,14 @@ class ApiCodecsSpec extends AnyFlatSpec with Matchers with ApiCodecs {
 }
 
 object ApiCodecsSpec {
-  val aircraft = Aircraft("EC_LVL", 18, AirbusA332, 461)
+  val aircraft = AircraftDto("EC_LVL", 18, AircraftType.Airbus332, Some(461))
 
   val aircraftJsonString =
     """
       |{
       |  "registration" : "EC_LVL",
       |  "age" : 18,
-      |  "model" : "AirbusA332",
+      |  "model" : "Airbus332",
       |  "id" : 461
       |}
       |""".stripMargin

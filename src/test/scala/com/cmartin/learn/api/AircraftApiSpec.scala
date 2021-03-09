@@ -5,9 +5,10 @@ import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
 import com.cmartin.learn.api.CommonEndpoint.BASE_API
-import com.cmartin.learn.api.Model.AircraftDto
+import com.cmartin.learn.api.Model.{AircraftDto, AircraftType}
 import io.circe
 import org.json4s.native.JsonMethods
+import org.json4s.ext.EnumNameSerializer
 import org.json4s.{DefaultFormats, JValue}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -16,7 +17,7 @@ class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
 
   import AircraftApiSpec._
 
-  implicit val formats = DefaultFormats
+  implicit val formats = DefaultFormats + new EnumNameSerializer(AircraftType)
 
   behavior of "AircraftApi API"
 

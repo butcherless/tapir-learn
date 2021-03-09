@@ -1,18 +1,34 @@
 package com.cmartin.learn.domain
 
+import com.cmartin.learn.api
 import com.cmartin.learn.api.ApiCodecs.CurrencySelector
 import com.cmartin.learn.api.BuildInfo
+import com.cmartin.learn.api.Model.AircraftType._
 import com.cmartin.learn.api.Model.{AircraftDto, BuildInfoDto, TransferDto}
 import com.cmartin.learn.domain.Model._
 
 import java.time._
-import com.cmartin.learn.api
 
 trait ApiConverters {
 
+  implicit class AircraftTypeToModel(aType: AircraftType) {
+    def toModel: AircraftModel.Value = aType match {
+      case AirbusA320  => AircraftModel.AirbusA320
+      case AirbusA320N => AircraftModel.AirbusA320N
+      case Airbus332   => AircraftModel.AirbusA332
+      case AirbusA333  => AircraftModel.AirbusA333
+      case Boeing737NG => AircraftModel.Boeing737NG
+      case Boeing788   => AircraftModel.Boeing788
+      case Boeing789   => AircraftModel.Boeing789
+    }
+  }
+
   //TODO
-  def apiToModel(a: AircraftDto): Aircraft =
-    Aircraft(a.registration, a.age, AirbusA320, a.id.getOrElse(0))
+  def apiToModel(a: AircraftDto): Aircraft = {
+
+    Aircraft(a.registration, a.age, a.model.toModel, a.id.getOrElse(0))
+
+  }
 
   // ACTUATOR
 
@@ -26,17 +42,17 @@ trait ApiConverters {
     }
 
   // AIRCRAFT
-  implicit def stringToAircraftModel(s: String): AircraftModel =
-    s match {
-      case "AirbusA320"  => AirbusA320
-      case "AirbusA320N" => AirbusA320N
-      case "AirbusA332"  => AirbusA332
-      case "AirbusA333"  => AirbusA333
-      case "Boeing737NG" => Boeing737NG
-      case "Boeing788"   => Boeing788
-      case ""            => manageEmptyCase("model")
-      case _             => manageDefaultCase("model", s)
-    }
+//  implicit def stringToAircraftModel(s: String): AircraftModel =
+//    s match {
+//      case "AirbusA320"  => AirbusA320
+//      case "AirbusA320N" => AirbusA320N
+//      case "AirbusA332"  => AirbusA332
+//      case "AirbusA333"  => AirbusA333
+//      case "Boeing737NG" => Boeing737NG
+//      case "Boeing788"   => Boeing788
+//      case ""            => manageEmptyCase("model")
+//      case _             => manageDefaultCase("model", s)
+//    }
 
   //TODO
   def modelToApi(a: Aircraft): AircraftDto =
