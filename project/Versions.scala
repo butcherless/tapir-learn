@@ -10,6 +10,6 @@ object Versions {
   val logback = "1.2.3"
   val zio     = "1.0.5"
 
-  val scalatest = "3.2.6"
+  val scalatest = "3.2.7"
 
 }
