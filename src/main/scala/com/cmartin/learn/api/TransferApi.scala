@@ -7,10 +7,12 @@ import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.ApiConverters._
 import com.cmartin.learn.domain.Model.Transfer
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import zio.Task
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
+import scala.util.Failure
+import scala.util.Success
 
 trait TransferApi {
 
@@ -30,9 +32,25 @@ trait TransferApi {
       .toRoute(
         TransferEndpoint.getTransferEndpoint
       )(
-        businessLogic _ andThen
-          handleErrors
+        //businessLogic _ andThen
+        //  handleErrors
+        doControllerLogic
       )
+
+  //TODO refactor controller logic with ZIO
+  val runtime = zio.Runtime.default
+  type EndpointResponse[T] = Future[Either[ErrorInfo, T]]
+
+  // ZIO based controller logic
+  def doControllerLogic(transferId: TransferId): EndpointResponse[TransferDto] = {
+    val program = for {
+      transfer    <- doBusinessLogic(transferId)
+      transferDto <- toDto(transfer)
+    } yield transferDto
+    val x1 = program.mapError(handle2Error)
+
+    runtime.unsafeRunToFuture(x1.either)
+  }
 
   lazy val getFilteredRoute: Route =
     AkkaHttpServerInterpreter
@@ -82,6 +100,25 @@ trait TransferApi {
       )(_ => Future.successful(Right(Model.ShaOut)))
 
   // simulating business logic function
+  def doBusinessLogic(transferId: TransferId): Task[Transfer] =
+    transferId match {
+      case StatusCodes.BadRequest.intValue =>
+        Task.fail(BusinessException(StatusCodes.BadRequest.intValue, StatusCodes.BadRequest.defaultMessage))
+      case StatusCodes.NotFound.intValue =>
+        Task.fail(BusinessException(StatusCodes.NotFound.intValue, StatusCodes.NotFound.defaultMessage))
+      case StatusCodes.InternalServerError.intValue =>
+        Task.fail(
+          BusinessException(StatusCodes.InternalServerError.intValue, StatusCodes.InternalServerError.defaultMessage)
+        )
+      case StatusCodes.ServiceUnavailable.intValue =>
+        Task.fail(
+          BusinessException(StatusCodes.ServiceUnavailable.intValue, StatusCodes.ServiceUnavailable.defaultMessage)
+        )
+      case 666 => Task.fail(BusinessException(666, "Unknown error"))
+      case _   => Task.succeed(TransferEndpoint.transferModelExample)
+    }
+
+  // simulating business logic function
   def businessLogic(transferId: TransferId): Future[TransferDto] =
     transferId match {
       case StatusCodes.BadRequest.intValue =>
@@ -114,6 +151,40 @@ trait TransferApi {
         }
       case _ => Success(Left(Model.UnknownError("UNKNOWN_ERROR", "No error description")))
     }
+
+  def toDto(transfer: Transfer): Task[TransferDto] =
+    Task.succeed(
+      TransferDto(
+        transfer.sender,
+        transfer.receiver,
+        transfer.amount,
+        transfer.currency.toString,
+        transfer.date,
+        transfer.desc
+      )
+    )
+
+  def handle2Error(error: Throwable): ErrorInfo = {
+    error match {
+      case BusinessException(code, message) =>
+        code match {
+          case StatusCodes.BadRequest.intValue =>
+            BadRequestError("MISSING_INFO", message)
+
+          case StatusCodes.NotFound.intValue =>
+            NotFoundError("ENTITY_NOT_FOUND", message)
+
+          case StatusCodes.InternalServerError.intValue =>
+            ServerError("SERVER_ERROR", message)
+
+          case StatusCodes.ServiceUnavailable.intValue =>
+            ServiceUnavailableError("SERVICE_UNAVAILABLE_ERROR", message)
+
+          case _ => Model.UnknownError("UNKNOWN_ERROR", message)
+        }
+      case e @ _ => UnknownError("UNKNOWN_ERROR", e.getMessage())
+    }
+  }
 
   case class BusinessException(code: Int, message: String = "Information not available")
       extends RuntimeException(message)

@@ -1,6 +1,8 @@
 package com.cmartin.learn.api
 
 import com.cmartin.learn.api.Model._
+import com.cmartin.learn.domain
+import com.cmartin.learn.domain.Model.EUR
 import io.circe.Json
 import io.circe.generic.auto._
 import sttp.model.StatusCode
@@ -9,7 +11,9 @@ import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 trait TransferEndpoint extends ApiCodecs {
 
@@ -143,6 +147,16 @@ object TransferEndpoint extends TransferEndpoint {
       transferDate,
       "Compra smartphone"
     )
+
+val transferModelExample = 
+domain.Model.Transfer(
+  "ES11 0182 1111 2222 3333 4444",
+      "ES99 2038 9999 8888 7777 6666",
+      100.00,
+      EUR,
+      transferDate,
+      "Viaje a Tenerife"
+)
 
   val transferListExample: List[TransferDto] = List(transferExample, transfer2Example)
 
