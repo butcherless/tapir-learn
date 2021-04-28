@@ -1,17 +1,17 @@
 import Dependencies._
 import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
 
-
 ThisBuild / scalaVersion := "2.13.5"
 ThisBuild / organization := "com.cmartin.learn"
 
 lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
   "-deprecation", // Emit warning and location for usages of deprecated APIs.
-  "-encoding", "utf-8", // Specify character encoding used by source files.
-  "-explaintypes", // Explain type errors in more detail.
-  "-explaintypes", // Explain type errors in more detail.
-  "-unchecked", // Enable additional warnings where generated code depends on assumptions.
-  "-feature", // Emit warning and location for usages of features that should be imported explicitly.
+  "-encoding",
+  "utf-8",                 // Specify character encoding used by source files.
+  "-explaintypes",         // Explain type errors in more detail.
+  "-explaintypes",         // Explain type errors in more detail.
+  "-unchecked",            // Enable additional warnings where generated code depends on assumptions.
+  "-feature",              // Emit warning and location for usages of features that should be imported explicitly.
   "-language:higherKinds", // Allow higher-kinded types
   "-language:implicitConversions",
   "-language:postfixOps"
@@ -37,8 +37,9 @@ lazy val tapirLearn = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
-
-addCommandAlias("xcc", "clean;coverage;test;coverageReport")
+addCommandAlias("xcoverage", "clean;coverage;test;coverageReport")
 addCommandAlias("xreload", "clean;reload")
 addCommandAlias("xstart", "clean;reStart")
+addCommandAlias("xstop", "reStop;clean")
+addCommandAlias("xupdate", "clean;update")
 addCommandAlias("xdup", "dependencyUpdates")
