@@ -10,8 +10,10 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"         % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml"   % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-json-json4s"          % Versions.tapir,
     "io.circe"                    %% "circe-generic-extras"       % Versions.circe,
     "ch.qos.logback"               % "logback-classic"            % Versions.logback,
+    "com.github.mlangc"           %% "slf4zio"                    % Versions.slf4zio,
     "dev.zio"                     %% "zio"                        % Versions.zio,
     "org.json4s"                  %% "json4s-core"                % Versions.json4s,
     "org.json4s"                  %% "json4s-ext"                 % Versions.json4s,
@@ -26,8 +28,8 @@ object Dependencies {
     "dev.zio"           %% "zio-test"          % Versions.zio       % "test",
     "dev.zio"           %% "zio-test-sbt"      % Versions.zio       % "test",
     // S T T P
-    "com.softwaremill.sttp.client" %% "core"                          % Versions.sttp % "it, test",
-    "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % Versions.sttp % "it, test",
-    "com.softwaremill.sttp.client" %% "circe"                         % Versions.sttp % "it, test"
+    "com.softwaremill.sttp.client3" %% "core"                          % Versions.sttp % "it, test",
+    "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % Versions.sttp % "it, test",
+    "com.softwaremill.sttp.client3" %% "circe"                         % Versions.sttp % "it, test"
   )
 }

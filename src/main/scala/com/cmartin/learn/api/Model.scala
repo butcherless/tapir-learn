@@ -1,7 +1,9 @@
 package com.cmartin.learn.api
 
-import java.time.{Instant, LocalDateTime}
 import sttp.tapir._
+
+import java.time.Instant
+import java.time.LocalDateTime
 
 object Model {
 

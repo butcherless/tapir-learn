@@ -2,9 +2,14 @@ package com.cmartin.learn.api
 
 import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.Model._
-import io.circe.{Decoder, Encoder, HCursor, Json}
+import io.circe.Decoder
+import io.circe.Encoder
+import io.circe.HCursor
+import io.circe.Json
 
 trait ApiCodecs {
+
+  implicit val formats = org.json4s.DefaultFormats
 
   implicit lazy val aircraftEncoder: Encoder[Aircraft] = new Encoder[Aircraft] {
     override def apply(a: Aircraft): Json = {
@@ -27,7 +32,6 @@ trait ApiCodecs {
       }
   }
 
-
   def genericEncoder[T](): Encoder[T] =
     new Encoder[T] {
       override def apply(a: T): Json =
@@ -41,7 +45,6 @@ trait ApiCodecs {
   // Object => JSON
   implicit lazy val currencyEncoder: Encoder[Currency] =
     genericEncoder[Currency]()
-
 
   //TODO refactor to generic select[T]
   def select(o: Currency): Currency =

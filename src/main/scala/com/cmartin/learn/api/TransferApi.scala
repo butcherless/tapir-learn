@@ -103,9 +103,13 @@ trait TransferApi {
   def doBusinessLogic(transferId: TransferId): Task[Transfer] =
     transferId match {
       case StatusCodes.BadRequest.intValue =>
-        Task.fail(BusinessException(StatusCodes.BadRequest.intValue, StatusCodes.BadRequest.defaultMessage))
+        Task.fail(
+          BusinessException(StatusCodes.BadRequest.intValue, StatusCodes.BadRequest.defaultMessage)
+        )
       case StatusCodes.NotFound.intValue =>
-        Task.fail(BusinessException(StatusCodes.NotFound.intValue, StatusCodes.NotFound.defaultMessage))
+        Task.fail(
+          BusinessException(StatusCodes.NotFound.intValue, StatusCodes.NotFound.defaultMessage)
+        )
       case StatusCodes.InternalServerError.intValue =>
         Task.fail(
           BusinessException(StatusCodes.InternalServerError.intValue, StatusCodes.InternalServerError.defaultMessage)
@@ -114,8 +118,10 @@ trait TransferApi {
         Task.fail(
           BusinessException(StatusCodes.ServiceUnavailable.intValue, StatusCodes.ServiceUnavailable.defaultMessage)
         )
+
       case 666 => Task.fail(BusinessException(666, "Unknown error"))
-      case _   => Task.succeed(TransferEndpoint.transferModelExample)
+
+      case _ => Task.succeed(TransferEndpoint.transferModelExample)
     }
 
   // simulating business logic function

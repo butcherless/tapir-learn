@@ -1,16 +1,19 @@
 package com.cmartin.learn.service
 
 import com.cmartin.learn.domain.ProcessorModel
-import com.cmartin.learn.domain.ProcessorModel.GenericDerivation.{eventDecoder, eventEncoder}
+import com.cmartin.learn.domain.ProcessorModel.GenericDerivation.eventDecoder
+import com.cmartin.learn.domain.ProcessorModel.GenericDerivation.eventEncoder
 import com.cmartin.learn.domain.ProcessorModel._
 import com.cmartin.learn.service.messaging.MyMessaging
 import io.circe
 import io.circe.Json
-import io.circe.parser.{decode, parse}
+import io.circe.parser.decode
+import io.circe.parser.parse
 import io.circe.syntax._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import zio.{Task, ZIO}
+import zio.Task
+import zio.ZIO
 
 class ProcessorsSpec extends AnyFlatSpec with Matchers {
 

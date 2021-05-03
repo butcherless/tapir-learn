@@ -4,9 +4,11 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import com.cmartin.learn.configuration.ApiConfiguration
 
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
+import scala.util.Failure
+import scala.util.Success
 
 /*
   https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html

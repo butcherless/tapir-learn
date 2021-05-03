@@ -7,13 +7,13 @@ import io.circe
 import io.circe.generic.auto._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import sttp.client.Response
-import sttp.client.ResponseError
-import sttp.client._
-import sttp.client.asynchttpclient.zio.AsyncHttpClientZioBackend
-import sttp.client.basicRequest
-import sttp.client.circe._
-import sttp.client.circe.asJson
+import sttp.client3.Response
+import sttp.client3.ResponseError
+import sttp.client3._
+import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
+import sttp.client3.basicRequest
+import sttp.client3.circe._
+import sttp.client3.circe.asJson
 import sttp.model.Method
 import sttp.model.StatusCode
 
@@ -37,7 +37,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[BuildInfoDto])
 
-    val response: Response[Either[ResponseError[circe.Error], BuildInfoDto]] =
+    val response =
       runtime
         .unsafeRun(
           backend.send(request)
@@ -71,7 +71,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
     response.body.isLeft shouldBe true
   }
 
-  it should "respond Not Found for a missing transfer" in {
+  it should "WIP respond Not Found for a missing transfer" in {
     val request =
       basicRequest
         .get(uri"http://localhost:8080/api/v1.0/transfers/404")
@@ -158,6 +158,11 @@ object TransferApiClientSpec {
       req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "400"
     }
     .thenRespond(Response("BAD_REQUEST", StatusCode.BadRequest))
+    //
+    .whenRequestMatches { req =>
+      req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "404"
+    }
+    .thenRespond(Response("NOT_FOUND", StatusCode.NotFound))
     //
     .whenRequestMatches { req =>
       req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "500"

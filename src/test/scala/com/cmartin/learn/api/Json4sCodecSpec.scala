@@ -1,10 +1,13 @@
 package com.cmartin.learn.api
 
 import org.json4s.JsonAST.JValue
+import org.json4s._
 import org.json4s.native.JsonMethods
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import sttp.tapir._
 import sttp.tapir.generic.auto._
+import sttp.tapir.json.json4s._
 
 import java.util.Date
 
@@ -12,8 +15,8 @@ class Json4sCodecSpec extends AnyFlatSpec with Matchers {
 
   behavior of "Json4s codec"
 
-  import sttp.tapir._
-  import sttp.tapir.json.json4s._
+  implicit val serialization: Serialization = org.json4s.native.Serialization
+  implicit val formats: Formats             = DefaultFormats
 
   it should "json4s implementation" in {
 

@@ -1,6 +1,7 @@
 package com.cmartin.learn.domain
 
-import com.cmartin.learn.api.Model.{AircraftDto, AircraftType}
+import com.cmartin.learn.api.Model.AircraftDto
+import com.cmartin.learn.api.Model.AircraftType
 import com.cmartin.learn.domain.Model.AircraftModel._
 import com.cmartin.learn.domain.Model._
 import org.scalatest.flatspec.AnyFlatSpec

@@ -5,17 +5,22 @@ import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
 import com.cmartin.learn.api.CommonEndpoint.BASE_API
-import com.cmartin.learn.api.Model.{AircraftDto, AircraftType}
+import com.cmartin.learn.api.Model.AircraftDto
+import com.cmartin.learn.api.Model.AircraftType
 import io.circe
-import org.json4s.native.JsonMethods
+import org.json4s.DefaultFormats
+import org.json4s.JValue
+import org.json4s._
 import org.json4s.ext.EnumNameSerializer
-import org.json4s.{DefaultFormats, JValue}
+import org.json4s.native.JsonMethods
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-
+import sttp.tapir._
+import sttp.tapir.json.json4s._
 class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest {
 
   import AircraftApiSpec._
+  implicit val serialization: Serialization = org.json4s.native.Serialization
 
   implicit val formats = DefaultFormats + new EnumNameSerializer(AircraftType)
 

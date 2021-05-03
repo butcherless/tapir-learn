@@ -5,8 +5,8 @@ import com.cmartin.learn.domain
 import com.cmartin.learn.domain.Model.EUR
 import io.circe.Json
 import io.circe.generic.auto._
+import org.json4s.DefaultFormats
 import sttp.model.StatusCode
-import sttp.tapir.EndpointOutput.StatusMapping
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
@@ -105,12 +105,11 @@ trait TransferEndpoint extends ApiCodecs {
     query[Option[Long]]("offset").and(query[Option[Int]]("limit"))
 
    */
-  val breMapping: StatusMapping[BadRequestError] = statusMapping(StatusCode.BadRequest, jsonBody[BadRequestError])
-  val nfeMapping: StatusMapping[NotFoundError]   = statusMapping(StatusCode.NotFound, jsonBody[NotFoundError])
-  val iseMapping: StatusMapping[ServerError]     = statusMapping(StatusCode.InternalServerError, jsonBody[ServerError])
-  val sueMapping: StatusMapping[ServiceUnavailableError] =
-    statusMapping(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
-  val deMapping = statusDefaultMapping(jsonBody[UnknownError])
+  val breMapping = oneOfMappingFromMatchType(StatusCode.BadRequest, jsonBody[BadRequestError])
+  val nfeMapping = oneOfMappingFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
+  val iseMapping = oneOfMappingFromMatchType(StatusCode.InternalServerError, jsonBody[ServerError])
+  val sueMapping = oneOfMappingFromMatchType(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
+  val deMapping  = oneOfDefaultMapping(jsonBody[UnknownError])
 
 }
 
@@ -148,15 +147,15 @@ object TransferEndpoint extends TransferEndpoint {
       "Compra smartphone"
     )
 
-val transferModelExample = 
-domain.Model.Transfer(
-  "ES11 0182 1111 2222 3333 4444",
+  val transferModelExample =
+    domain.Model.Transfer(
+      "ES11 0182 1111 2222 3333 4444",
       "ES99 2038 9999 8888 7777 6666",
       100.00,
       EUR,
       transferDate,
       "Viaje a Tenerife"
-)
+    )
 
   val transferListExample: List[TransferDto] = List(transferExample, transfer2Example)
 

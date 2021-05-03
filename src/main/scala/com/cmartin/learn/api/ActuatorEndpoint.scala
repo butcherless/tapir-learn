@@ -4,9 +4,11 @@ import com.cmartin.learn.api.Model.BuildInfoDto
 import com.cmartin.learn.domain.ApiConverters
 import io.circe.generic.auto._
 import sttp.model.StatusCode
+import sttp.tapir.Endpoint
+import sttp.tapir._
+import sttp.tapir.endpoint
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
-import sttp.tapir.{Endpoint, endpoint, _}
 
 trait ActuatorEndpoint extends ApiCodecs {
 

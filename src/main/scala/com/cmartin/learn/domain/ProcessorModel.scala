@@ -1,10 +1,11 @@
 package com.cmartin.learn.domain
 
 import cats.syntax.functor._
+import io.circe.Decoder
+import io.circe.Encoder
 import io.circe.generic.extras.Configuration
 import io.circe.generic.extras.auto._
 import io.circe.syntax._
-import io.circe.{Decoder, Encoder}
 import zio.Task
 
 object ProcessorModel {

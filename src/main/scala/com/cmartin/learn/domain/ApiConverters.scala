@@ -3,8 +3,10 @@ package com.cmartin.learn.domain
 import com.cmartin.learn.api
 import com.cmartin.learn.api.ApiCodecs.CurrencySelector
 import com.cmartin.learn.api.BuildInfo
+import com.cmartin.learn.api.Model.AircraftDto
 import com.cmartin.learn.api.Model.AircraftType._
-import com.cmartin.learn.api.Model.{AircraftDto, BuildInfoDto, TransferDto}
+import com.cmartin.learn.api.Model.BuildInfoDto
+import com.cmartin.learn.api.Model.TransferDto
 import com.cmartin.learn.domain.Model._
 
 import java.time._

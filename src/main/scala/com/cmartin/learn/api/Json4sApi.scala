@@ -3,16 +3,33 @@ package com.cmartin.learn.api
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.Model.AircraftDto
+import com.cmartin.learn.api.Model.AircraftType
+import com.github.mlangc.slf4zio.api.LoggingSupport
 import org.json4s.JValue
+import org.json4s._
+import org.json4s.ext.EnumNameSerializer
+import org.json4s.native.JsonMethods
+import org.json4s.native.Serialization
 import sttp.model.StatusCode
+import sttp.tapir.Codec.JsonCodec
+import sttp.tapir.DecodeResult.Error
+import sttp.tapir.DecodeResult.Value
+import sttp.tapir.SchemaType.SCoproduct
+import sttp.tapir.SchemaType.SObjectInfo
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.json4s._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
 import scala.concurrent.Future
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
-trait Json4sApi {
+trait Json4sApi extends LoggingSupport {
+
+  implicit val serialization: Serialization = org.json4s.native.Serialization
+  implicit val formats: Formats             = DefaultFormats + new EnumNameSerializer(AircraftType)
 
   lazy val routes: Route =
     getRoute ~
@@ -87,7 +104,7 @@ trait Json4sApi {
       .toRoute(
         postEntityEndpoint
       ) { entity =>
-        log.debug(s"postEntityRoute.request: $entity")
+        //TODO refactor zio.Task & slf4zio: log.debug(s"postEntityRoute.request: $entity")
         Future.successful(Right(AircraftEndpoint.apiAircraftNFZExample))
       }
 
