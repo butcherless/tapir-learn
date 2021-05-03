@@ -2,9 +2,9 @@ package com.cmartin.learn
 
 import com.cmartin.learn.api.Model.ApiBuildInfo
 import io.circe.generic.auto._
-import sttp.client._
-import sttp.client.asynchttpclient.zio._
-import sttp.client.circe._
+import sttp.client3._
+import sttp.client3.asynchttpclient.zio._
+import sttp.client3.circe._
 import zio._
 import zio.console.Console
 import zio.duration._
@@ -23,7 +23,7 @@ object GetAndParseJsonZioCirce extends App {
         .response(asJson[ApiBuildInfo])
 
     val program: ZIO[Console with SttpClient, Throwable, Unit] = for {
-      response <- SttpClient.send(request)
+      response <- send(request)
       _        <- console.putStrLn(s"response code: ${response.code}")
       _        <- console.putStrLn(response.body.toString)
     } yield ()

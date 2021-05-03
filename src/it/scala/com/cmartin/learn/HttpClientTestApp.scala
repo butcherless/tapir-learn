@@ -1,7 +1,9 @@
 package com.cmartin.learn
 
-import sttp.client._
-import sttp.client.asynchttpclient.zio.AsyncHttpClientZioBackend
+import sttp.capabilities.WebSockets
+import sttp.capabilities.zio.ZioStreams
+import sttp.client3._
+import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
 import sttp.model.StatusCode
 import zio._
 import zio.clock.Clock
@@ -16,7 +18,7 @@ object HttpClientTestApp extends App {
   val loopCount      = 500
 
   // http client backend
-  implicit val backend: SttpBackend[Task, Nothing, Nothing] =
+  implicit val backend: SttpBackend[Task, ZioStreams with WebSockets] =
     unsafeRun(AsyncHttpClientZioBackend())
   val urls: Seq[String] = List.fill(fiberCount)(healthEndpoint)
   val program: ZIO[Clock with zio.ZEnv, Throwable, Unit] = for {

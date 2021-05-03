@@ -37,6 +37,15 @@ lazy val tapirLearn = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
+lazy val cls = taskKey[Unit]("Prints a separator")
+cls := {
+  val brs   = "\n".repeat(4)
+  val chars = "*".repeat(37)
+  println(s"$brs$chars")
+  println("* B U I L D   B E G I N S   H E R E *")
+  println(s"$chars$brs ")
+}
+
 addCommandAlias("xcoverage", "clean;coverage;test;coverageReport")
 addCommandAlias("xreload", "clean;reload")
 addCommandAlias("xstart", "clean;reStart")
