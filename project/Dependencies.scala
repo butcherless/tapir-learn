@@ -11,6 +11,7 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml"   % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-json-json4s"          % Versions.tapir,
+    "com.typesafe.akka"           %% "akka-slf4j"                 % Versions.akka,
     "io.circe"                    %% "circe-generic-extras"       % Versions.circe,
     "ch.qos.logback"               % "logback-classic"            % Versions.logback,
     "com.github.mlangc"           %% "slf4zio"                    % Versions.slf4zio,
@@ -24,7 +25,6 @@ object Dependencies {
     "org.scalatest"     %% "scalatest"         % Versions.scalatest % "it, test",
     "com.typesafe.akka" %% "akka-http-testkit" % Versions.akkaHttp  % Test,
     "com.typesafe.akka" %% "akka-testkit"      % Versions.akka      % Test,
-    "com.typesafe.akka" %% "akka-slf4j"        % Versions.akka      % Test,
     "dev.zio"           %% "zio-test"          % Versions.zio       % "test",
     "dev.zio"           %% "zio-test-sbt"      % Versions.zio       % "test",
     // S T T P
