@@ -11,6 +11,6 @@ object Versions {
   val slf4zio = "1.0.0"
   val zio     = "1.0.7"
 
-  val scalatest = "3.2.8"
+  val scalatest = "3.2.9"
 
 }
