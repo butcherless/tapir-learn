@@ -22,7 +22,7 @@ object GetAndParseJsonZioCirce extends App {
         get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[ApiBuildInfo])
 
-    val program: ZIO[Console with SttpClient, Throwable, Unit] = for {
+    val program = for {
       response <- send(request)
       _        <- console.putStrLn(s"response code: ${response.code}")
       _        <- console.putStrLn(response.body.toString)
@@ -33,13 +33,13 @@ object GetAndParseJsonZioCirce extends App {
         .exponential(50.milliseconds) *>
         Schedule
           .recurs(5)
-          .tapOutput(i => console.putStrLn(s"$i"))
+    //.tapOutput(i => console.putStrLn(s"$i")) , use logger
 
     program
       .retry(schedulePolicy)
       .provideCustomLayer(AsyncHttpClientZioBackend.layer())
       .foldM( // error management
-        e => console.putStrLn(e.getMessage) *> UIO(ExitCode.failure),
+        e => /*console.putStrLn(e.getMessage) *>*/ UIO(ExitCode.failure),
         _ => UIO(ExitCode.success)
       )
   }
