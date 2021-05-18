@@ -1,7 +1,7 @@
 import Dependencies._
 import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
 
-ThisBuild / scalaVersion := "2.13.6"
+ThisBuild / scalaVersion := "2.13.5"
 ThisBuild / organization := "com.cmartin.learn"
 
 lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
