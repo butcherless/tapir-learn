@@ -3,8 +3,8 @@ object Versions {
   val akkaHttp = "10.2.4"
   val akka     = "2.6.14"
   val circe    = "0.13.0"
-  val sttp     = "3.3.3"
-  val tapir    = "0.18.0-M10"
+  val sttp     = "3.3.4"
+  val tapir    = "0.18.0-M11"
 
   val json4s  = "3.6.11"
   val logback = "1.2.3"
