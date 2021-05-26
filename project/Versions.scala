@@ -2,7 +2,7 @@ object Versions {
 
   val akkaHttp = "10.2.4"
   val akka     = "2.6.14"
-  val circe    = "0.13.0"
+  val circe    = "0.14.0"
   val sttp     = "3.3.4"
   val tapir    = "0.18.0-M11"
 
