@@ -16,7 +16,6 @@ object Dependencies {
     "ch.qos.logback"               % "logback-classic"            % Versions.logback,
     "com.github.mlangc"           %% "slf4zio"                    % Versions.slf4zio,
     "dev.zio"                     %% "zio"                        % Versions.zio,
-    "org.json4s"                  %% "json4s-core"                % Versions.json4s,
     "org.json4s"                  %% "json4s-ext"                 % Versions.json4s,
     "org.json4s"                  %% "json4s-native"              % Versions.json4s,
     /*
