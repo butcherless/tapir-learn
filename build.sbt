@@ -20,8 +20,7 @@ lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
 lazy val commonSettings = Seq(
   libraryDependencies ++= mainAndTest,
   scalacOptions ++= basicScalacOptions,
-  test in assembly := {},
-  assemblyJarName in assembly := "tapir-learn-webapp.jar"
+  assemblyJarName := "tapir-learn-webapp.jar"
 )
 
 lazy val tapirLearn = (project in file("."))
@@ -45,6 +44,8 @@ cls := {
   println("* B U I L D   B E G I N S   H E R E *")
   println(s"$chars$brs ")
 }
+
+Global / onChangedBuildSource := ReloadOnSourceChanges
 
 addCommandAlias("xcoverage", "clean;coverage;test;coverageReport")
 addCommandAlias("xreload", "clean;reload")
