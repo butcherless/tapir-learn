@@ -33,7 +33,7 @@ jobs:
       - run:
           name: test, coverage
           command: |
-            sbt --client "coverage;test;coverageReport"
+            sbt --client xcoverage
 
       - run:
           name: assembly
