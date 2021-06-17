@@ -31,11 +31,6 @@ jobs:
             sbt --client test:compile
 
       - run:
-          name: integration test compile
-          command: |
-            sbt --client it:compile
-
-      - run:
           name: test, coverage
           command: |
             sbt --client "coverage;test;coverageReport"
