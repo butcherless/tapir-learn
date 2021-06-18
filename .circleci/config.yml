@@ -23,22 +23,17 @@ jobs:
       - run:
           name: compile
           command: |
-            sbt --client "clean;compile"
-
-      - run:
-          name: test compile
-          command: |
-            sbt --client test:compile
-
-      - run:
-          name: test, coverage
-          command: |
-            sbt --client xcoverage
+            sbt "clean;test"
 
       - run:
           name: assembly
           command: |
-            sbt --client assembly
+            sbt assembly
+
+      - run:
+          name: test, coverage
+          command: |
+            sbt xcoverage
 
       - run:
           name: coverage report
