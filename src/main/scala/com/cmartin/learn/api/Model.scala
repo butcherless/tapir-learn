@@ -20,7 +20,7 @@ object Model {
 
     // needs to be a def or lazy val so that the enumeration values are available!
     implicit def schemaForEnum: Schema[e.Value] =
-      Schema.string.validate(Validator.enum(e.values.toList, v => Option(v)))
+      Schema.string.validate(Validator.enumeration(e.values.toList, v => Option(v)))
   }
 
   object AircraftType extends Enumeration with EnumHelper {
