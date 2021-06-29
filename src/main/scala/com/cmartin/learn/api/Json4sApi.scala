@@ -15,7 +15,7 @@ import sttp.tapir.Codec.JsonCodec
 import sttp.tapir.DecodeResult.Error
 import sttp.tapir.DecodeResult.Value
 import sttp.tapir.SchemaType.SCoproduct
-import sttp.tapir.SchemaType.SObjectInfo
+import sttp.tapir.Schema.SName
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.json4s._
@@ -47,7 +47,7 @@ trait Json4sApi extends LoggingSupport {
       .errorOut(statusCode)
 
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         getAircraftEndpoint
       )(_ => Future.successful(Right(AircraftEndpoint.apiAircraftMIGExample)))
@@ -62,7 +62,7 @@ trait Json4sApi extends LoggingSupport {
       .errorOut(statusCode)
 
   lazy val getJsonRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         getJsonEndpoint
       )(_ => Future.successful(Right(AircraftEndpoint.jValueAircraftExample)))
@@ -82,7 +82,7 @@ trait Json4sApi extends LoggingSupport {
   }
 
   lazy val postJsonRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         postJsonEndpoint
       )(_ => Future.successful(Right(AircraftEndpoint.jValueAircraftExample)))
@@ -100,7 +100,7 @@ trait Json4sApi extends LoggingSupport {
       .errorOut(statusCode)
 
   lazy val postEntityRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         postEntityEndpoint
       ) { entity =>

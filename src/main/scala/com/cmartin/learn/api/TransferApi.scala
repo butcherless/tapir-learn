@@ -28,7 +28,7 @@ trait TransferApi {
 
   // tapir endpoint description to akka routes via .toRoute function
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         TransferEndpoint.getTransferEndpoint
       )(
@@ -53,21 +53,21 @@ trait TransferApi {
   }
 
   lazy val getFilteredRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         TransferEndpoint.getFilteredTransferEndpoint
       )(_ => Future.successful(Right(TransferEndpoint.transferListExample)))
 
   //
   lazy val getWithHeaderRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         TransferEndpoint.getWithHeaderTransferEndpoint
       )(_ => Future.successful(Right(())))
 
   // dummy business process
   lazy val postRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         TransferEndpoint.postTransferEndpoint
       ) { inDto =>
@@ -78,23 +78,23 @@ trait TransferApi {
       }
 
   lazy val postJsonRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         TransferEndpoint.postJsonEndpoint
       )(inDto => Future.successful(Right(inDto)))
 
   lazy val getACEntityRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         TransferEndpoint.getACEntityEndpoint
       )(_ => Future.successful(Right(TransferEndpoint.acEntityExample)))
 
   lazy val getComOutputRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(TransferEndpoint.getComOutputEndpoint)(_ => Future.successful(Right(Model.ComOut)))
 
   lazy val getShaOutputRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         TransferEndpoint.getShaOutputEndpoint
       )(_ => Future.successful(Right(Model.ShaOut)))

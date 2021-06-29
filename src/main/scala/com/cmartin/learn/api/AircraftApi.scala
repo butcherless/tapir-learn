@@ -31,7 +31,7 @@ trait AircraftApi {
       .errorOut(statusCode)
 
   lazy val getTypeRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         getAircraftTypeEndpoint
       )(_ => Future.successful(Right(AircraftType.values.toSeq)))
@@ -66,13 +66,13 @@ trait AircraftApi {
       .errorOut(statusCode)
 
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         getAircraftEndpoint
       )(_ => Future.successful(Right(apiAircraftMIGExample)))
 
   lazy val getSeqRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         getAircraftSeqEndpoint
       )(_ =>
@@ -84,7 +84,7 @@ trait AircraftApi {
       )
 
   lazy val postRoute: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(
         postAircraftEndpoint
       )(aircraft => Future.successful(Right(aircraft.copy(id = Some(1234L)))))

@@ -15,7 +15,7 @@ trait SwaggerApi {
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =
-    OpenAPIDocsInterpreter
+    OpenAPIDocsInterpreter()
       .toOpenAPI(endpoints, info)
       .toYaml
 

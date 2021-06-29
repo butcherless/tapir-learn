@@ -10,7 +10,7 @@ trait ActuatorApi {
 
   // tapir endpoint description to akka routes via .toRoute function
   lazy val route: Route =
-    AkkaHttpServerInterpreter
+    AkkaHttpServerInterpreter()
       .toRoute(ActuatorEndpoint.healthEndpoint)(_ =>
         Future.successful {
           Right(ApiConverters.modelToApi())
