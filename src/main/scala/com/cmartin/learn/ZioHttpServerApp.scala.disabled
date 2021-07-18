@@ -1,0 +1,15 @@
+package com.cmartin.learn
+
+import zio._
+import zhttp.http
+import zhttp.service.Server
+import com.cmartin.learn.apizio.ActuatorApi
+/*
+  https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html
+ */
+object ZioHttpServerApp extends App {
+
+  override def run(args: List[String]): URIO[ZEnv, ExitCode] = {
+    Server.start(8081, ActuatorApi.route).exitCode
+  }
+}
