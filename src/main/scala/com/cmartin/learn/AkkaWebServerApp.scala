@@ -13,7 +13,7 @@ import scala.util.Success
 /*
   https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html
  */
-object AkkaWebServerApp extends App with ApiConfiguration {
+class AkkaWebServerApp extends App with ApiConfiguration {
 
   // A K K A  A C T O R  S Y S T E M
   implicit lazy val system: ActorSystem           = ActorSystem("WebActorSystem")

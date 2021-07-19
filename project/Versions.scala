@@ -5,8 +5,8 @@ object Versions {
   val json4s   = "4.0.0"
   val logback  = "1.2.3"
   val slf4zio  = "1.0.0"
-  val sttp     = "3.3.11"
-  val tapir    = "0.19.0-M1"
+  val sttp     = "3.3.7"
+  val tapir    = "0.19.0-M2"
   val zio      = "1.0.9"
 
   val scalatest = "3.2.9"
