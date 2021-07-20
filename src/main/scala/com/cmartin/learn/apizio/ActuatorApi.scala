@@ -25,7 +25,7 @@ trait ActuatorApi {
     )
   }
 
-  lazy val swaggerUiRoute =
+  lazy val swaggerVersionRoute =
     ZioHttpInterpreter()
       .toHttp(ActuatorEndpoint.swaggerVersionEndpoint)(_ => converter(getSwaggerVersion())
       //.mapError(_ => Left(StatusCode.InternalServerError))
@@ -47,3 +47,5 @@ object ActuatorApi extends ActuatorApi {
     }
 
 }
+
+// http://localhost:8080/api/v1.0/docs/index.html?url=/api/v1.0/docs/docs.yaml

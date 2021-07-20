@@ -1,6 +1,7 @@
 package com.cmartin.learn
 
 import akka.http.javadsl.Http
+import com.cmartin.learn.api.ZioSwaggerApi
 import com.cmartin.learn.apizio.ActuatorApi
 import zhttp.http
 import zhttp.http._
@@ -12,7 +13,10 @@ import zio._
  */
 object ZioHttpServerApp extends App {
 
-  val routes = ActuatorApi.healthRoute <> ActuatorApi.swaggerUiRoute
+  val routes =
+    ActuatorApi.healthRoute <>
+      ActuatorApi.swaggerVersionRoute <>
+      ZioSwaggerApi.route
 
   override def run(args: List[String]): URIO[ZEnv, ExitCode] = {
 

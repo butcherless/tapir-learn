@@ -1,17 +1,16 @@
 package com.cmartin.learn.api
 
-import akka.http.scaladsl.server.Route
 import com.cmartin.learn.api.CommonEndpoint.BASE_API
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Info
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.swagger.akkahttp.SwaggerAkka
+import sttp.tapir.swagger.ziohttp.SwaggerZioHttp
 
-trait SwaggerApi {
+trait ZioSwaggerApi {
 
-  lazy val route: Route = {
-    new SwaggerAkka(docsAsYaml, s"$BASE_API/docs").routes
-  }
+  lazy val route =
+    new SwaggerZioHttp(docsAsYaml).route
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =
@@ -43,4 +42,4 @@ trait SwaggerApi {
   )
 }
 
-object SwaggerApi extends SwaggerApi
+object ZioSwaggerApi extends ZioSwaggerApi
