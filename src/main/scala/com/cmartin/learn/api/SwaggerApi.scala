@@ -23,7 +23,6 @@ trait SwaggerApi {
 
   private lazy val endpoints = List(
     ActuatorEndpoint.healthEndpoint,
-    ActuatorEndpoint.swaggerVersionEndpoint,
     TransferEndpoint.getTransferEndpoint,
     TransferEndpoint.getFilteredTransferEndpoint,
     TransferEndpoint.getWithHeaderTransferEndpoint,

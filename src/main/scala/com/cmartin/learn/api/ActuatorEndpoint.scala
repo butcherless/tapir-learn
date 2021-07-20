@@ -1,7 +1,6 @@
 package com.cmartin.learn.api
 
 import com.cmartin.learn.api.Model.BuildInfoDto
-import com.cmartin.learn.apizio.ActuatorApi.Artifact
 import com.cmartin.learn.domain.ApiConverters
 import io.circe.generic.auto._
 import sttp.model.StatusCode
@@ -25,17 +24,6 @@ trait ActuatorEndpoint extends ApiCodecs {
       .description("Health Check Endpoint")
       .out(jsonBody[HealthInfo].example(ApiConverters.modelToApi()))
       .errorOut(statusCode)
-
-  //TODO remove after ApiZio POC
-  lazy val swaggerVersionEndpoint: Endpoint[Unit, StatusCode, Artifact, Any] =
-    endpoint.get
-      .in(CommonEndpoint.baseEndpointInput / "swaggerVersion")
-      .name("swagger-version")
-      .description("Retrieve the Swagger UI version installed inServer")
-      .out(jsonBody[Artifact].example(artifact))
-      .errorOut(statusCode)
 }
 
-object ActuatorEndpoint extends ActuatorEndpoint {
-  val artifact = Artifact("org.webjars", "swagger-ui", "3.51.1")
-}
+object ActuatorEndpoint extends ActuatorEndpoint

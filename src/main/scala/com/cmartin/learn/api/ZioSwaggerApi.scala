@@ -4,7 +4,6 @@ import com.cmartin.learn.api.CommonEndpoint.BASE_API
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Info
 import sttp.tapir.openapi.circe.yaml._
-import sttp.tapir.swagger.akkahttp.SwaggerAkka
 import sttp.tapir.swagger.ziohttp.SwaggerZioHttp
 
 trait ZioSwaggerApi {
@@ -22,7 +21,6 @@ trait ZioSwaggerApi {
 
   private lazy val endpoints = List(
     ActuatorEndpoint.healthEndpoint,
-    ActuatorEndpoint.swaggerVersionEndpoint,
     TransferEndpoint.getTransferEndpoint,
     TransferEndpoint.getFilteredTransferEndpoint,
     TransferEndpoint.getWithHeaderTransferEndpoint,
