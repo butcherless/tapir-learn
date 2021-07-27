@@ -12,6 +12,7 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-akka-http" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-json-json4s"          % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-zio-http"             % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-zio-http"  % Versions.tapir,
     "com.typesafe.akka"           %% "akka-slf4j"                 % Versions.akka,
     "ch.qos.logback"               % "logback-classic"            % Versions.logback,
     "com.github.mlangc"           %% "slf4zio"                    % Versions.slf4zio,
