@@ -9,7 +9,8 @@ import zio._
 /*
   https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html
  */
-object ZioHttpServerApp extends App {
+object ZioHttpServerApp 
+extends App {
 
   val routes =
     ActuatorApi.healthRoute <>
@@ -19,4 +20,5 @@ object ZioHttpServerApp extends App {
 
     Server.start(8081, routes).exitCode
   }
+  
 }
