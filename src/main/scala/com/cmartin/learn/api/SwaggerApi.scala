@@ -1,17 +1,20 @@
 package com.cmartin.learn.api
 
 import akka.http.scaladsl.server.Route
-import com.cmartin.learn.api.CommonEndpoint.BASE_API
+import com.cmartin.learn.api.CommonEndpoint._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Info
 import sttp.tapir.openapi.circe.yaml._
-import sttp.tapir.swagger.akkahttp.SwaggerAkka
+import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import sttp.tapir.swagger.SwaggerUI
+
+import scala.concurrent.Future
 
 trait SwaggerApi {
 
-  lazy val route: Route = {
-    new SwaggerAkka(docsAsYaml, s"$BASE_API/docs").routes
-  }
+  lazy val route: Route = 
+      AkkaHttpServerInterpreter()
+      .toRoute(SwaggerUI[Future](docsAsYaml,List(API_TEXT,API_VERSION,"docs")))  
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =

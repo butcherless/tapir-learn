@@ -1,15 +1,18 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.api.CommonEndpoint.BASE_API
+import com.cmartin.learn.api.CommonEndpoint._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Info
 import sttp.tapir.openapi.circe.yaml._
-import sttp.tapir.swagger.ziohttp.SwaggerZioHttp
+import sttp.tapir.server.ziohttp.ZioHttpInterpreter
+import sttp.tapir.swagger.SwaggerUI
+import zio.Task
 
 trait ZioSwaggerApi {
 
   lazy val route =
-    new SwaggerZioHttp(docsAsYaml).route
+    ZioHttpInterpreter()
+     .toHttp(SwaggerUI[Task](docsAsYaml ,List(API_TEXT,API_VERSION,"docs")))
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =
