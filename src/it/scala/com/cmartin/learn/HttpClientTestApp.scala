@@ -5,11 +5,9 @@ import sttp.capabilities.zio.ZioStreams
 import sttp.client3._
 import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
 import sttp.model.StatusCode
+import zio.Console._
+import zio.Random._
 import zio._
-import zio.clock.Clock
-import zio.console._
-import zio.duration._
-import zio.random._
 
 object HttpClientTestApp extends App {
 
@@ -21,7 +19,7 @@ object HttpClientTestApp extends App {
   implicit val backend: SttpBackend[Task, ZioStreams with WebSockets] =
     unsafeRun(AsyncHttpClientZioBackend())
   val urls: Seq[String] = List.fill(fiberCount)(healthEndpoint)
-  val program: ZIO[Clock with zio.ZEnv, Throwable, Unit] = for {
+  val program = for {
     number <- nextIntBetween(500, 2000)
     delay  <- UIO(number)
     _      <- ZIO.sleep(delay.milliseconds)
@@ -29,7 +27,7 @@ object HttpClientTestApp extends App {
   } yield ()
 
   // Dummy method
-  def makeGet(uri: String): ZIO[Clock with Random, Nothing, Unit] =
+  def makeGet(uri: String) =
     for {
       number <- nextIntBetween(500, 2000)
       delay  <- UIO(number)
@@ -37,10 +35,10 @@ object HttpClientTestApp extends App {
       _      <- UIO(println(s"sleep[$delay]: $uri"))
     } yield ()
 
-  def doGet(endpoint: String): ZIO[Console, Throwable, Unit] =
+  def doGet(endpoint: String) =
     for {
       response <- basicRequest.get(uri"$endpoint").send()
-      _        <- putStrLn(checkResponse(response))
+      _        <- printLine(checkResponse(response))
     } yield ()
 
   def checkResponse(response: Response[Either[String, String]]): String =
@@ -53,6 +51,6 @@ object HttpClientTestApp extends App {
   // Here the interpreter runs the program and performs side-effects
   override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, ExitCode] = {
     program.exitCode
-      .catchAllCause(cause => putStrLn(s"${cause.prettyPrint}").exitCode)
+      .catchAllCause(cause => printLine(s"${cause.prettyPrint}").exitCode)
   }
 }

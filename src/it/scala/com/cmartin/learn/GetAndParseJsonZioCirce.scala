@@ -6,8 +6,7 @@ import sttp.client3._
 import sttp.client3.asynchttpclient.zio._
 import sttp.client3.circe._
 import zio._
-import zio.console.Console
-import zio.duration._
+import zio.Console._
 
 object GetAndParseJsonZioCirce extends App {
   override def run(args: List[String]): ZIO[ZEnv, Nothing, ExitCode] = {
@@ -24,8 +23,8 @@ object GetAndParseJsonZioCirce extends App {
 
     val program = for {
       response <- send(request)
-      _        <- console.putStrLn(s"response code: ${response.code}")
-      _        <- console.putStrLn(response.body.toString)
+      _        <- printLine(s"response code: ${response.code}")
+      _        <- printLine(response.body.toString)
     } yield ()
 
     val schedulePolicy =
