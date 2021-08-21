@@ -7,7 +7,7 @@ object Versions {
   val slf4zio  = "1.0.0"
   val sttp     = "3.3.7"
   val tapir    = "0.19.0-M7"
-  val zio      = "1.0.10"
+  val zio      = "2.0.0-M2"
 
   val scalatest = "3.2.9"
 }
