@@ -5,19 +5,18 @@ import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
 import com.cmartin.learn.api.CommonEndpoint.BASE_API
-import com.cmartin.learn.api.Model.AircraftDto
-import com.cmartin.learn.api.Model.AircraftType
+import com.cmartin.learn.api.Model.{AircraftDto, AircraftType}
 import io.circe
-import org.json4s.DefaultFormats
-import org.json4s.JValue
-import org.json4s._
 import org.json4s.ext.EnumNameSerializer
 import org.json4s.native.JsonMethods
+import org.json4s.{DefaultFormats, JValue, _}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import sttp.tapir._
-import sttp.tapir.json.json4s._
-class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest {
+
+class AircraftApiSpec
+    extends AnyFlatSpec
+    with Matchers
+    with ScalatestRouteTest {
 
   import AircraftApiSpec._
   implicit val serialization: Serialization = org.json4s.native.Serialization
@@ -64,7 +63,8 @@ class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
         status shouldBe StatusCodes.OK
         header[`Content-Type`] shouldBe Some(contentTypeJson)
         val response: JValue = JsonMethods.parse(entityAs[String])
-        response.extract[AircraftDto] shouldBe AircraftEndpoint.apiAircraftMIGExample
+        response
+          .extract[AircraftDto] shouldBe AircraftEndpoint.apiAircraftMIGExample
       }
   }
 

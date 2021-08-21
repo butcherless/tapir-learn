@@ -14,17 +14,16 @@ object GetAndParseJsonZioCirce extends App {
     case class HttpBinResponse(origin: String, headers: Map[String, String])
 
     val request =
-      basicRequest
-        .
-          //get(uri"https://httpbin.org/get")
-          //.response(asJson[HttpBinResponse])
-        get(uri"http://localhost:8080/api/v1.0/health")
+      basicRequest.
+      //get(uri"https://httpbin.org/get")
+      //.response(asJson[HttpBinResponse])
+      get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[ApiBuildInfo])
 
     val program = for {
       response <- send(request)
-      _        <- printLine(s"response code: ${response.code}")
-      _        <- printLine(response.body.toString)
+      _ <- printLine(s"response code: ${response.code}")
+      _ <- printLine(response.body.toString)
     } yield ()
 
     val schedulePolicy =

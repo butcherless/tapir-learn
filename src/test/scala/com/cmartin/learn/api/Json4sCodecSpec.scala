@@ -16,7 +16,7 @@ class Json4sCodecSpec extends AnyFlatSpec with Matchers {
   behavior of "Json4s codec"
 
   implicit val serialization: Serialization = org.json4s.native.Serialization
-  implicit val formats: Formats             = DefaultFormats
+  implicit val formats: Formats = DefaultFormats
 
   it should "json4s implementation" in {
 
@@ -25,10 +25,10 @@ class Json4sCodecSpec extends AnyFlatSpec with Matchers {
     val bookInput: EndpointIO[Book] = jsonBody[Book]
   }
 
-  val number   = 1234L
-  val idJson   = """{"id":1234}"""
+  val number = 1234L
+  val idJson = """{"id":1234}"""
   val idJValue = JsonMethods.parse(idJson)
-  val myId     = MyId(1234)
+  val myId = MyId(1234)
 
   case class MyId(id: Int)
 
@@ -68,7 +68,7 @@ class Json4sCodecSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "encode a JValue" in {
-    val id      = idJValue
+    val id = idJValue
     val encoded = json4sCodec[JValue].encode(id)
     encoded shouldBe idJson
   }

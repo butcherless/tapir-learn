@@ -1,22 +1,15 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.api.Model.BuildInfoDto
-import com.cmartin.learn.api.Model.TransferDto
+import com.cmartin.learn.api.Model.{BuildInfoDto, TransferDto}
 import com.cmartin.learn.domain.ApiConverters
-import io.circe
 import io.circe.generic.auto._
+import org.scalatest.Ignore
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import sttp.client3.Response
-import sttp.client3.ResponseError
-import sttp.client3._
 import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
-import sttp.client3.basicRequest
+import sttp.client3.{Response, basicRequest, _}
 import sttp.client3.circe._
-import sttp.client3.circe.asJson
-import sttp.model.Method
-import sttp.model.StatusCode
-import org.scalatest.Ignore
+import sttp.model.{Method, StatusCode}
 
 @Ignore
 class TransferApiClientSpec extends AnyFlatSpec with Matchers {
@@ -152,22 +145,30 @@ object TransferApiClientSpec {
 
   val backend = AsyncHttpClientZioBackend.stub
     .whenRequestMatches { req =>
-      req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "1"
+      req.method == Method.GET && req.uri.path.contains(
+        "transfers"
+      ) && req.uri.path.last == "1"
     }
     .thenRespond(TransferEndpoint.transferExample)
     //
     .whenRequestMatches { req =>
-      req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "400"
+      req.method == Method.GET && req.uri.path.contains(
+        "transfers"
+      ) && req.uri.path.last == "400"
     }
     .thenRespond(Response("BAD_REQUEST", StatusCode.BadRequest))
     //
     .whenRequestMatches { req =>
-      req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "404"
+      req.method == Method.GET && req.uri.path.contains(
+        "transfers"
+      ) && req.uri.path.last == "404"
     }
     .thenRespond(Response("NOT_FOUND", StatusCode.NotFound))
     //
     .whenRequestMatches { req =>
-      req.method == Method.GET && req.uri.path.contains("transfers") && req.uri.path.last == "500"
+      req.method == Method.GET && req.uri.path.contains(
+        "transfers"
+      ) && req.uri.path.last == "500"
     }
     .thenRespond(Response("SERVER_ERROR", StatusCode.InternalServerError))
     /*

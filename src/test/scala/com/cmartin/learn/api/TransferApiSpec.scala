@@ -5,8 +5,7 @@ import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
 import com.cmartin.learn.api.Model.TransferDto
-import com.cmartin.learn.domain.ApiConverters
-import com.cmartin.learn.domain.Model
+import com.cmartin.learn.domain.{ApiConverters, Model}
 import com.cmartin.learn.domain.Model.Transfer
 import io.circe
 import io.circe.generic.auto._
@@ -14,7 +13,10 @@ import io.circe.syntax._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class TransferApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest {
+class TransferApiSpec
+    extends AnyFlatSpec
+    with Matchers
+    with ScalatestRouteTest {
 
   import CommonEndpoint._
   import TransferApiSpec._
@@ -31,7 +33,9 @@ class TransferApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
       check {
         status shouldBe StatusCodes.OK
         header[`Content-Type`] shouldBe Some(contentTypeJson)
-        parseTransfer(entityAs[String]) shouldBe Right(TransferEndpoint.transferExample)
+        parseTransfer(entityAs[String]) shouldBe Right(
+          TransferEndpoint.transferExample
+        )
         info(entityAs[String])
       }
   }
@@ -110,7 +114,9 @@ class TransferApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
       check {
         status shouldBe StatusCodes.Created
         info(entityAs[String])
-        io.circe.parser.decode[TransferDto](entityAs[String]) shouldBe Right(TransferEndpoint.transferExample)
+        io.circe.parser.decode[TransferDto](entityAs[String]) shouldBe Right(
+          TransferEndpoint.transferExample
+        )
       }
   }
 
@@ -131,7 +137,8 @@ class TransferApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
     // Given
 
     // When
-    val convertedTransfer = ApiConverters.apiToModel(TransferEndpoint.transferExample)
+    val convertedTransfer =
+      ApiConverters.apiToModel(TransferEndpoint.transferExample)
 
     // Then
     convertedTransfer shouldBe transfer
