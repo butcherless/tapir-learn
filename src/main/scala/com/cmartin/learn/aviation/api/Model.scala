@@ -1,18 +1,11 @@
 package com.cmartin.learn.aviation.api
 
-import java.time.LocalDate
+import com.cmartin.learn.aviation.domain.Model._
 import zio.prelude.Subtype
 
+import java.time.LocalDate
+
 object Model {
-
-  object CountryCode extends Subtype[String] {
-    type CountryCode = CountryCode.Type
-  }
-
-  //TODO move to domain
-  sealed trait DomainError {
-    val message: String
-  }
 
   sealed trait ApiError extends DomainError
   sealed trait RestValidationError extends DomainError
@@ -32,7 +25,7 @@ object Model {
 
   //TODO opaque Type, regex, constraints
   case class CountryView(
-      code: String,
+      code: CountryCode,
       name: String
   )
 

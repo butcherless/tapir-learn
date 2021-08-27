@@ -1,7 +1,9 @@
 package com.cmartin.learn.aviation.api.validator
-import zio.prelude.Validation
+
 import com.cmartin.learn.aviation.api.Model._
+import com.cmartin.learn.aviation.domain.Model._
 import zio.IO
+import zio.prelude.Validation
 
 object CountryValidator {
   val COUNTRY_CODE_LENGTH = 2
@@ -10,11 +12,11 @@ object CountryValidator {
      - length == COUNTRY_CODE_LENGTH
      - convert toLower
    */
-  def validateGetRequest(code: String): Validation[RestValidationError, String] =
+  def validateGetRequest(code: String): Validation[RestValidationError, CountryCode] =
     for {
       _ <- validateEmptyText(code, EmptyProperty("code property is empty"))
       _ <- validateCodeLength(code) //TODO refactor for generic use as validateEmptyText
-    } yield code.toLowerCase()
+    } yield CountryCode(code.toLowerCase())
 
   // TODO move to common validator
   private def validateEmptyText(text: String, error: RestValidationError): Validation[RestValidationError, String] = {

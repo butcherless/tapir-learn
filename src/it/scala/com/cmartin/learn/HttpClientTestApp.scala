@@ -39,7 +39,7 @@ object HttpClientTestApp extends App {
 
   def doGet(endpoint: String) =
     for {
-      response <- basicRequest.get(uri"$endpoint").send()
+      response <- basicRequest.get(uri"$endpoint").send(backend)
       _ <- printLine(checkResponse(response))
     } yield ()
 

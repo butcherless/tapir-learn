@@ -13,8 +13,7 @@ import BaseEndpoint._
 
 trait AirportEndpoints {
 
-  lazy val getByIataCodeEndpoint
-      : Endpoint[String, OutputError, AirportView, Any] =
+  lazy val getByIataCodeEndpoint: Endpoint[String, OutputError, AirportView, Any] =
     baseEndpoint.get
       .name("airport-get-by-iata-code-endpoint")
       .description("Retrieves an Airport by its iata code")
@@ -30,8 +29,7 @@ trait AirportEndpoints {
         )
       )
 
-  lazy val postEndpoint
-      : Endpoint[AirportView, OutputError, (String, AirportView), Any] =
+  lazy val postEndpoint: Endpoint[AirportView, OutputError, (String, AirportView), Any] =
     baseEndpoint.post
       .name("airport-post-endpoint")
       .description("Creates an Airport")

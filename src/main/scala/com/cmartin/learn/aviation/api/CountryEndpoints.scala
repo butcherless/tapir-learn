@@ -1,6 +1,9 @@
 package com.cmartin.learn.aviation.api
 
 import akka.http.scaladsl.model.headers.`Content-Location`
+import com.cmartin.learn.aviation.domain.Model.CountryCode
+import io.circe.Decoder
+import io.circe.Encoder
 import io.circe.Json
 import io.circe.generic.auto._
 import sttp.model.StatusCode
@@ -12,6 +15,10 @@ import Model._
 import BaseEndpoint._
 
 trait CountryEndpoints {
+
+  implicit val encodeInstant: Encoder[CountryCode] = Encoder.encodeString.contramap[CountryCode](_.s)
+  implicit val decodeInstant: Decoder[CountryCode] = Decoder.decodeString.map(CountryCode.apply)
+  implicit val amountSchema: Schema[CountryCode] = Schema(SchemaType.SString())
 
   lazy val getByCodeEndpoint: Endpoint[String, OutputError, CountryView, Any] =
     baseEndpoint.get
@@ -69,5 +76,5 @@ trait CountryEndpoints {
 }
 
 object CountryEndpoints extends CountryEndpoints {
-  val countryViewExample = CountryView("es", "Spain")
+  val countryViewExample = CountryView(CountryCode("es"), "Spain")
 }

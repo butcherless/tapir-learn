@@ -4,6 +4,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.cmartin.learn.aviation.api.validator.CountryValidator
 import com.cmartin.learn.aviation.api.validator.CountryValidator._
+import com.cmartin.learn.aviation.domain.Model._
 import com.github.mlangc.slf4zio.api._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio.IO

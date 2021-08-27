@@ -1,5 +1,6 @@
 package com.cmartin.learn.aviation.api
 
+import com.cmartin.learn.aviation.domain.Model._
 import zio.IO
 
 import BaseEndpoint._

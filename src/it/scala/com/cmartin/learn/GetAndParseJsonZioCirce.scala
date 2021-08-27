@@ -36,7 +36,7 @@ object GetAndParseJsonZioCirce extends App {
     program
       .retry(schedulePolicy)
       .provideCustomLayer(AsyncHttpClientZioBackend.layer())
-      .foldM( // error management
+      .foldZIO( // error management
         e => /*console.putStrLn(e.getMessage) *>*/ UIO(ExitCode.failure),
         _ => UIO(ExitCode.success)
       )
