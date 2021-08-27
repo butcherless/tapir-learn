@@ -29,8 +29,7 @@ trait CountryEndpoints {
         )
       )
 
-  lazy val postEndpoint
-      : Endpoint[CountryView, OutputError, (String, CountryView), Any] =
+  lazy val postEndpoint: Endpoint[CountryView, OutputError, (String, CountryView), Any] =
     baseEndpoint.post
       .name("country-post-endpoint")
       .description("Creates a Country")

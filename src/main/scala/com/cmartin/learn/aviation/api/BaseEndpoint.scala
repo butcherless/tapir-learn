@@ -8,9 +8,13 @@ import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 import sttp.tapir.json.circe._
 
+import scala.concurrent.Future
+
 import Model._
 
 trait BaseEndpoint {
+
+  type RouteResponse[T] = Future[Either[OutputError, T]]
 
   lazy val apiText: String = "api"
   lazy val apiVersionText: String = "v1.0"
@@ -33,6 +37,10 @@ trait BaseEndpoint {
 
   val defaultMapping =
     oneOfDefaultMapping(jsonBody[UnknownError])
+
+  def buildContentLocation(resourcePath: String, resourceId: String): String = {
+    s"/$apiText/$apiVersionText/$resourcePath/$resourceId"
+  }
 
 }
 
