@@ -1,6 +1,7 @@
 import Dependencies._
 import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
 
+name := "aviation-root"
 ThisBuild / scalaVersion := "2.13.6"
 ThisBuild / organization := "com.cmartin.learn"
 
@@ -18,16 +19,17 @@ lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
 )
 
 lazy val commonSettings = Seq(
-  libraryDependencies ++= mainAndTest,
-  scalacOptions ++= basicScalacOptions,
-  assemblyJarName := "tapir-learn-webapp.jar"
+  libraryDependencies ++= commonTest,
+  scalacOptions ++= basicScalacOptions
 )
 
-lazy val tapirLearn = (project in file("."))
+lazy val `tapir-learn` = (project in file("tapir-learn"))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
     commonSettings,
+    libraryDependencies ++= mainAndTest,
+    assemblyJarName := "tapir-learn-webapp.jar",
     name := "tapir-learn"
   )
   .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
@@ -36,10 +38,38 @@ lazy val tapirLearn = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
+lazy val `aviation-core` = (project in file("aviation-core"))
+  .configs(IntegrationTest)
+  .settings(
+    Defaults.itSettings,
+    commonSettings,
+    libraryDependencies ++= commonMain,
+    name := "aviation-core"
+  )
+  .settings(coverageExcludedPackages := "<empty>;.*Configuration.*")
+
+lazy val `aviation-api` = (project in file("aviation-api"))
+  .configs(IntegrationTest)
+  .settings(
+    Defaults.itSettings,
+    commonSettings,
+    libraryDependencies ++= apiMain ++ apiTest,
+    assemblyJarName := "aviation-webapp.jar",
+    name := "aviation-api"
+  )
+  .dependsOn(`aviation-core`)
+  .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
+  .settings(BuildInfoSettings.value)
+  // plugins
+  .enablePlugins(BuildInfoPlugin)
+  .enablePlugins(GitVersioning)
+
+// clear screen and banner
 lazy val cls = taskKey[Unit]("Prints a separator")
 cls := {
-  val brs = "\n".repeat(4)
-  val chars = "*".repeat(37)
+  val brs = "\n".repeat(2)
+  val message = "* B U I L D   B E G I N S   H E R E *"
+  val chars = "*".repeat(message.length())
   println(s"$brs$chars")
   println("* B U I L D   B E G I N S   H E R E *")
   println(s"$chars$brs ")

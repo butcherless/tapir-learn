@@ -1,6 +1,6 @@
-package com.cmartin.learn.aviation.domain
+package com.cmartin.aviation.domain
 
-import com.cmartin.learn.aviation.domain.Model._
+import com.cmartin.aviation.domain.Model._
 import zio.IO
 
 trait CountryService {

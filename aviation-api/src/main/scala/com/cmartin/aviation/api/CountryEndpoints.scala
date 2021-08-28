@@ -1,7 +1,7 @@
-package com.cmartin.learn.aviation.api
+package com.cmartin.aviation.api
 
 import akka.http.scaladsl.model.headers.`Content-Location`
-import com.cmartin.learn.aviation.domain.Model.CountryCode
+import com.cmartin.aviation.domain.Model.CountryCode
 import io.circe.Decoder
 import io.circe.Encoder
 import io.circe.Json

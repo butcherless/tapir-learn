@@ -1,4 +1,4 @@
-package com.cmartin.learn.aviation.api
+package com.cmartin.aviation.api
 
 import io.circe.Json
 import io.circe.generic.auto._

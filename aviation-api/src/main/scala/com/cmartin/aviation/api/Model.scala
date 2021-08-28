@@ -1,6 +1,6 @@
-package com.cmartin.learn.aviation.api
+package com.cmartin.aviation.api
 
-import com.cmartin.learn.aviation.domain.Model._
+import com.cmartin.aviation.domain.Model._
 import zio.prelude.Subtype
 
 import java.time.LocalDate

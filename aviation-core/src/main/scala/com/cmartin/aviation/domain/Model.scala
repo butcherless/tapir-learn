@@ -1,4 +1,4 @@
-package com.cmartin.learn.aviation.domain
+package com.cmartin.aviation.domain
 
 import zio.prelude.Subtype
 

@@ -2,6 +2,33 @@ import sbt._
 
 object Dependencies {
 
+  val commonMain = Seq(
+    "ch.qos.logback" % "logback-classic" % Versions.logback,
+    "com.github.mlangc" %% "slf4zio" % Versions.slf4zio,
+    "dev.zio" %% "zio-prelude" % Versions.zioPrelude
+  )
+
+  val commonTest = Seq(
+    "org.scalatest" %% "scalatest" % Versions.scalatest % "it, test"
+  )
+
+  val coreMain = Seq(
+  )
+
+  val apiMain = Seq(
+    "com.softwaremill.sttp.tapir" %% "tapir-core" % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server" % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % Versions.tapir
+  )
+
+  val apiTest = Seq(
+    "com.typesafe.akka" %% "akka-http-testkit" % Versions.akkaHttp % Test,
+    "com.typesafe.akka" %% "akka-testkit" % Versions.akka % Test
+  )
+
   val mainAndTest = Seq(
     // T A P I R
     "com.softwaremill.sttp.tapir" %% "tapir-core" % Versions.tapir,

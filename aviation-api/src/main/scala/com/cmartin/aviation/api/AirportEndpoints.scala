@@ -1,4 +1,4 @@
-package com.cmartin.learn.aviation.api
+package com.cmartin.aviation.api
 
 import akka.http.scaladsl.model.headers.`Content-Location`
 import io.circe.Json

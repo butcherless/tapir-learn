@@ -1,7 +1,7 @@
-package com.cmartin.learn.aviation.api.validator
+package com.cmartin.aviation.api.validator
 
-import com.cmartin.learn.aviation.api.Model._
-import com.cmartin.learn.aviation.domain.Model._
+import com.cmartin.aviation.api.Model._
+import com.cmartin.aviation.domain.Model._
 import zio.IO
 import zio.prelude.Validation
 
