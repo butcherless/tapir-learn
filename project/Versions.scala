@@ -1,5 +1,5 @@
 object Versions {
-
+  // main
   val akkaHttp = "10.2.6"
   val akka = "2.6.16"
   val json4s = "4.0.3"
@@ -9,5 +9,8 @@ object Versions {
   val tapir = "0.19.0-M7"
   val zio = "2.0.0-M2"
   val zioPrelude = "1.0.0-RC6"
+
+  // test
   val scalatest = "3.2.9"
+  val scalaMock = "5.1.0"
 }

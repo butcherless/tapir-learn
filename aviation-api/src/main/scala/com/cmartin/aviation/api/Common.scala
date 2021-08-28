@@ -16,5 +16,7 @@ object Common {
     )
   }
 
+  // handle only ApiError, remove DomainError
+  // map ServiceError to ApiError, default case
   def handleError(error: DomainError): OutputError = ???
 }

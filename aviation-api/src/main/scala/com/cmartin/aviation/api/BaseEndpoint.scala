@@ -19,10 +19,11 @@ trait BaseEndpoint {
   lazy val apiText: String = "api"
   lazy val apiVersionText: String = "v1.0"
   lazy val baseApiResource: EndpointInput[Unit] = apiText / apiVersionText
+  lazy val baseApiPath: String = s"$apiText/$apiVersionText"
 
   lazy val baseEndpoint: Endpoint[Unit, Unit, Unit, Any] =
     endpoint
-      .in(apiText)
+      .in(baseApiResource)
       .name(apiVersionText)
       .description("Aviation REST API")
 
@@ -39,7 +40,7 @@ trait BaseEndpoint {
     oneOfDefaultMapping(jsonBody[UnknownError])
 
   def buildContentLocation(resourcePath: String, resourceId: String): String = {
-    s"/$apiText/$apiVersionText/$resourcePath/$resourceId"
+    s"/$baseApiPath/$resourcePath/$resourceId"
   }
 
 }

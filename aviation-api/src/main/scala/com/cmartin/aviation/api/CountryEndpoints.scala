@@ -15,10 +15,7 @@ import Model._
 import BaseEndpoint._
 
 trait CountryEndpoints {
-
-  implicit val encodeInstant: Encoder[CountryCode] = Encoder.encodeString.contramap[CountryCode](_.s)
-  implicit val decodeInstant: Decoder[CountryCode] = Decoder.decodeString.map(CountryCode.apply)
-  implicit val amountSchema: Schema[CountryCode] = Schema(SchemaType.SString())
+  import CountryEndpoints.Implicits._
 
   lazy val getByCodeEndpoint: Endpoint[String, OutputError, CountryView, Any] =
     baseEndpoint.get
@@ -71,10 +68,16 @@ trait CountryEndpoints {
       )
 
   lazy val countriesResource = "countries"
-  lazy val countryPath = baseApiResource / countriesResource
+  lazy val countryPath: EndpointInput[Unit] = countriesResource
   lazy val codePath = path[String]("code")
 }
 
 object CountryEndpoints extends CountryEndpoints {
   val countryViewExample = CountryView(CountryCode("es"), "Spain")
+
+  object Implicits {
+    implicit val encodeInstant: Encoder[CountryCode] = Encoder.encodeString.contramap[CountryCode](_.s)
+    implicit val decodeInstant: Decoder[CountryCode] = Decoder.decodeString.map(CountryCode.apply)
+    implicit val amountSchema: Schema[CountryCode] = Schema(SchemaType.SString())
+  }
 }

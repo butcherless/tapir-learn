@@ -1,7 +1,6 @@
 import Dependencies._
 import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
 
-name := "aviation-root"
 ThisBuild / scalaVersion := "2.13.6"
 ThisBuild / organization := "com.cmartin.learn"
 
@@ -22,6 +21,13 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= commonTest,
   scalacOptions ++= basicScalacOptions
 )
+
+lazy val `aviation-root` = (project in file("."))
+  .aggregate(
+    `aviation-core`,
+    `aviation-api`,
+    `tapir-learn`
+  )
 
 lazy val `tapir-learn` = (project in file("tapir-learn"))
   .configs(IntegrationTest)

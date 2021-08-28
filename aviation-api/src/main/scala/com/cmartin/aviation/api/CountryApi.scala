@@ -4,6 +4,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.cmartin.aviation.api.validator.CountryValidator
 import com.cmartin.aviation.api.validator.CountryValidator._
+import com.cmartin.aviation.domain.CountryService
 import com.cmartin.aviation.domain.Model._
 import com.github.mlangc.slf4zio.api._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
@@ -13,7 +14,8 @@ import Common.run
 import Model._
 import BaseEndpoint._
 
-class CountryApi extends LoggingSupport {
+class CountryApi(countryService: CountryService) extends LoggingSupport {
+  import CountryApi._
 
   lazy val routes: Route =
     getRoute ~
@@ -47,10 +49,9 @@ class CountryApi extends LoggingSupport {
   private def doGetLogic(request: String): IO[DomainError, CountryView] = {
     for {
       _ <- logger.debugIO(s"doGetLogic - request: $request")
-      // TODO validate / smart constructor
       criteria <- CountryValidator.validateGetRequest(request).toIO
-      // TODO call service operation
-    } yield CountryEndpoints.countryViewExample
+      country <- countryService.findByCode(criteria)
+    } yield country.toView
   }
 
   private def doPostLogic(request: CountryView): IO[DomainError, (String, CountryView)] = {
@@ -70,5 +71,15 @@ class CountryApi extends LoggingSupport {
       // TODO validate / smart constructor
       // TODO call service operation
     } yield ()
+  }
+}
+
+object CountryApi {
+  def apply(countryService: CountryService): CountryApi =
+    new CountryApi(countryService)
+
+  implicit class ModelToView(country: Country) {
+    def toView: CountryView =
+      CountryView(country.code, country.name)
   }
 }

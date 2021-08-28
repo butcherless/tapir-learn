@@ -26,7 +26,8 @@ object Dependencies {
 
   val apiTest = Seq(
     "com.typesafe.akka" %% "akka-http-testkit" % Versions.akkaHttp % Test,
-    "com.typesafe.akka" %% "akka-testkit" % Versions.akka % Test
+    "com.typesafe.akka" %% "akka-testkit" % Versions.akka % Test,
+    "org.scalamock" %% "scalamock" % Versions.scalaMock % Test
   )
 
   val mainAndTest = Seq(
