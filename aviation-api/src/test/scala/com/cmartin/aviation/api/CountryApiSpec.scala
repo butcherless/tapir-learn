@@ -1,7 +1,9 @@
 package com.cmartin.aviation.api
 
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.testkit.RouteTestTimeout
 import akka.http.scaladsl.testkit.ScalatestRouteTest
+import akka.testkit.TestDuration
 import com.cmartin.aviation.domain.CountryService
 import com.cmartin.aviation.domain.Model._
 import io.circe.generic.auto._
@@ -11,6 +13,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import zio.IO
 
+import scala.concurrent.duration._
+
 import BaseEndpoint.baseApiPath
 import CountryEndpoints.countriesResource
 import CountryEndpoints.Implicits._
@@ -18,6 +22,7 @@ import Model.CountryView
 
 class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with ScalatestRouteTest {
 
+  implicit val timeout = RouteTestTimeout(5.seconds.dilated)
   val countryService: CountryService = mock[CountryService]
   val countryApi: CountryApi = CountryApi(countryService)
 
