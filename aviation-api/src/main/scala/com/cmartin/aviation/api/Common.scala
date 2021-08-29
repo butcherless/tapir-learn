@@ -8,7 +8,7 @@ import Model._
 
 object Common {
   val runtime = zio.Runtime.default
-  def run[A](program: IO[DomainError, A]): RouteResponse[A] = {
+  def run[A](program: IO[ProgramError, A]): RouteResponse[A] = {
     runtime.unsafeRunToFuture(
       program
         .mapError(handleError)
@@ -18,5 +18,5 @@ object Common {
 
   // handle only ApiError, remove DomainError
   // map ServiceError to ApiError, default case
-  def handleError(error: DomainError): OutputError = ???
+  def handleError(error: ProgramError): OutputError = ???
 }

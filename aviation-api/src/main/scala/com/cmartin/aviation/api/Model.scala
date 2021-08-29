@@ -7,10 +7,10 @@ import java.time.LocalDate
 
 object Model {
 
-  sealed trait ApiError extends DomainError
-  sealed trait RestValidationError extends DomainError
+  sealed trait ApiError extends ProgramError
+  sealed trait ValidationError extends ApiError
 
-  abstract class DescribedError extends RestValidationError {
+  abstract class DescribedError extends ValidationError {
     val message: String
   }
 
@@ -21,7 +21,7 @@ object Model {
 
   case class InvalidNameCharacters(message: String) extends DescribedError
 
-  case class ValidationError(message: String, exception: Option[Throwable] = None) extends ApiError
+  case class ValidationErrors(message: String, exception: Option[Throwable] = None) extends ValidationError
 
   //TODO opaque Type, regex, constraints
   case class CountryView(

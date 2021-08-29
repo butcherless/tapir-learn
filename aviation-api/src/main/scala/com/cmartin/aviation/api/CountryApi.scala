@@ -10,7 +10,7 @@ import com.github.mlangc.slf4zio.api._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio.IO
 
-import Common.run
+import Common._
 import Model._
 import BaseEndpoint._
 
@@ -38,6 +38,14 @@ class CountryApi(countryService: CountryService) extends LoggingSupport {
         )
       }
 
+  lazy val putRoute: Route =
+    AkkaHttpServerInterpreter()
+      .toRoute(CountryEndpoints.putEndpoint) { request =>
+        run(
+          doPutLogic(request)
+        )
+      }
+
   lazy val deleteRoute: Route =
     AkkaHttpServerInterpreter()
       .toRoute(CountryEndpoints.deleteEndpoint) { request =>
@@ -46,30 +54,36 @@ class CountryApi(countryService: CountryService) extends LoggingSupport {
         )
       }
 
-  private def doGetLogic(request: String): IO[DomainError, CountryView] = {
+  private def doGetLogic(request: String): IO[ProgramError, CountryView] = {
     for {
       _ <- logger.debugIO(s"doGetLogic - request: $request")
-      criteria <- CountryValidator.validateGetRequest(request).toIO
+      criteria <- CountryValidator.validateCode(request).toIO
       country <- countryService.findByCode(criteria)
     } yield country.toView
   }
 
-  private def doPostLogic(request: CountryView): IO[DomainError, (String, CountryView)] = {
+  private def doPostLogic(request: CountryView): IO[ProgramError, (String, CountryView)] = {
     for {
       _ <- logger.debugIO(s"doPostLogic - request: $request")
-      // TODO validate / smart constructor
-      // TODO call service operation
+      country <- CountryValidator.validatePostRequest(request).toIO
+      country <- countryService.create(country)
     } yield (
-      buildContentLocation(CountryEndpoints.countriesResource, "dummy-id"),
-      CountryEndpoints.countryViewExample
+      buildContentLocation(CountryEndpoints.countriesResource, country.code),
+      country.toView
     )
   }
 
-  private def doDeleteLogic(request: String): IO[DomainError, Unit] = {
+  private def doPutLogic(request: CountryView): IO[ProgramError, CountryView] = {
+    for {
+      _ <- logger.debugIO(s"doPostLogic - request: $request")
+    } yield CountryEndpoints.countryViewExample
+  }
+
+  private def doDeleteLogic(request: String): IO[ProgramError, Unit] = {
     for {
       _ <- logger.debugIO(s"doDeleteLogic - request: $request")
-      // TODO validate / smart constructor
-      // TODO call service operation
+      criteria <- CountryValidator.validateDeleteRequest(request).toIO
+      _ <- countryService.deleteByCode(criteria)
     } yield ()
   }
 }

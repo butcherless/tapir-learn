@@ -52,6 +52,24 @@ trait CountryEndpoints {
         )
       )
 
+  lazy val putEndpoint: Endpoint[CountryView, OutputError, CountryView, Any] =
+    baseEndpoint.put
+      .name("country-put-endpoint")
+      .description("Updates a Country")
+      .in(countryPath)
+      .in(jsonBody[CountryView].example(CountryEndpoints.countryViewExample))
+      .out(
+        statusCode(StatusCode.Ok)
+          .and(jsonBody[CountryView].example(CountryEndpoints.countryViewExample))
+      )
+      .errorOut(
+        oneOf[OutputError](
+          badRequestMapping,
+          internalErrorMapping,
+          defaultMapping
+        )
+      )
+
   lazy val deleteEndpoint: Endpoint[String, OutputError, Unit, Any] =
     baseEndpoint.delete
       .name("country-delete-endpoint")
@@ -62,6 +80,7 @@ trait CountryEndpoints {
       .errorOut(
         oneOf[OutputError](
           badRequestMapping,
+          notFoundMapping,
           internalErrorMapping,
           defaultMapping
         )
