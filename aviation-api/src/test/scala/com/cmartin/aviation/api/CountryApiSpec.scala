@@ -4,8 +4,8 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.testkit.RouteTestTimeout
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.testkit.TestDuration
-import com.cmartin.aviation.domain.CountryService
 import com.cmartin.aviation.domain.Model._
+import com.cmartin.aviation.port.CountryService
 import io.circe.generic.auto._
 import io.circe.parser.decode
 import org.scalamock.scalatest.MockFactory
@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 import BaseEndpoint.baseApiPath
 import CountryEndpoints.countriesResource
 import CountryEndpoints.Implicits._
-import Model.CountryView
+import Model._
 
 class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with ScalatestRouteTest {
 
@@ -46,7 +46,7 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
       }
   }
 
-  ignore should "returns a BadRequest for an invalid country code" in {
+  it should "WIP returns a BadRequest for an invalid country code" in {
     // G I V E N
     val code = CountryCode("esp")
 
@@ -56,7 +56,10 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
       // T H E N
       check {
         status shouldBe StatusCodes.BadRequest
-        //decode[CountryView](entityAs[String]) shouldBe Right(CountryEndpoints.countryViewExample)
+        info(entityAs[String])
+        decode[BadRequestError](entityAs[String]) shouldBe Right(
+          BadRequestError(BadRequestError.toString, "[country code must have size: 2]")
+        )
       }
 
   }

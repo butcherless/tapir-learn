@@ -26,7 +26,7 @@ object CountryValidator {
 
   private def validateCodeLength(code: String): Validation[ValidationError, String] = {
     Validation
-      .fromPredicateWith(InvalidCodeLength(s"country code has size: $COUNTRY_CODE_LENGTH"))(code)(
+      .fromPredicateWith(InvalidCodeLength(s"country code must have size: $COUNTRY_CODE_LENGTH"))(code)(
         _.size == COUNTRY_CODE_LENGTH
       )
   }

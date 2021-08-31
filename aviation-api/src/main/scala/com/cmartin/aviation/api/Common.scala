@@ -1,22 +1,30 @@
 package com.cmartin.aviation.api
 
+import com.cmartin.aviation.Commons._
 import com.cmartin.aviation.domain.Model._
-import zio.IO
+import zio.ZIO
+import zio.logging._
 
 import BaseEndpoint._
 import Model._
 
 object Common {
-  val runtime = zio.Runtime.default
-  def run[A](program: IO[ProgramError, A]): RouteResponse[A] = {
+
+  type ApiResponse[A] = ZIO[Logging, ProgramError, A]
+
+  def run[A](program: ApiResponse[A]): RouteResponse[A] = {
     runtime.unsafeRunToFuture(
       program
+        .provideLayer(loggingEnv)
         .mapError(handleError)
         .either
     )
   }
 
-  // handle only ApiError, remove DomainError
   // map ServiceError to ApiError, default case
-  def handleError(error: ProgramError): OutputError = ???
+  def handleError(error: ProgramError): OutputError =
+    error match {
+      case ValidationErrors(message, _) => BadRequestError(BadRequestError.toString, message)
+      case e @ _                        => UnknownError(UnknownError.toString, e.message)
+    }
 }

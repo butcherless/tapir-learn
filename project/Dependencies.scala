@@ -4,7 +4,7 @@ object Dependencies {
 
   val commonMain = Seq(
     "ch.qos.logback" % "logback-classic" % Versions.logback,
-    "com.github.mlangc" %% "slf4zio" % Versions.slf4zio,
+    "dev.zio" %% "zio-logging-slf4j" % Versions.zioLogging,
     "dev.zio" %% "zio-prelude" % Versions.zioPrelude
   )
 
@@ -12,8 +12,9 @@ object Dependencies {
     "org.scalatest" %% "scalatest" % Versions.scalatest % "it, test"
   )
 
-  val coreMain = Seq(
-  )
+  val coreMain = Seq()
+
+  val coreTest = Seq()
 
   val apiMain = Seq(
     "com.softwaremill.sttp.tapir" %% "tapir-core" % Versions.tapir,
