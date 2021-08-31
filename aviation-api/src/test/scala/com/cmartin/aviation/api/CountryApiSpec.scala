@@ -19,6 +19,7 @@ import BaseEndpoint.baseApiPath
 import CountryEndpoints.countriesResource
 import CountryEndpoints.Implicits._
 import Model._
+import TestData._
 
 class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with ScalatestRouteTest {
 
@@ -27,6 +28,42 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
   val countryApi: CountryApi = CountryApi(countryService)
 
   behavior of "CountryApiSpec"
+
+  "Post" should "create a Country" in {
+    // G I V E N
+    (countryService.create _)
+      .expects(TestData.spainCountry)
+      .returns(IO.succeed(TestData.spainCountry))
+      .once()
+
+    // W H E N
+    Post(s"$baseApiPath/$countriesResource")
+      .withEntity(TestData.spainCountryJson) ~>
+      addHeader(jsonContentType) ~>
+      countryApi.postRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.Created
+        decode[CountryView](entityAs[String]) shouldBe Right(CountryEndpoints.countryViewExample)
+      }
+  }
+
+  it should "return BadRequest for an invalid Country, invalid code" in {
+    // G I V E N
+
+    // W H E N
+    Post(s"$baseApiPath/$countriesResource")
+      .withEntity(TestData.invalidCountryCodeJson) ~>
+      addHeader(jsonContentType) ~>
+      countryApi.postRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.BadRequest
+        decode[BadRequestError](entityAs[String]) shouldBe Right(
+          BadRequestError(BadRequestError.toString, "[country code must have size: 2]")
+        )
+      }
+  }
 
   "Get" should "retrieve a Country by code" in {
     // G I V E N
@@ -46,7 +83,7 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
       }
   }
 
-  it should "WIP returns a BadRequest for an invalid country code" in {
+  it should "return a BadRequest for an invalid country code" in {
     // G I V E N
     val code = CountryCode("esp")
 
@@ -56,11 +93,30 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
       // T H E N
       check {
         status shouldBe StatusCodes.BadRequest
-        info(entityAs[String])
         decode[BadRequestError](entityAs[String]) shouldBe Right(
           BadRequestError(BadRequestError.toString, "[country code must have size: 2]")
         )
       }
+  }
 
+  it should "return a NotFound for a missing country code" in {
+    // G I V E N
+    val code = CountryCode("xy")
+    (countryService.findByCode _)
+      .expects(code)
+      .returns(IO.fail(MissingEntityError(s"missing country for code: $code")))
+      .once()
+
+    // W H E N
+    Get(s"$baseApiPath/$countriesResource/${code}") ~>
+      countryApi.getRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.NotFound
+        info(entityAs[String])
+        decode[NotFoundError](entityAs[String]) shouldBe Right(
+          NotFoundError(NotFoundError.toString, s"missing country for code: $code")
+        )
+      }
   }
 }

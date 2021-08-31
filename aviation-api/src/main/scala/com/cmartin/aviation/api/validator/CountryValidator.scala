@@ -38,7 +38,10 @@ object CountryValidator {
     )(Country)
   }
 
-  def validateName(name: String): Validation[ValidationError, String] = ???
+  //TODO add regex validation, copy from existing
+  def validateName(name: String): Validation[ValidationError, String] = {
+    Validation.succeed(name)
+  }
 
   def validateDeleteRequest(code: String): Validation[ValidationError, CountryCode] = {
     validateCode(code)

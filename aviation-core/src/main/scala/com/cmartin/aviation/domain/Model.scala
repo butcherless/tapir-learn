@@ -11,6 +11,8 @@ object Model {
 
   sealed trait ServiceError extends ProgramError
 
+  case class MissingEntityError(message: String) extends ServiceError
+
   object CountryCode extends Subtype[String]
   type CountryCode = CountryCode.Type
 

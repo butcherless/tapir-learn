@@ -25,6 +25,12 @@ object Common {
   def handleError(error: ProgramError): OutputError =
     error match {
       case ValidationErrors(message, _) => BadRequestError(BadRequestError.toString, message)
+      case e: ServiceError              => handleServiceError(e)
       case e @ _                        => UnknownError(UnknownError.toString, e.message)
+    }
+
+  def handleServiceError(error: ServiceError): OutputError =
+    error match {
+      case MissingEntityError(message) => NotFoundError(NotFoundError.toString, error.message)
     }
 }
