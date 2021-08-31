@@ -54,6 +54,16 @@ lazy val `aviation-core` = (project in file("aviation-core"))
   )
   .settings(coverageExcludedPackages := "<empty>;.*Configuration.*")
 
+lazy val `aviation-repository` = (project in file("aviation-repository"))
+  .configs(IntegrationTest)
+  .settings(
+    Defaults.itSettings,
+    commonSettings,
+    libraryDependencies ++= repoMain ++ repoTest,
+    name := "aviation-repository"
+  )
+  .dependsOn(`aviation-core`)
+
 lazy val `aviation-api` = (project in file("aviation-api"))
   .configs(IntegrationTest)
   .settings(
