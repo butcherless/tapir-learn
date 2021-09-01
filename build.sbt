@@ -25,6 +25,7 @@ lazy val commonSettings = Seq(
 lazy val `aviation-root` = (project in file("."))
   .aggregate(
     `aviation-core`,
+    `aviation-repository`,
     `aviation-api`,
     `tapir-learn`
   )

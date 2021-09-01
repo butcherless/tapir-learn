@@ -1,7 +1,14 @@
 package com.cmartin.aviation.repository
-import JdbcDefinitions.BaseDefinitions
+import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
-import slick.lifted.{ForeignKeyQuery, Index, PrimaryKey, ProvenShape}
+import slick.lifted.ForeignKeyQuery
+import slick.lifted.Index
+import slick.lifted.PrimaryKey
+import slick.lifted.ProvenShape
+
+import scala.concurrent.Future
+
+import JdbcDefinitions.BaseDefinitions
 
 object JdbcRepositories {
   import JdbcDefinitions._
@@ -40,5 +47,14 @@ object JdbcRepositories {
         entities.filter(_.code === code).result.headOption
       }
     }
+  }
+
+  class DataAccessObject(configPath: String) extends JdbcProfile with AviationRepositories {
+    val config = DatabaseConfig.forConfig[JdbcProfile](configPath)
+
+    implicit def runAction[A](action: api.DBIO[A]): Future[A] =
+      config.db.run(action)
+
+    val countryRepository = new CountrySlickRepository
   }
 }
