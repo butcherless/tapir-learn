@@ -69,5 +69,10 @@ object AbstractRepositories {
     def findByCountryCode(code: String): F[Seq[AirportDbo]]
   }
 
-  trait AbstractRouteRepository[F[_]] extends AbstractRepository[F, RouteDbo]
+  trait AbstractAirlineRepository[F[_]] extends AbstractRepository[F, AirlineDbo]
+
+  trait AbstractRouteRepository[F[_]] extends AbstractRepository[F, RouteDbo] {
+    def findByIataOrigin(iataCode: String): F[Seq[RouteDbo]]
+    def findByIataDestination(iataCode: String): F[Seq[RouteDbo]]
+  }
 }

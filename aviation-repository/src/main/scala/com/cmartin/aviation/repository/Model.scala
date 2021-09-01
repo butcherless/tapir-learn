@@ -1,5 +1,7 @@
 package com.cmartin.aviation.repository
 
+import java.time.LocalDate
+
 object Model {
   type LongTuple = (Long, Long)
 
@@ -28,6 +30,13 @@ object Model {
       iataCode: String,
       icaoCode: String,
       countryId: Long = 0L,
+      id: Option[Long] = None
+  ) extends LongDbo
+
+  final case class AirlineDbo(
+      name: String,
+      foundationDate: LocalDate,
+      countryId: Long,
       id: Option[Long] = None
   ) extends LongDbo
 

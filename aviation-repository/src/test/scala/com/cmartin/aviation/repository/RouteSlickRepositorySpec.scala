@@ -23,6 +23,38 @@ class RouteSlickRepositorySpec extends BaseRepositorySpec {
     }
   }
 
+  it should "fail to insert a duplicate Route into the repository" in {
+    recoverToSucceededIf[java.sql.SQLException] {
+      for {
+        countryId <- dao.countryRepository.insert(spainDbo)
+        originId <- dao.airportRepository.insert(dao.updateCountryId(madDbo)(countryId))
+        destinationId <- dao.airportRepository.insert(dao.updateCountryId(bcnDbo)(countryId))
+        _ <- dao.routeRepository.insert(RouteDbo(262.0, originId, destinationId))
+        _ <- dao.routeRepository.insert(RouteDbo(262.0, originId, destinationId))
+      } yield ()
+    }
+  }
+
+  it should "fail to insert a Route with missing origin airport into the repository" in {
+    recoverToSucceededIf[java.sql.SQLException] {
+      for {
+        countryId <- dao.countryRepository.insert(spainDbo)
+        destinationId <- dao.airportRepository.insert(dao.updateCountryId(bcnDbo)(countryId))
+        _ <- dao.routeRepository.insert(RouteDbo(262.0, 0L, destinationId))
+      } yield ()
+    }
+  }
+
+  it should "fail to insert a Route with missing destination airport into the repository" in {
+    recoverToSucceededIf[java.sql.SQLException] {
+      for {
+        countryId <- dao.countryRepository.insert(spainDbo)
+        originId <- dao.airportRepository.insert(dao.updateCountryId(madDbo)(countryId))
+        _ <- dao.routeRepository.insert(RouteDbo(262.0, originId, 0L))
+      } yield ()
+    }
+  }
+
   override protected def beforeEach(): Unit = {
     Await.result(dao.createSchema(), waitTimeout)
   }

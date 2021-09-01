@@ -16,7 +16,8 @@ object Common {
     private val schema =
       countries.schema ++
         airports.schema ++
-        routes.schema
+        routes.schema ++
+        airlines.schema
 
     def createSchema(): Future[Unit] = schema.create
     def dropSchema(): Future[Unit] = schema.dropIfExists

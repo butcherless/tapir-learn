@@ -6,6 +6,7 @@ import slick.lifted.Index
 import slick.lifted.PrimaryKey
 import slick.lifted.ProvenShape
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 import JdbcDefinitions.BaseDefinitions
@@ -22,6 +23,7 @@ object JdbcRepositories {
     lazy val countries = TableQuery[CountryTable]
     lazy val airports = TableQuery[AirportTable]
     lazy val routes = TableQuery[RouteTable]
+    lazy val airlines = TableQuery[AirlineTable]
 
     /* C O U N T R Y
      */
@@ -62,7 +64,24 @@ object JdbcRepositories {
       def iataIndex = index("iataCode_index", iataCode, unique = true)
     }
 
-    /* A I R P O R T
+    /* A I R L I N E
+     */
+    final class AirlineTable(tag: Tag) extends LongBasedTable[AirlineDbo](tag, TableNames.airlines) {
+      // property columns:
+      def name = column[String]("NAME")
+
+      def foundationDate = column[LocalDate]("FOUNDATION_DATE")
+
+      // foreign columns:
+      def countryId = column[Long]("COUNTRY_ID")
+
+      def * = (name, foundationDate, countryId, id.?).<>(AirlineDbo.tupled, AirlineDbo.unapply)
+
+      // foreign keys
+      def country = foreignKey("FK_COUNTRY_AIRLINE", countryId, countries)(_.id)
+    }
+
+    /* R O U T E
      */
     final class RouteTable(tag: Tag) extends LongBasedTable[RouteDbo](tag, TableNames.routes) {
       // property columns:
@@ -130,11 +149,36 @@ object JdbcRepositories {
       }
     }
 
+    final class AirlineSlickRepository
+        extends AbstractLongRepository[AirlineDbo, AirlineTable]
+        with AbstractAirlineRepository[DBIO] {
+
+      override val entities: TableQuery[AirlineTable] = airlines
+    }
+
     final class RouteSlickRepository
         extends AbstractLongRepository[RouteDbo, RouteTable]
         with AbstractRouteRepository[DBIO] {
 
       override val entities: TableQuery[RouteTable] = routes
+
+      override def findByIataOrigin(iataCode: String): DBIO[Seq[RouteDbo]] = {
+        val query = for {
+          route <- entities
+          airport <- route.destination if airport.iataCode === iataCode
+        } yield route
+
+        query.result
+      }
+
+      override def findByIataDestination(iataCode: String): DBIO[Seq[RouteDbo]] = {
+        val query = for {
+          route <- entities
+          airport <- route.origin if airport.iataCode === iataCode
+        } yield route
+
+        query.result
+      }
     }
   }
 
@@ -146,6 +190,7 @@ object JdbcRepositories {
 
     val countryRepository = new CountrySlickRepository
     val airportRepository = new AirportSlickRepository
+    val airlineRepository = new AirlineSlickRepository
     val routeRepository = new RouteSlickRepository
   }
 }
