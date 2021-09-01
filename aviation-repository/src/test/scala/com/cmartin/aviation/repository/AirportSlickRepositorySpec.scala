@@ -16,7 +16,7 @@ class AirportSlickRepositorySpec extends BaseRepositorySpec {
 
   "Insert" should "insert an Airport into the repository" in {
     val result = for {
-      id <- insertAirport(spainDbo)(madDbo)
+      id <- dao.insertAirport(spainDbo)(madDbo)
       count <- dao.airportRepository.count()
     } yield (id, count)
 

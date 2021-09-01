@@ -21,6 +21,7 @@ object JdbcRepositories {
 
     lazy val countries = TableQuery[CountryTable]
     lazy val airports = TableQuery[AirportTable]
+    lazy val routes = TableQuery[RouteTable]
 
     /* C O U N T R Y
      */
@@ -61,6 +62,37 @@ object JdbcRepositories {
       def iataIndex = index("iataCode_index", iataCode, unique = true)
     }
 
+    /* A I R P O R T
+     */
+    final class RouteTable(tag: Tag) extends LongBasedTable[RouteDbo](tag, TableNames.routes) {
+      // property columns:
+      def distance = column[Double]("DISTANCE")
+
+      // foreign key columns:
+      def originId = column[Long]("ORIGIN_ID")
+
+      def destinationId = column[Long]("DESTINATION_ID")
+
+      def * = (distance, originId, destinationId, id.?).<>(RouteDbo.tupled, RouteDbo.unapply)
+
+      // foreign keys
+      def origin =
+        foreignKey("FK_ORIGIN_AIRPORT", originId, airports)(
+          origin => origin.id,
+          onDelete = ForeignKeyAction.Cascade
+        )
+
+      def destination =
+        foreignKey("FK_DESTINATION_AIRPORT", destinationId, airports)(
+          destination => destination.id,
+          onDelete = ForeignKeyAction.Cascade
+        )
+
+      // indexes, compound
+      def originDestinationIndex =
+        index("origin_destination_index", (originId, destinationId), unique = true)
+    }
+
     /*  R E P O S I T O R I E S
      */
     final class CountrySlickRepository
@@ -96,7 +128,13 @@ object JdbcRepositories {
 
         query.result
       }
+    }
 
+    final class RouteSlickRepository
+        extends AbstractLongRepository[RouteDbo, RouteTable]
+        with AbstractRouteRepository[DBIO] {
+
+      override val entities: TableQuery[RouteTable] = routes
     }
   }
 
@@ -108,5 +146,6 @@ object JdbcRepositories {
 
     val countryRepository = new CountrySlickRepository
     val airportRepository = new AirportSlickRepository
+    val routeRepository = new RouteSlickRepository
   }
 }

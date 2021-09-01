@@ -31,6 +31,13 @@ object Model {
       id: Option[Long] = None
   ) extends LongDbo
 
+  final case class RouteDbo(
+      distance: Double,
+      originId: Long,
+      destinationId: Long,
+      id: Option[Long] = None
+  ) extends LongDbo
+
   object TableNames {
     val airlines = "AIRLINES"
     val airports = "AIRPORTS"
