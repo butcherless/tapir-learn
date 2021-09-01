@@ -23,6 +23,14 @@ object Model {
       id: Option[Long] = None
   ) extends LongDbo
 
+  final case class AirportDbo(
+      name: String,
+      iataCode: String,
+      icaoCode: String,
+      countryId: Long = 0L,
+      id: Option[Long] = None
+  ) extends LongDbo
+
   object TableNames {
     val airlines = "AIRLINES"
     val airports = "AIRPORTS"
@@ -34,11 +42,3 @@ object Model {
     val aircraftJourney = "AIRCRAFT_JOURNEY"
   }
 }
-
-/*
-final case class CountryDbo(
-      name: String,
-      code: String,
-      id: Option[Long] = None
-  ) extends LongEntity(id)
- */

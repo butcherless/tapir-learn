@@ -61,7 +61,8 @@ lazy val `aviation-repository` = (project in file("aviation-repository"))
     Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= repoMain ++ repoTest,
-    name := "aviation-repository"
+    name := "aviation-repository",
+    parallelExecution := false
   )
   .dependsOn(`aviation-core`)
 

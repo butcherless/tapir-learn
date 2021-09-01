@@ -12,7 +12,7 @@ object TestData {
   val spainText = "Spain"
   val spainCountry = Country(spainCode, spainText)
   val spainDbo = CountryDbo(spainText, spainCode)
-  val updatedSpainDbo = spainDbo.copy(name = "SPAIN")
+  val updatedSpainText = "SPAIN"
 
   val portugalCode = CountryCode("pt")
   val portugalText = "Portugal"
@@ -20,4 +20,15 @@ object TestData {
   val portugalDbo = CountryDbo(portugalText, portugalCode)
 
   val countrySequence = Seq(spainDbo, portugalDbo)
+
+  // AIRPORT
+  val madIataCode = "MAD"
+  val madIcaoCode = "LEMD"
+  val madDbo = AirportDbo("Barajas", madIataCode, madIcaoCode)
+  val bcnDbo = AirportDbo("El Prat", "BCN", "LEBL")
+  val updatedMadText = "MADRID BARAJAS"
+
+  val airportSequence = Seq(madDbo, bcnDbo)
+
+  val lisDbo = AirportDbo("Portela", "LIS", "LPPT")
 }

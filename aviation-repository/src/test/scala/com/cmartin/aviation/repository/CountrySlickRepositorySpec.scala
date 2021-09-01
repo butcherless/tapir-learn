@@ -1,8 +1,6 @@
 package com.cmartin.aviation.repository
-import org.scalatest.BeforeAndAfterEach
+
 import org.scalatest.Inside._
-import org.scalatest.flatspec.AsyncFlatSpec
-import org.scalatest.matchers.should.Matchers
 
 import scala.concurrent.Await
 
@@ -10,7 +8,7 @@ import Common.dao
 import TestData._
 import Model.CountryDbo
 
-class CountrySlickRepositorySpec extends AsyncFlatSpec with Matchers with BeforeAndAfterEach {
+class CountrySlickRepositorySpec extends BaseRepositorySpec {
   import dao.runAction
 
   behavior of "Country Slick Repository"
@@ -52,14 +50,20 @@ class CountrySlickRepositorySpec extends AsyncFlatSpec with Matchers with Before
   "Update" should "update a country from the database" in {
     val result = for {
       cid <- dao.countryRepository.insert(spainDbo)
-      _ <- dao.countryRepository.update(updatedSpainDbo.copy(id = Option(cid)))
+      created <- dao.countryRepository.findById(Option(cid))
+      _ <- dao.countryRepository.update(created.get.copy(name = updatedSpainText))
       updated <- dao.countryRepository.findById(Option(cid))
     } yield (cid, updated)
 
     result map {
-      case (cid, updated) =>
+      case (cid, country) =>
         assert(cid > 0L)
-        assert(updated == Option(updatedSpainDbo.copy(id = Option(cid))))
+        assert(country.isDefined)
+        inside(country.get) {
+          case CountryDbo(name, code, _) =>
+            name shouldBe updatedSpainText
+            code shouldBe spainCode
+        }
     }
   }
 

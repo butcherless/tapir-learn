@@ -20,6 +20,7 @@ object JdbcRepositories {
     import api._
 
     lazy val countries = TableQuery[CountryTable]
+    lazy val airports = TableQuery[AirportTable]
 
     /* C O U N T R Y
      */
@@ -37,6 +38,31 @@ object JdbcRepositories {
         index("code_idx", code, unique = true)
     }
 
+    /* A I R P O R T
+     */
+    final class AirportTable(tag: Tag) extends LongBasedTable[AirportDbo](tag, TableNames.airports) {
+      // property columns:
+      def name: Rep[String] = column[String]("NAME")
+
+      def iataCode: Rep[String] = column[String]("IATA_CODE")
+
+      def icaoCode: Rep[String] = column[String]("ICAO_CODE")
+
+      // foreign columns:
+      def countryId: Rep[Long] = column[Long]("COUNTRY_ID")
+
+      def * : ProvenShape[AirportDbo] =
+        (name, iataCode, icaoCode, countryId, id.?).<>(AirportDbo.tupled, AirportDbo.unapply)
+
+      // foreign keys
+      def country = foreignKey("FK_COUNTRY_AIRPORT", countryId, countries)(_.id)
+
+      // indexes
+      def iataIndex = index("iataCode_index", iataCode, unique = true)
+    }
+
+    /*  R E P O S I T O R I E S
+     */
     final class CountrySlickRepository
         extends AbstractLongRepository[CountryDbo, CountryTable]
         with AbstractCountryRepository[DBIO] {
@@ -47,6 +73,31 @@ object JdbcRepositories {
         entities.filter(_.code === code).result.headOption
       }
     }
+
+    final class AirportSlickRepository
+        extends AbstractLongRepository[AirportDbo, AirportTable]
+        with AbstractAirportRepository[DBIO] {
+
+      override val entities: TableQuery[AirportTable] = airports
+
+      override def findByIataCode(code: String): DBIO[Option[AirportDbo]] = {
+        entities.filter(_.iataCode === code).result.headOption
+      }
+
+      override def findByIcaoCode(code: String): DBIO[Option[AirportDbo]] = {
+        entities.filter(_.icaoCode === code).result.headOption
+      }
+
+      override def findByCountryCode(code: String): DBIO[Seq[AirportDbo]] = {
+        val query = for {
+          airport <- entities
+          country <- airport.country if country.code === code
+        } yield airport
+
+        query.result
+      }
+
+    }
   }
 
   class DataAccessObject(configPath: String) extends JdbcProfile with AviationRepositories {
@@ -56,5 +107,6 @@ object JdbcRepositories {
       config.db.run(action)
 
     val countryRepository = new CountrySlickRepository
+    val airportRepository = new AirportSlickRepository
   }
 }

@@ -1,6 +1,7 @@
 package com.cmartin.aviation.repository
 
 import scala.concurrent.Future
+import Model._
 
 import JdbcRepositories.DataAccessObject
 
@@ -13,8 +14,8 @@ object Common {
     import api._
 
     private val schema =
-      countries.schema // ++
-    // airports.schema
+      countries.schema ++
+        airports.schema
 
     def createSchema(): Future[Unit] = schema.create
     def dropSchema(): Future[Unit] = schema.dropIfExists
