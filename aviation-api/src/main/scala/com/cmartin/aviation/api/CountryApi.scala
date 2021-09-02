@@ -65,17 +65,19 @@ class CountryApi(countryService: CountryService) {
     for {
       _ <- log.debug(s"doPostLogic - request: $request")
       country <- CountryValidator.validatePostRequest(request).toIO
-      country <- countryService.create(country)
+      created <- countryService.create(country)
     } yield (
-      buildContentLocation(CountryEndpoints.countriesResource, country.code),
-      country.toView
+      buildContentLocation(CountryEndpoints.countriesResource, created.code),
+      created.toView
     )
   }
 
   private def doPutLogic(request: CountryView): ApiResponse[CountryView] = {
     for {
-      _ <- log.debug(s"doPostLogic - request: $request")
-    } yield CountryEndpoints.countryViewExample
+      _ <- log.debug(s"doPutLogic - request: $request")
+      country <- CountryValidator.validatePutRequest(request).toIO
+      updated <- countryService.update(country)
+    } yield updated.toView
   }
 
   private def doDeleteLogic(request: String): ApiResponse[Unit] = {

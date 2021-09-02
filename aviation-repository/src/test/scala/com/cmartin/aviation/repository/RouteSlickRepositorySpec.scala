@@ -1,10 +1,11 @@
 package com.cmartin.aviation.repository
+import org.scalatest.Inside._
+
 import scala.concurrent.Await
 
 import Common.dao
 import TestData._
 import Model._
-import org.scalatest.Inside._
 
 class RouteSlickRepositorySpec extends BaseRepositorySpec {
   import dao.runAction

@@ -38,6 +38,10 @@ object CountryValidator {
     )(Country)
   }
 
+  def validatePutRequest(request: CountryView): Validation[ValidationError, Country] = {
+    validatePostRequest(request)
+  }
+
   //TODO add regex validation, copy from existing
   def validateName(name: String): Validation[ValidationError, String] = {
     Validation.succeed(name)

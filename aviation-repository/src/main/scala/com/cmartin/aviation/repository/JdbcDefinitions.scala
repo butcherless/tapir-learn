@@ -2,6 +2,8 @@ package com.cmartin.aviation.repository
 
 import slick.jdbc.JdbcProfile
 
+import AbstractRepositories.AbstractRepository
+
 object JdbcDefinitions {
 
   /** Relational Profile for mapping domain and persistence models
@@ -21,10 +23,12 @@ object JdbcDefinitions {
       def id: Rep[Long] = column[Long]("ID", O.PrimaryKey, O.AutoInc)
     }
 
+    /*
     abstract class ForeignLongTable[T <: LongDbo](tag: Tag, tableName: String) extends Table[T](tag, tableName) {
       /* primary key column */
       def id: Rep[Long] = column[Long]("ID")
     }
+     */
 
     abstract class RelationBasedTable[T <: RelationDbo](tag: Tag, tableName: String) extends Table[T](tag, tableName) {
       /* primary key columns */
@@ -32,6 +36,7 @@ object JdbcDefinitions {
       def right: Rep[Long] = column[Long]("RIGHT")
     }
 
+    /*
     abstract class AbstractRelationRepository[E <: RelationDbo, T <: RelationBasedTable[E]] {
       val entities: TableQuery[T]
 
@@ -65,7 +70,9 @@ object JdbcDefinitions {
       private def entityReturningId(): ReturningInsertActionComposer[E, LongTuple] =
         entities returning entities.map(e => (e.left, e.right))
     }
+     */
 
+    /*
     abstract class AbstractForeignLongRepository[E <: LongDbo, T <: ForeignLongTable[E]] {
       val entities: TableQuery[T]
 
@@ -73,8 +80,8 @@ object JdbcDefinitions {
 
       def insert(e: E): DBIO[Long] = entityReturningId += e
     }
+     */
 
-    import AbstractRepositories.AbstractRepository
     abstract class AbstractLongRepository[E <: LongDbo, T <: LongBasedTable[E]] extends AbstractRepository[DBIO, E] {
       val entities: TableQuery[T]
 

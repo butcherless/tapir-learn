@@ -11,5 +11,5 @@ trait CountryService {
   def create(country: Country): ServiceResponse[Country]
   def findByCode(code: CountryCode): ServiceResponse[Country]
   def update(country: Country): ServiceResponse[Country]
-  def deleteByCode(code: CountryCode): ServiceResponse[Unit]
+  def deleteByCode(code: CountryCode): ServiceResponse[Int]
 }

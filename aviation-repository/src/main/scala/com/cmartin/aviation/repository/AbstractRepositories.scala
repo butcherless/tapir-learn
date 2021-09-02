@@ -1,4 +1,5 @@
 package com.cmartin.aviation.repository
+
 import Model._
 
 object AbstractRepositories {

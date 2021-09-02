@@ -33,10 +33,10 @@ class CountryCrudService extends CountryService {
     program
   }
 
-  override def deleteByCode(code: CountryCode): ServiceResponse[Unit] = {
+  override def deleteByCode(code: CountryCode): ServiceResponse[Int] = {
     val program = for {
       _ <- log.debug(s"deleteByCode: $code")
-    } yield ()
+    } yield 1
 
     program
   }

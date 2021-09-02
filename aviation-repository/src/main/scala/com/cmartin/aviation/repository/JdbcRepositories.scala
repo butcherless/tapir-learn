@@ -1,4 +1,5 @@
 package com.cmartin.aviation.repository
+
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
 import slick.lifted.ForeignKeyQuery

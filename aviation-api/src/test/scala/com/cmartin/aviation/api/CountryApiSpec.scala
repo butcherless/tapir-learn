@@ -119,4 +119,41 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
         )
       }
   }
+
+  "Update" should "update a Country" in {
+    // G I V E N
+    (countryService.update _)
+      .expects(TestData.spainCountry)
+      .returns(IO.succeed(TestData.spainCountry))
+      .once()
+
+    // W H E N
+    Put(s"$baseApiPath/$countriesResource")
+      .withEntity(TestData.spainCountryJson) ~>
+      addHeader(jsonContentType) ~>
+      countryApi.putRoute ~>
+      // T H E N
+      check {
+        status shouldBe StatusCodes.OK
+        decode[CountryView](entityAs[String]) shouldBe Right(CountryEndpoints.countryViewExample)
+      }
+  }
+
+  "Delete" should "delete a Country" in {
+    // G I V E N
+    val code = CountryCode("es")
+
+    (countryService.deleteByCode _)
+      .expects(code)
+      .returns(IO.succeed(1))
+      .once()
+    // W H E N
+    Delete(s"$baseApiPath/$countriesResource/${code}") ~>
+      countryApi.deleteRoute ~>
+      check {
+        // T H E N
+        status shouldBe StatusCodes.NoContent
+      }
+
+  }
 }
