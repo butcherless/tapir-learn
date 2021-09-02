@@ -25,7 +25,9 @@ object TestData {
   val madIataCode = "MAD"
   val madIcaoCode = "LEMD"
   val madDbo = AirportDbo("Barajas", madIataCode, madIcaoCode)
-  val bcnDbo = AirportDbo("El Prat", "BCN", "LEBL")
+  val bcnIataCode = "BCN"
+  val bcnDbo = AirportDbo("El Prat", bcnIataCode, "LEBL")
+  val tfnDbo = AirportDbo("Los Rodeos", "TFN", "GCXO")
   val updatedMadText = "MADRID BARAJAS"
 
   val airportSequence = Seq(madDbo, bcnDbo)

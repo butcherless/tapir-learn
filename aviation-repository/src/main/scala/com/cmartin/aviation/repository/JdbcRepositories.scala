@@ -165,7 +165,7 @@ object JdbcRepositories {
       override def findByIataOrigin(iataCode: String): DBIO[Seq[RouteDbo]] = {
         val query = for {
           route <- entities
-          airport <- route.destination if airport.iataCode === iataCode
+          airport <- route.origin if airport.iataCode === iataCode
         } yield route
 
         query.result
@@ -174,7 +174,7 @@ object JdbcRepositories {
       override def findByIataDestination(iataCode: String): DBIO[Seq[RouteDbo]] = {
         val query = for {
           route <- entities
-          airport <- route.origin if airport.iataCode === iataCode
+          airport <- route.destination if airport.iataCode === iataCode
         } yield route
 
         query.result
