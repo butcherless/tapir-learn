@@ -9,13 +9,11 @@ object Model {
     val id: T
   }
 
-  /**
-    * Identifier for a Long based Entity object
+  /** Identifier for a Long based Entity object
     */
   trait LongDbo extends IdentifiedDbo[Option[Long]]
 
-  /**
-    * Identifier for a N <-> M relationship object
+  /** Identifier for a N <-> M relationship object
     */
   trait RelationDbo extends IdentifiedDbo[LongTuple]
 

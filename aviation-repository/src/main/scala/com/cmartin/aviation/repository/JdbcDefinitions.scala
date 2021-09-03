@@ -113,6 +113,5 @@ object JdbcDefinitions {
       private def entityReturningId(): ReturningInsertActionComposer[E, Long] =
         entities returning entities.map(_.id)
     }
-
   }
 }
