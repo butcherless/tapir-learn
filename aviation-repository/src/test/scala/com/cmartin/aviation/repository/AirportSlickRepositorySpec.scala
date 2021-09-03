@@ -30,7 +30,7 @@ class AirportSlickRepositorySpec extends BaseRepositorySpec {
   it should "insert a sequence of airports into the database" in {
     val result = for {
       countryId <- dao.countryRepository.insert(spainDbo)
-      cs <- dao.airportRepository.insert(airportSequence.map(a => updateCountryId(a)(countryId)))
+      cs <- dao.airportRepository.insert(airportSequence.map(a => a.copy(countryId = countryId)))
     } yield cs
 
     result map { cs =>
@@ -44,8 +44,8 @@ class AirportSlickRepositorySpec extends BaseRepositorySpec {
     recoverToSucceededIf[java.sql.SQLException] {
       for {
         countryId <- dao.countryRepository.insert(spainDbo)
-        _ <- dao.airportRepository.insert(updateCountryId(madDbo)(countryId))
-        _ <- dao.airportRepository.insert(updateCountryId(madDbo)(countryId))
+        _ <- dao.airportRepository.insert(madDbo.copy(countryId = countryId))
+        _ <- dao.airportRepository.insert(madDbo.copy(countryId = countryId))
       } yield ()
     }
   }
@@ -118,8 +118,8 @@ class AirportSlickRepositorySpec extends BaseRepositorySpec {
     val result = for {
       esId <- dao.countryRepository.insert(spainDbo)
       ptId <- dao.countryRepository.insert(portugalDbo)
-      _ <- dao.airportRepository.insert(airportSequence.map(a => updateCountryId(a)(esId)))
-      _ <- dao.airportRepository.insert(updateCountryId(lisDbo)(ptId))
+      _ <- dao.airportRepository.insert(airportSequence.map(a => a.copy(countryId = esId)))
+      _ <- dao.airportRepository.insert(lisDbo.copy(countryId = ptId))
       airports <- dao.airportRepository.findByCountryCode(spainCode)
       count <- dao.airportRepository.count()
     } yield (airports, count)
@@ -131,15 +131,31 @@ class AirportSlickRepositorySpec extends BaseRepositorySpec {
     }
   }
 
+  it should "retrieve a sequence of airports with a similar name" in {
+    val airportOne = AirportDbo("Barajas", "iata-1", "icao-1")
+    val airportTwo = AirportDbo("Madrid Barajas", "iata-2", "icao-2")
+    val airportThree = AirportDbo("Adolfo Suárez Madrid Barajas", "iata-3", "icao-3")
+
+    val result = for {
+      esId <- dao.countryRepository.insert(spainDbo)
+      _ <- dao.airportRepository.insert(airportOne.copy(countryId = esId))
+      _ <- dao.airportRepository.insert(airportTwo.copy(countryId = esId))
+      _ <- dao.airportRepository.insert(airportThree.copy(countryId = esId))
+      airports <- dao.airportRepository.findByName("Barajas")
+      count <- dao.airportRepository.count()
+    } yield airports
+
+    result map { airports =>
+      airports should have size 3
+    }
+  }
+
   def insertAirport(countryDbo: CountryDbo)(airportDbo: AirportDbo): DBIO[Long] = {
     for {
       countryId <- dao.countryRepository.insert(countryDbo)
-      id <- dao.airportRepository.insert(updateCountryId(airportDbo)(countryId))
+      id <- dao.airportRepository.insert(airportDbo.copy(countryId = countryId))
     } yield id
   }
-
-  def updateCountryId(dbo: AirportDbo)(countryId: Long): AirportDbo =
-    dbo.copy(countryId = countryId)
 
   override protected def beforeEach(): Unit = {
     Await.result(dao.createSchema(), waitTimeout)

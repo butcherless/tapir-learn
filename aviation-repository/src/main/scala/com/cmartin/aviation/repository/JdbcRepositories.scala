@@ -63,6 +63,7 @@ object JdbcRepositories {
 
       // indexes
       def iataIndex = index("iataCode_index", iataCode, unique = true)
+      def icaoIndex = index("icaoCode_index", icaoCode, unique = true)
     }
 
     /* A I R L I N E
@@ -147,6 +148,10 @@ object JdbcRepositories {
         } yield airport
 
         query.result
+      }
+
+      override def findByName(name: String): DBIO[Seq[AirportDbo]] = {
+        entities.filter(_.name like s"%$name%").result
       }
     }
 

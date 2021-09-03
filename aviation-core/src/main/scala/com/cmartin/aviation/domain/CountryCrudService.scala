@@ -12,7 +12,7 @@ class CountryCrudService extends CountryService {
   override def create(country: Country): ServiceResponse[Country] = {
     val program = for {
       _ <- log.debug(s"create: $country")
-    } yield Country(CountryCode("es"), "Spain")
+    } yield country
 
     program
   }
