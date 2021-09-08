@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:11-buster
+      - image: circleci/openjdk:18-buster
 
     working_directory: ~/repo
 
