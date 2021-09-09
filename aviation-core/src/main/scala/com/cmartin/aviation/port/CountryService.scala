@@ -1,15 +1,27 @@
 package com.cmartin.aviation.port
 
+import com.cmartin.aviation.Commons.ServiceResponse
 import com.cmartin.aviation.domain.Model._
-import zio.ZIO
-import zio.logging._
 
 trait CountryService {
 
-  type ServiceResponse[A] = ZIO[Logging, ServiceError, A]
-
+  /** @param country
+    * @return
+    */
   def create(country: Country): ServiceResponse[Country]
+
+  /** @param code
+    * @return
+    */
   def findByCode(code: CountryCode): ServiceResponse[Country]
+
+  /** @param country
+    * @return
+    */
   def update(country: Country): ServiceResponse[Country]
+
+  /** @param code
+    * @return
+    */
   def deleteByCode(code: CountryCode): ServiceResponse[Int]
 }

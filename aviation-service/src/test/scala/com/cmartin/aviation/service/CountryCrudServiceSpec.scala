@@ -1,18 +1,20 @@
-package com.cmartin.aviation.application
+package com.cmartin.aviation.service
 
-import com.cmartin.aviation.domain.CountryCrudService
+import com.cmartin.aviation.Commons._
 import com.cmartin.aviation.domain.Model._
+import com.cmartin.aviation.port.CountryRepository
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import com.cmartin.aviation.Commons._
 
 class CountryCrudServiceSpec extends AnyFlatSpec with Matchers {
+
 
   behavior of "CountryCrudService"
 
 //TODO
-  it should "be implemented..." in {
-    val service = CountryCrudService()
+  ignore should "be implemented..." in {
+  val countryRepository: CountryRepository = ???
+    val service = CountryCrudService(countryRepository)
     val code = CountryCode("es")
     val country = Country(code, "Spain")
 

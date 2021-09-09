@@ -1,0 +1,63 @@
+@startuml
+
+'Domain
+package "Domain" {
+  class DomainModel
+  'ports
+  interface CountryService
+  interface CountryRepository
+  CountryService -up-> DomainModel
+  CountryRepository -up-> DomainModel
+
+  interface AirportService
+  interface AirportRepository
+  AirportService -up-> DomainModel
+  AirportRepository -up-> DomainModel
+}
+
+'Service
+package "Services" {
+  CountryCrudService -up-|> CountryService
+  CountryCrudService --> CountryRepository
+
+  AirportCrudService -up-|> AirportService
+  AirportCrudService --> AirportRepository
+}
+
+'Repository
+package "Repositories" {
+  class DboModel {
+    toModel: DomainModel
+    toDbo: DboModel
+  }
+
+  CountryCrudRepository -up-|> CountryRepository
+  CountryCrudRepository -up-> DboModel
+
+  AirportCrudRepository -up-|> AirportRepository
+  AirportCrudRepository -up-> DboModel
+}
+
+'API
+package "Apis" {
+  class ViewModel {
+      toModel: DomainModel
+      toView: ViewModel
+  }
+
+  CountryApi -up-> ViewModel
+  CountryApi --> DomainModel
+  CountryApi -up-> CountryValidator
+  CountryApi --> CountryService
+  CountryValidator --> ViewModel
+  CountryValidator --> DomainModel
+
+  AirportApi -up-> ViewModel
+  AirportApi --> DomainModel
+  AirportApi -up-> AirportValidator
+  AirportApi --> AirportService
+  AirportValidator --> ViewModel
+  AirportValidator --> DomainModel
+}
+
+@enduml

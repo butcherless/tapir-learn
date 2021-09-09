@@ -10,6 +10,7 @@ object Model {
   }
 
   sealed trait ServiceError extends ProgramError
+  trait RepositoryError extends ProgramError
 
   case class MissingEntityError(message: String) extends ServiceError
 

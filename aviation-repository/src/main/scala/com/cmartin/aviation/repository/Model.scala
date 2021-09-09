@@ -17,6 +17,12 @@ object Model {
     */
   trait RelationDbo extends IdentifiedDbo[LongTuple]
 
+  /** Country entity
+    *
+    * @param name country nmme
+    * @param code country iso-2 code
+    * @param id entity identifier
+    */
   final case class CountryDbo(
       name: String,
       code: String,

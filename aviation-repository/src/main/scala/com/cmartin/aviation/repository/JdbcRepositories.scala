@@ -9,8 +9,12 @@ import slick.lifted.ProvenShape
 
 import java.time.LocalDate
 import scala.concurrent.Future
-
 import JdbcDefinitions.BaseDefinitions
+import com.cmartin.aviation.Commons.ServiceResponse
+import zio.{IO, Task, ZIO}
+import com.cmartin.aviation.domain.Model._
+import com.cmartin.aviation.port.CountryRepository
+import zio.logging._
 
 object JdbcRepositories {
   import JdbcDefinitions._
@@ -186,6 +190,19 @@ object JdbcRepositories {
         query.result
       }
     }
+
+    object RepoImplicits {
+      import slick.jdbc.PostgresProfile
+      implicit def runAction[A](action: DBIO[A]): Future[A] = ???
+    }
+
+
+    def manageThrowable(ex: Throwable): RepositoryError = ???
+
+    implicit class CountryToDbo(country: Country) {
+      def toDbo: Task[CountryDbo] = ???
+    }
+
   }
 
   class DataAccessObject(configPath: String) extends JdbcProfile with AviationRepositories {
@@ -198,5 +215,7 @@ object JdbcRepositories {
     val airportRepository = new AirportSlickRepository
     val airlineRepository = new AirlineSlickRepository
     val routeRepository = new RouteSlickRepository
+
+    def insertCountry(country: Country): Task[Long] = ???
   }
 }

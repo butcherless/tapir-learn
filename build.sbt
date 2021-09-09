@@ -25,6 +25,7 @@ lazy val commonSettings = Seq(
 lazy val `aviation-root` = (project in file("."))
   .aggregate(
     `aviation-core`,
+    `aviation-service`,
     `aviation-repository`,
     `aviation-api`,
     `tapir-learn`
@@ -54,6 +55,17 @@ lazy val `aviation-core` = (project in file("aviation-core"))
     name := "aviation-core"
   )
   .settings(coverageExcludedPackages := "<empty>;.*Configuration.*")
+
+lazy val `aviation-service` = (project in file("aviation-service"))
+  .configs(IntegrationTest)
+  .settings(
+    Defaults.itSettings,
+    commonSettings,
+    libraryDependencies ++= repoMain ++ repoTest,
+    name := "aviation-service",
+    parallelExecution := false
+  )
+  .dependsOn(`aviation-core`)
 
 lazy val `aviation-repository` = (project in file("aviation-repository"))
   .configs(IntegrationTest)
