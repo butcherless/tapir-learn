@@ -109,7 +109,7 @@ trait TransferEndpoint extends ApiCodecs {
   val nfeMapping = oneOfMappingFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
   val iseMapping = oneOfMappingFromMatchType(StatusCode.InternalServerError, jsonBody[ServerError])
   val sueMapping = oneOfMappingFromMatchType(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
-  val deMapping  = oneOfDefaultMapping(jsonBody[UnknownError])
+  val deMapping = oneOfDefaultMapping(jsonBody[UnknownError])
 
 }
 

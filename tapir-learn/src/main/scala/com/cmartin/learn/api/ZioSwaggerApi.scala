@@ -12,7 +12,7 @@ trait ZioSwaggerApi {
 
   lazy val route =
     ZioHttpInterpreter()
-     .toHttp(SwaggerUI[Task](docsAsYaml ,List(API_TEXT,API_VERSION,"docs")))
+      .toHttp(SwaggerUI[Task](docsAsYaml, List(API_TEXT, API_VERSION, "docs")))
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =

@@ -196,7 +196,6 @@ object JdbcRepositories {
       implicit def runAction[A](action: DBIO[A]): Future[A] = ???
     }
 
-
     def manageThrowable(ex: Throwable): RepositoryError = ???
 
     implicit class CountryToDbo(country: Country) {
