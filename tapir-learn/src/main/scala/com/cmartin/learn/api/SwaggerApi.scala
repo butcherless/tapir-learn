@@ -12,9 +12,9 @@ import scala.concurrent.Future
 
 trait SwaggerApi {
 
-  lazy val route: Route = 
-      AkkaHttpServerInterpreter()
-      .toRoute(SwaggerUI[Future](docsAsYaml,List(API_TEXT,API_VERSION,"docs")))  
+  lazy val route: Route =
+    AkkaHttpServerInterpreter()
+      .toRoute(SwaggerUI[Future](docsAsYaml, List(API_TEXT, API_VERSION, "docs")))
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =

@@ -19,9 +19,12 @@ object Model {
 
   /** Country entity
     *
-    * @param name country nmme
-    * @param code country iso-2 code
-    * @param id entity identifier
+    * @param name
+    *   country nmme
+    * @param code
+    *   country iso-2 code
+    * @param id
+    *   entity identifier
     */
   final case class CountryDbo(
       name: String,

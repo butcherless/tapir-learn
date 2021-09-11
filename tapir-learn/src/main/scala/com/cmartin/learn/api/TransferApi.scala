@@ -44,7 +44,7 @@ trait TransferApi {
   // ZIO based controller logic
   def doControllerLogic(transferId: TransferId): EndpointResponse[TransferDto] = {
     val program = for {
-      transfer    <- doBusinessLogic(transferId)
+      transfer <- doBusinessLogic(transferId)
       transferDto <- toDto(transfer)
     } yield transferDto
     val x1 = program.mapError(handle2Error)

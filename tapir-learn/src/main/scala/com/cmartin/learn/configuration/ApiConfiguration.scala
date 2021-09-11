@@ -8,7 +8,7 @@ import com.cmartin.learn.api._
 trait ApiConfiguration {
 
   lazy val serverAddress: String = "localhost"
-  lazy val serverPort: Int       = 8080
+  lazy val serverPort: Int = 8080
 
   lazy val routes: Route =
     DebuggingDirectives.logRequestResult("route-logger") {

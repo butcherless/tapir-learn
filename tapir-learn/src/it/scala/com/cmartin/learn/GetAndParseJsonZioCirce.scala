@@ -15,9 +15,9 @@ object GetAndParseJsonZioCirce extends App {
 
     val request =
       basicRequest.
-      //get(uri"https://httpbin.org/get")
-      //.response(asJson[HttpBinResponse])
-      get(uri"http://localhost:8080/api/v1.0/health")
+          //get(uri"https://httpbin.org/get")
+          //.response(asJson[HttpBinResponse])
+        get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[ApiBuildInfo])
 
     val program = for {

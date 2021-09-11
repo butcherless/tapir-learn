@@ -8,12 +8,11 @@ import org.scalatest.matchers.should.Matchers
 
 class CountryCrudServiceSpec extends AnyFlatSpec with Matchers {
 
-
   behavior of "CountryCrudService"
 
 //TODO
   ignore should "be implemented..." in {
-  val countryRepository: CountryRepository = ???
+    val countryRepository: CountryRepository = ???
     val service = CountryCrudService(countryRepository)
     val code = CountryCode("es")
     val country = Country(code, "Spain")

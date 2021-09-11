@@ -99,7 +99,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .body(TransferEndpoint.transferExample)
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
-    val doPost       = send(request)
+    val doPost = send(request)
     val layeredDoGet = doPost.provideCustomLayer(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
@@ -113,7 +113,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .body("""{ "key" : "invalid-transfer }""")
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
-    val doPost       = send(request)
+    val doPost = send(request)
     val layeredDoGet = doPost.provideCustomLayer(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
