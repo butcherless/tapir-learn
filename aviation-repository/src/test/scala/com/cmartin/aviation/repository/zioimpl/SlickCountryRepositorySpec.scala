@@ -1,46 +1,24 @@
 package com.cmartin.aviation.repository.zioimpl
+
+import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.Model.CountryDbo
-import com.cmartin.aviation.repository.zioimpl.SlickCountryRepository.SchemaHelper
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
-import zio.{FiberFailure, Has, IO, TaskLayer, ZIO, ZLayer}
-import slick.jdbc.JdbcProfile
-import slick.interop.zio.DatabaseProvider
-import com.typesafe.config.ConfigFactory
+import com.cmartin.aviation.repository.TestData._
+import com.cmartin.aviation.repository.zioimpl.common.runtime
+import zio.{Has, TaskLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
-import scala.jdk.CollectionConverters._
 
 class SlickCountryRepositorySpec
-    extends AnyFlatSpec with Matchers with BeforeAndAfterEach {
+    extends SlickBaseRepositorySpec {
 
-  //TODO
-  val runtime = zio.Runtime.default
-
-  private val config = ConfigFactory.parseMap(
-    Map(
-      "url" -> "jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1",
-      "driver" -> "org.h2.Driver",
-      "connectionPool" -> "disabled"
-    ).asJava
-  )
-
-  val configLayer = ZLayer.succeed(config)
-
-  private val env: ZLayer[Any, Throwable, Has[CountryRepository]] =
-    (ZLayer.succeed(config) ++ ZLayer.succeed[JdbcProfile](
-      slick.jdbc.H2Profile
-    )) >>> DatabaseProvider.live >>> SlickCountryRepository.live
+  val env: TaskLayer[Has[CountryRepository]] = testEnv >>> SlickCountryRepository.live
 
   behavior of "SlickCountryRepository"
 
   "Insert" should "insert a Country into the database" in {
-    val dbo = CountryDbo("Spain", "es")
     val program = for {
-      repo <- ZIO.service[CountryRepository]
-      c <- repo.insert(dbo)
-    } yield c
+      id <- SlickCountryRepository.insert(spainDbo)
+    } yield id
 
     val layeredProgram = program.provideLayer(env)
     val id = runtime.unsafeRun(layeredProgram)
@@ -49,16 +27,12 @@ class SlickCountryRepositorySpec
   }
 
   it should "fail to insert a duplicate Country into the database" in {
-    val dbo = CountryDbo("Spain", "es")
     val program = for {
-      repo <- ZIO.service[CountryRepository]
-      c <- repo.insert(dbo)
-      c <- repo.insert(dbo)
-    } yield c
+      _ <- SlickCountryRepository.insert(spainDbo)
+      _ <- SlickCountryRepository.insert(spainDbo)
+    } yield ()
 
-    val layeredProgram = program.provideLayer(env).either
-
-    val resultEither = runtime.unsafeRun(layeredProgram)
+    val resultEither = runtime.unsafeRun(program.provideLayer(env).either)
 
     resultEither.isLeft shouldBe true
 
@@ -66,21 +40,69 @@ class SlickCountryRepositorySpec
       case _: SQLIntegrityConstraintViolationException => succeed
       case _                                           => fail("unexpected error")
     }
-
   }
 
-  override def beforeEach(): Unit = {
-    val init =
-      (ZLayer.succeed(config) ++ ZLayer.succeed[JdbcProfile](
-        slick.jdbc.H2Profile
-      )) >>> DatabaseProvider.live >>> SlickCountryRepository.init
+  "Find" should "retrieve a Country by code" in {
+    val program = for {
+      id <- SlickCountryRepository.insert(spainDbo)
+      dbo <- SlickCountryRepository.findByCode(spainCode)
+    } yield (dbo)
 
-    val program = (for {
-      helper <- ZIO.service[SchemaHelper]
-      _ <- helper.dropSchema()
-      _ <- helper.createSchema()
-    } yield ()).provideLayer(init)
+    val layeredProgram = program.provideLayer(env)
+    val dboOpt = runtime.unsafeRun(layeredProgram)
 
-    runtime.unsafeRun(program)
+    dboOpt shouldBe Some(spainDbo.copy(id = dboOpt.get.id))
   }
+
+  it should "return None for a missing Country" in {
+    val program = for {
+      dbo <- SlickCountryRepository.findByCode(spainCode)
+    } yield dbo
+
+    val layeredProgram = program.provideLayer(env)
+    val dboOpt = runtime.unsafeRun(layeredProgram)
+
+    dboOpt shouldBe None
+  }
+
+  "Update" should "update a country retrieved from the database" in {
+    val program = for {
+      _ <- SlickCountryRepository.insert(spainDbo)
+      dbo <- SlickCountryRepository.findByCode(spainCode)
+      count <- SlickCountryRepository.update(dbo.get.copy(name = updatedSpainText))
+      dbo <- SlickCountryRepository.findByCode(spainCode)
+    } yield (dbo, count)
+
+    val layeredProgram = program.provideLayer(env)
+    val (dboOpt, count) = runtime.unsafeRun(layeredProgram)
+
+    dboOpt shouldBe Some(CountryDbo(updatedSpainText, spainCode, dboOpt.get.id))
+    count shouldBe 1
+  }
+
+  "Delete" should "delete a country from the database" in {
+    val program = for {
+      id <- SlickCountryRepository.insert(spainDbo)
+      _ <- SlickCountryRepository.delete(spainDbo.code)
+      count <- SlickCountryRepository.count()
+    } yield (id, count)
+
+    val (id, count) = runtime.unsafeRun(program.provideLayer(env))
+
+    assert(id > 0L)
+    assert(count == 0)
+  }
+
+  it should "return zero deleted items for a missing Country" in {
+    val program = for {
+      cs <- SlickCountryRepository.delete(spainDbo.code)
+      count <- SlickCountryRepository.count()
+    } yield (cs, count)
+
+    val (cs, count) = runtime.unsafeRun(program.provideLayer(env))
+
+    assert(cs == 0)
+    assert(count == 0)
+  }
+
 }

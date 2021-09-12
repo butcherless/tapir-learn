@@ -22,9 +22,10 @@ object TestData {
   val countrySequence = Seq(spainDbo, portugalDbo)
 
   // AIRPORT
+  val madName = "Barajas"
   val madIataCode = "MAD"
   val madIcaoCode = "LEMD"
-  val madDbo = AirportDbo("Barajas", madIataCode, madIcaoCode)
+  val madDbo = AirportDbo(madName, madIataCode, madIcaoCode)
   val bcnIataCode = "BCN"
   val bcnDbo = AirportDbo("El Prat", bcnIataCode, "LEBL")
   val tfnDbo = AirportDbo("Los Rodeos", "TFN", "GCXO")

@@ -5,9 +5,10 @@ import zio.IO
 
 trait CountryRepository {
 
-  def insert(countryDbo: CountryDbo): IO[Throwable, Long]
+  def insert(dbo: CountryDbo): IO[Throwable, Long]
   def findByCode(code: String): IO[Throwable, Option[CountryDbo]]
   def update(countryDbo: CountryDbo): IO[Throwable, Int]
   def delete(code: String): IO[Throwable, Int]
+  def count(): IO[Throwable, Int]
 
 }
