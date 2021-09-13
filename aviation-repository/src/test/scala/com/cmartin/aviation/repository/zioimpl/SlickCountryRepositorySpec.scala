@@ -70,8 +70,8 @@ class SlickCountryRepositorySpec
       _ <- SlickCountryRepository.insert(spainDbo)
       dbo <- SlickCountryRepository.findByCode(spainCode)
       count <- SlickCountryRepository.update(dbo.get.copy(name = updatedSpainText))
-      dbo <- SlickCountryRepository.findByCode(spainCode)
-    } yield (dbo, count)
+      updated <- SlickCountryRepository.findByCode(spainCode)
+    } yield (updated, count)
 
     val layeredProgram = program.provideLayer(env)
     val (dboOpt, count) = runtime.unsafeRun(layeredProgram)
@@ -83,14 +83,12 @@ class SlickCountryRepositorySpec
   "Delete" should "delete a country from the database" in {
     val program = for {
       id <- SlickCountryRepository.insert(spainDbo)
-      _ <- SlickCountryRepository.delete(spainDbo.code)
-      count <- SlickCountryRepository.count()
-    } yield (id, count)
+      count <- SlickCountryRepository.delete(spainDbo.code)
+    } yield count
 
-    val (id, count) = runtime.unsafeRun(program.provideLayer(env))
+    val count = runtime.unsafeRun(program.provideLayer(env))
 
-    assert(id > 0L)
-    assert(count == 0)
+    assert(count == 1)
   }
 
   it should "return zero deleted items for a missing Country" in {

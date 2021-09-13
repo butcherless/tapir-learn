@@ -1,14 +1,13 @@
 package com.cmartin.aviation.repository
 
-import com.cmartin.aviation.domain.Model
 import com.cmartin.aviation.repository.Model.{CountryDbo, LongDbo, TableNames}
-import SlickInfrastructure.Repositories.CountryRepo
-import SlickInfrastructure.CountryTable.countries
-import slick.jdbc.PostgresProfile.api._
-import slick.lifted.{Index, ProvenShape}
+import com.cmartin.aviation.repository.SlickInfrastructure.CountryTable.countries
+import com.cmartin.aviation.repository.SlickInfrastructure.Repositories.CountryRepo
 import slick.interop.zio.DatabaseProvider
 import slick.interop.zio.syntax._
-import zio.{Has, IO, Task, UIO, ZIO, ZLayer}
+import slick.jdbc.PostgresProfile.api._
+import slick.lifted.{Index, ProvenShape}
+import zio.{Has, IO, ZIO, ZLayer}
 
 object SlickInfrastructure {
 

@@ -53,6 +53,11 @@ object SlickAirportRepository {
             val query = entities.filter(_.name like s"%$name%")
             (query.result, db).toZio
           }
+
+          override def count(): IO[Throwable, Int] = {
+            val query = entities.length
+            (query.result, db).toZio
+          }
         }
       }
     }
@@ -64,6 +69,11 @@ object SlickAirportRepository {
   def update(dbo: AirportDbo): ZIO[Has[AirportRepository], Throwable, Int] =
     ZIO.accessM[Has[AirportRepository]](_.get.update(dbo))
 
+  /**
+   * Deletes an Aiport by its iata code
+   * @param iataCode airport code
+   * @return number of deleted rows
+   */
   def delete(iataCode: String): ZIO[Has[AirportRepository], Throwable, Int] =
     ZIO.accessM[Has[AirportRepository]](_.get.delete(iataCode))
 
@@ -78,5 +88,8 @@ object SlickAirportRepository {
 
   def findByName(name: String): ZIO[Has[AirportRepository], Throwable, Seq[AirportDbo]] =
     ZIO.accessM[Has[AirportRepository]](_.get.findByName(name))
+
+  def count(): ZIO[Has[AirportRepository], Throwable, Int] =
+    ZIO.accessM[Has[AirportRepository]](_.get.count())
 
 }

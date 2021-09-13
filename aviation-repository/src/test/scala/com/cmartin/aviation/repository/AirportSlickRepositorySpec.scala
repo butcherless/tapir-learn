@@ -142,7 +142,6 @@ class AirportSlickRepositorySpec extends BaseRepositorySpec {
       _ <- dao.airportRepository.insert(airportTwo.copy(countryId = esId))
       _ <- dao.airportRepository.insert(airportThree.copy(countryId = esId))
       airports <- dao.airportRepository.findByName("Barajas")
-      count <- dao.airportRepository.count()
     } yield airports
 
     result map { airports =>
