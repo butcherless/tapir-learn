@@ -56,6 +56,10 @@ trait Tables { self: JdbcProfile =>
 
   val airports = TableQuery[AirportTable]
 
+  def count[T <: LongBasedTable[_ <: LongDbo]](t: TableQuery[T]): DBIO[Int] = {
+    t.length.result
+  }
+
 }
 
 object Tables extends Tables with JdbcProfile

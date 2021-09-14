@@ -36,11 +36,10 @@ object SlickCountryRepository {
           }
 
           override def count(): IO[Throwable, Int] = {
-            val query = entities.length
-            (query.result, db).toZio
+            (Tables.count(entities), db).toZio
           }
-
         }
+
       }
     }
   }

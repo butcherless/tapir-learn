@@ -22,5 +22,4 @@ object common {
     def toZio: IO[Throwable, R] =
       ZIO.fromDBIO(ctx._1).provide(Has(ctx._2))
   }
-
 }
