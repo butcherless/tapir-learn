@@ -1,10 +1,15 @@
 package com.cmartin.aviation.service
 
 import com.cmartin.aviation.Commons.ServiceResponse
-import com.cmartin.aviation.domain.Model.{Country, CountryCode, MissingEntityError, ServiceError}
-import com.cmartin.aviation.port.{CountryRepository, CountryService}
+import com.cmartin.aviation.domain.Model.Country
+import com.cmartin.aviation.domain.Model.CountryCode
+import com.cmartin.aviation.domain.Model.MissingEntityError
+import com.cmartin.aviation.domain.Model.ServiceError
+import com.cmartin.aviation.port.CountryRepository
+import com.cmartin.aviation.port.CountryService
 import zio.IO
 import zio.logging._
+
 import CountryCrudService._
 
 class CountryCrudService(countryRepository: CountryRepository) extends CountryService {

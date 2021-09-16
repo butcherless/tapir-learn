@@ -6,9 +6,6 @@ import zhttp.http
 import zhttp.service.Server
 import zio._
 
-/*
-  https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html
- */
 object ZioHttpServerApp
     extends App {
 

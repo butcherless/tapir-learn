@@ -19,6 +19,7 @@ class CountryApi(countryService: CountryService) {
   lazy val routes: Route =
     getRoute ~
       postRoute ~
+      putRoute ~
       deleteRoute
 
   lazy val getRoute: Route =
