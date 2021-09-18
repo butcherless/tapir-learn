@@ -44,9 +44,9 @@ class SlickCountryRepositorySpec
 
   "Find" should "retrieve a Country by code" in {
     val program = for {
-      id <- SlickCountryRepository.insert(spainDbo)
+      _ <- SlickCountryRepository.insert(spainDbo)
       dbo <- SlickCountryRepository.findByCode(spainCode)
-    } yield (dbo)
+    } yield dbo
 
     val layeredProgram = program.provideLayer(env)
     val dboOpt = runtime.unsafeRun(layeredProgram)

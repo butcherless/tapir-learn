@@ -4,8 +4,7 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
 import akka.http.scaladsl.server.directives.DebuggingDirectives
 import com.cmartin.aviation.Commons
-import com.cmartin.aviation.api.CountryApi
-import com.cmartin.aviation.api.SwaggerApi
+import com.cmartin.aviation.api.{ActuatorApi, CountryApi, SwaggerApi}
 import com.cmartin.aviation.domain.Model
 import com.cmartin.aviation.port.CountryService
 
@@ -29,7 +28,8 @@ trait ApiConfiguration {
   val countryApi = CountryApi(countryService)
 
   lazy val routes: Route = DebuggingDirectives.logRequestResult("route-logger") {
-    countryApi.routes ~
+    ActuatorApi.route ~
+      countryApi.routes ~
       SwaggerApi.route
   }
 }

@@ -3,7 +3,7 @@ package com.cmartin.aviation.api
 import com.cmartin.aviation.domain.Model._
 import zio.prelude.Subtype
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 
 object Model {
 
@@ -60,5 +60,14 @@ object Model {
   case class ServiceUnavailableError(code: String, message: String) extends OutputError
 
   case class UnknownError(code: String, message: String) extends OutputError
+
+  case class BuildInfoView(
+      name: String,
+      version: String,
+      scalaVersion: String,
+      sbtVersion: String,
+      gitCommit: String,
+      builtAtMillis: LocalDateTime
+  )
 
 }

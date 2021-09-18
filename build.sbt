@@ -89,7 +89,7 @@ lazy val `aviation-api` = (project in file("aviation-api"))
   )
   .dependsOn(`aviation-core`)
   .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
-  .settings(BuildInfoSettings.value)
+  .settings(AviationBuildInfoSettings.value)
   // plugins
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)

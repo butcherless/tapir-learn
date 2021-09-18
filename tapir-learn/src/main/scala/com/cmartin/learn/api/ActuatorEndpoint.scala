@@ -12,11 +12,8 @@ import sttp.tapir.json.circe._
 
 trait ActuatorEndpoint extends ApiCodecs {
 
-  import ActuatorEndpoint._
-
   type HealthInfo = BuildInfoDto
 
-  //json encode/decode via circe.generic.auto
   lazy val healthEndpoint: Endpoint[Unit, StatusCode, HealthInfo, Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "health")

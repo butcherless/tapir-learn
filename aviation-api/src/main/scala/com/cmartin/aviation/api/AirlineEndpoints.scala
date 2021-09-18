@@ -1,7 +1,8 @@
 package com.cmartin.aviation.api
 
 import akka.http.scaladsl.model.headers.`Content-Location`
-import io.circe.Json
+import com.cmartin.aviation.api.BaseEndpoint._
+import com.cmartin.aviation.api.Model._
 import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir._
@@ -9,9 +10,6 @@ import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 
 import java.time.LocalDate
-
-import Model._
-import BaseEndpoint._
 
 trait AirlineEndpoints {
 
