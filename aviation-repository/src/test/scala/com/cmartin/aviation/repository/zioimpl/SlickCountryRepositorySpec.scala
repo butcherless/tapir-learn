@@ -4,14 +4,16 @@ import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.common.runtime
-import zio.{Has, TaskLayer}
+import zio.Has
+import zio.TaskLayer
 
 import java.sql.SQLIntegrityConstraintViolationException
 
 class SlickCountryRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env: TaskLayer[Has[CountryRepository]] = testEnv >>> SlickCountryRepository.live
+  val env: TaskLayer[Has[CountryRepository]] =
+    testEnv >>> SlickCountryRepository.live
 
   behavior of "SlickCountryRepository"
 
@@ -24,6 +26,17 @@ class SlickCountryRepositorySpec
     val id = runtime.unsafeRun(layeredProgram)
 
     assert(id > 0)
+  }
+
+  it should "insert a sequence of Countries into the database" in {
+    val program = for {
+      ids <- SlickCountryRepository.insert(Seq(spainDbo, portugalDbo))
+    } yield ids
+
+    val layeredProgram = program.provideLayer(env)
+    val ids = runtime.unsafeRun(layeredProgram)
+
+    assert(ids.forall(_ > 0L), "non positive entity identifier")
   }
 
   it should "fail to insert a duplicate Country into the database" in {

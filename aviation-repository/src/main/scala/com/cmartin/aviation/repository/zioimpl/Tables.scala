@@ -1,8 +1,15 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.Model.{AirportDbo, CountryDbo, LongDbo, TableNames}
+import com.cmartin.aviation.repository.Model.AirlineDbo
+import com.cmartin.aviation.repository.Model.AirportDbo
+import com.cmartin.aviation.repository.Model.CountryDbo
+import com.cmartin.aviation.repository.Model.LongDbo
+import com.cmartin.aviation.repository.Model.TableNames
 import slick.jdbc.JdbcProfile
-import slick.lifted.{Index, ProvenShape}
+import slick.lifted.Index
+import slick.lifted.ProvenShape
+
+import java.time.LocalDate
 
 trait Tables { self: JdbcProfile =>
   import api._
@@ -32,7 +39,7 @@ trait Tables { self: JdbcProfile =>
 
   /* A I R P O R T
    */
-  final class AirportTable(tag: Tag) extends LongBasedTable[AirportDbo](tag, TableNames.airports) {
+  final class Airports(tag: Tag) extends LongBasedTable[AirportDbo](tag, TableNames.airports) {
     // property columns:
     def name: Rep[String] = column[String]("NAME")
 
@@ -54,10 +61,23 @@ trait Tables { self: JdbcProfile =>
     def icaoIndex = index("icaoCode_index", icaoCode, unique = true)
   }
 
-  val airports = TableQuery[AirportTable]
+  val airports = TableQuery[Airports]
 
-  def count[T <: LongBasedTable[_ <: LongDbo]](t: TableQuery[T]): DBIO[Int] = {
-    t.length.result
+  /* A I R L I N E
+   */
+  final class AirlineTable(tag: Tag) extends LongBasedTable[AirlineDbo](tag, TableNames.airlines) {
+    // property columns:
+    def name = column[String]("NAME")
+
+    def foundationDate = column[LocalDate]("FOUNDATION_DATE")
+
+    // foreign columns:
+    def countryId = column[Long]("COUNTRY_ID")
+
+    def * = (name, foundationDate, countryId, id.?).<>(AirlineDbo.tupled, AirlineDbo.unapply)
+
+    // foreign keys
+    def country = foreignKey("FK_COUNTRY_AIRLINE", countryId, countries)(_.id)
   }
 
 }

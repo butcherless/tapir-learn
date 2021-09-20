@@ -32,7 +32,7 @@ object JdbcRepositories {
 
     /* C O U N T R Y
      */
-    final class CountryTable(tag: Tag) extends LongBasedTable[CountryDbo](tag, TableNames.countries) {
+    final class CountryTable(tag: Tag) extends OldLongBasedTable[CountryDbo](tag, TableNames.countries) {
       // property columns:
       def name: Rep[String] = column[String]("NAME")
       def code: Rep[String] = column[String]("CODE")
@@ -48,7 +48,7 @@ object JdbcRepositories {
 
     /* A I R P O R T
      */
-    final class AirportTable(tag: Tag) extends LongBasedTable[AirportDbo](tag, TableNames.airports) {
+    final class AirportTable(tag: Tag) extends OldLongBasedTable[AirportDbo](tag, TableNames.airports) {
       // property columns:
       def name: Rep[String] = column[String]("NAME")
 
@@ -72,7 +72,7 @@ object JdbcRepositories {
 
     /* A I R L I N E
      */
-    final class AirlineTable(tag: Tag) extends LongBasedTable[AirlineDbo](tag, TableNames.airlines) {
+    final class AirlineTable(tag: Tag) extends OldLongBasedTable[AirlineDbo](tag, TableNames.airlines) {
       // property columns:
       def name = column[String]("NAME")
 
@@ -89,7 +89,7 @@ object JdbcRepositories {
 
     /* R O U T E
      */
-    final class RouteTable(tag: Tag) extends LongBasedTable[RouteDbo](tag, TableNames.routes) {
+    final class RouteTable(tag: Tag) extends OldLongBasedTable[RouteDbo](tag, TableNames.routes) {
       // property columns:
       def distance = column[Double]("DISTANCE")
 

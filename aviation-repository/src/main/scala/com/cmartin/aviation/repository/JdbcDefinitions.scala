@@ -18,7 +18,7 @@ object JdbcDefinitions {
     import Model._
     import api._
 
-    abstract class LongBasedTable[T <: LongDbo](tag: Tag, tableName: String) extends Table[T](tag, tableName) {
+    abstract class OldLongBasedTable[T <: LongDbo](tag: Tag, tableName: String) extends Table[T](tag, tableName) {
       /* primary key column */
       def id: Rep[Long] = column[Long]("ID", O.PrimaryKey, O.AutoInc)
     }
@@ -82,7 +82,7 @@ object JdbcDefinitions {
     }
      */
 
-    abstract class AbstractLongRepository[E <: LongDbo, T <: LongBasedTable[E]] extends AbstractRepository[DBIO, E] {
+    abstract class AbstractLongRepository[E <: LongDbo, T <: OldLongBasedTable[E]] extends AbstractRepository[DBIO, E] {
       val entities: TableQuery[T]
 
       def findById(id: Option[Long]): DBIO[Option[E]] = {

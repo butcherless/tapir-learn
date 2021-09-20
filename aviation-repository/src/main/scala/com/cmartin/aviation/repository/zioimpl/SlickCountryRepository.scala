@@ -1,45 +1,42 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model.CountryDbo
+import com.cmartin.aviation.repository.zioimpl.Abstractions.AbstractLongRepository
+import com.cmartin.aviation.repository.zioimpl.Tables.Countries
 import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
 import slick.interop.zio.DatabaseProvider
-import zio.{Has, IO, ZIO, ZLayer}
+import slick.jdbc.JdbcProfile
+import zio.Has
+import zio.IO
+import zio.ZIO
+import zio.ZLayer
 
 object SlickCountryRepository {
 
+  class CountryRepositoryImpl(db: DatabaseProvider, profile: JdbcProfile)
+      extends AbstractLongRepository[CountryDbo, Countries](db, profile)
+      with CountryRepository {
+
+    import profile.api._
+
+    override val entities = Tables.countries
+
+    override def findByCode(code: String): IO[Throwable, Option[CountryDbo]] = {
+      val query = entities.filter(_.code === code)
+      (query.result.headOption, db).toZio
+    }
+
+    override def delete(code: String): IO[Throwable, Int] = {
+      val query = entities.filter(_.code === code)
+      (query.delete, db).toZio
+    }
+
+  }
+
   val live: ZLayer[Has[DatabaseProvider], Throwable, Has[CountryRepository]] = {
-    ZLayer.fromServiceM { db =>
-      db.profile.map { profile =>
-        import profile.api._
-
-        new CountryRepository {
-          private val entities = Tables.countries
-
-          override def insert(dbo: CountryDbo): IO[Throwable, Long] = {
-            val action = (entities returning entities.map(_.id)) += dbo
-            (action, db).toZio
-          }
-
-          override def findByCode(code: String): IO[Throwable, Option[CountryDbo]] = {
-            val query = entities.filter(_.code === code)
-            (query.result.headOption, db).toZio
-          }
-
-          override def update(dbo: CountryDbo): IO[Throwable, Int] = {
-            val query = entities.filter(_.id === dbo.id)
-            (query.update(dbo), db).toZio
-          }
-
-          override def delete(code: String): IO[Throwable, Int] = {
-            val query = entities.filter(_.code === code)
-            (query.delete, db).toZio
-          }
-
-          override def count(): IO[Throwable, Int] = {
-            (Tables.count(entities), db).toZio
-          }
-        }
-
+    ZLayer.fromServiceM { provider =>
+      provider.profile.map { profile =>
+        new CountryRepositoryImpl(provider, profile)
       }
     }
   }
@@ -49,6 +46,9 @@ object SlickCountryRepository {
 
   def insert(dbo: CountryDbo): ZIO[Has[CountryRepository], Throwable, Long] =
     ZIO.accessM[Has[CountryRepository]](_.get.insert(dbo))
+
+  def insert(seq: Seq[CountryDbo]): ZIO[Has[CountryRepository], Throwable, Seq[Long]] =
+    ZIO.accessM[Has[CountryRepository]](_.get.insert(seq))
 
   def update(dbo: CountryDbo): ZIO[Has[CountryRepository], Throwable, Int] =
     ZIO.accessM[Has[CountryRepository]](_.get.update(dbo))

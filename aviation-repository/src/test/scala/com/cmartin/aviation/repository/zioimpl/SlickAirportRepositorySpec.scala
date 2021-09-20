@@ -4,7 +4,9 @@ import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.Model.AirportDbo
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.common.runtime
-import zio.{Has, TaskLayer}
+import zio.Has
+import zio.TaskLayer
+import zio.ZLayer
 
 import java.sql.SQLIntegrityConstraintViolationException
 
@@ -26,6 +28,21 @@ class SlickAirportRepositorySpec
     val id = runtime.unsafeRun(layeredProgram)
 
     assert(id > 0)
+  }
+
+  it should "insert a sequence of Airports into the database" in {
+
+    val program = for {
+      countryId <- SlickCountryRepository.insert(spainDbo)
+      ids <- SlickAirportRepository.insert(
+        Seq(madDbo.copy(countryId = countryId), bcnDbo.copy(countryId = countryId))
+      )
+    } yield ids
+
+    val layeredProgram = program.provideLayer(env)
+    val ids = runtime.unsafeRun(layeredProgram)
+
+    assert(ids.forall(_ > 0L), "non positive entity identifier")
   }
 
   it should "fail to insert a duplicate Country into the database" in {

@@ -2,7 +2,10 @@ package com.cmartin.aviation.repository.zioimpl
 
 import slick.interop.zio.DatabaseProvider
 import slick.interop.zio.syntax._
-import zio.{Has, IO, ZIO, ZLayer}
+import zio.Has
+import zio.IO
+import zio.ZIO
+import zio.ZLayer
 
 object SlickSchemaHelper {
 
