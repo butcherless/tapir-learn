@@ -13,6 +13,7 @@ object Model {
   trait RepositoryError extends ProgramError
 
   case class MissingEntityError(message: String) extends ServiceError
+  case class UnexpectedServiceError(message: String) extends ServiceError
 
   object CountryCode extends Subtype[String]
   type CountryCode = CountryCode.Type
