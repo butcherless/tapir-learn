@@ -6,8 +6,7 @@ import zio.IO
 trait AirportRepository
     extends BaseRepository[AirportDbo] {
 
-  //def insert(dbo: AirportDbo): IO[Throwable, Long]
-  def delete(code: String): IO[Throwable, Int]
+  def deleteByIataCode(code: String): IO[Throwable, Int]
   def findByIataCode(code: String): IO[Throwable, Option[AirportDbo]]
   def findByIcaoCode(code: String): IO[Throwable, Option[AirportDbo]]
   def findByCountryCode(code: String): IO[Throwable, Seq[AirportDbo]]

@@ -42,9 +42,7 @@ trait Tables { self: JdbcProfile =>
   final class Airports(tag: Tag) extends LongBasedTable[AirportDbo](tag, TableNames.airports) {
     // property columns:
     def name: Rep[String] = column[String]("NAME")
-
     def iataCode: Rep[String] = column[String]("IATA_CODE")
-
     def icaoCode: Rep[String] = column[String]("ICAO_CODE")
 
     // foreign columns:
@@ -57,29 +55,36 @@ trait Tables { self: JdbcProfile =>
     def country = foreignKey("FK_COUNTRY_AIRPORT", countryId, countries)(_.id)
 
     // indexes
-    def iataIndex = index("iataCode_index", iataCode, unique = true)
-    def icaoIndex = index("icaoCode_index", icaoCode, unique = true)
+    def iataIndex = index("airport_iataCode_index", iataCode, unique = true)
+    def icaoIndex = index("airport_icaoCode_index", icaoCode, unique = true)
   }
 
   val airports = TableQuery[Airports]
 
   /* A I R L I N E
    */
-  final class AirlineTable(tag: Tag) extends LongBasedTable[AirlineDbo](tag, TableNames.airlines) {
+  final class Airlines(tag: Tag) extends LongBasedTable[AirlineDbo](tag, TableNames.airlines) {
     // property columns:
     def name = column[String]("NAME")
-
+    def iataCode: Rep[String] = column[String]("IATA_CODE")
+    def icaoCode: Rep[String] = column[String]("ICAO_CODE")
     def foundationDate = column[LocalDate]("FOUNDATION_DATE")
 
     // foreign columns:
     def countryId = column[Long]("COUNTRY_ID")
 
-    def * = (name, foundationDate, countryId, id.?).<>(AirlineDbo.tupled, AirlineDbo.unapply)
+    def * = (name, iataCode, icaoCode, foundationDate, countryId, id.?).<>(AirlineDbo.tupled, AirlineDbo.unapply)
 
     // foreign keys
     def country = foreignKey("FK_COUNTRY_AIRLINE", countryId, countries)(_.id)
+
+    // indexes
+    def nameIndex = index("airline_name_index", name, unique = false)
+    def iataIndex = index("airline_iataCode_index", iataCode, unique = true)
+    def icaoIndex = index("airline_icaoCode_index", icaoCode, unique = true)
   }
 
+  val airlines = TableQuery[Airlines]
 }
 
 object Tables extends Tables with JdbcProfile

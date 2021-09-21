@@ -7,15 +7,15 @@ import zhttp.service.Server
 import zio._
 
 object ZioHttpServerApp
-    extends App {
+    extends ZIOAppDefault {
 
   val routes =
     ActuatorApi.healthRoute <>
       ZioSwaggerApi.route
 
-  override def run(args: List[String]): URIO[ZEnv, ExitCode] = {
-
-    Server.start(8081, routes).exitCode
-  }
+  def run =
+    for {
+      code <- Server.start(8081, routes).exitCode
+    } yield code
 
 }

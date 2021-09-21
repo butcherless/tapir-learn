@@ -3,6 +3,7 @@ package com.cmartin.aviation.repository
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.repository.Model._
 
+import java.time.LocalDate
 import scala.concurrent.duration._
 
 object TestData {
@@ -34,4 +35,24 @@ object TestData {
   val airportSequence = Seq(madDbo, bcnDbo)
 
   val lisDbo = AirportDbo("Portela", "LIS", "LPPT")
+
+  // AIRLINE
+  val ibeName = "Iberia"
+  val updatedIbeText = "IBERIA"
+  val ibeIataCode = "ib"
+  val ibeIcaoCode = "ibe"
+  val ibeFoundationDate = LocalDate.of(1927, 6, 28)
+  val ibeDbo = AirlineDbo(ibeName, ibeIataCode, ibeIcaoCode, ibeFoundationDate)
+
+  val aeaName = "Air Europa"
+  val aeaIataCode = "ux"
+  val aeaIcaoCode = "aea"
+  val aeaFoundationDate = LocalDate.of(1986, 11, 21)
+  val aeaDbo = AirlineDbo(aeaName, aeaIataCode, aeaIcaoCode, aeaFoundationDate)
+
+  val tapName = "TAP Air Portugal"
+  val tapIataCode = "tp"
+  val tapIcaoCode = "tap"
+  val tapFoundationDate = LocalDate.of(1945, 3, 14)
+  val tapDbo = AirlineDbo(tapName, tapIataCode, tapIcaoCode, tapFoundationDate)
 }

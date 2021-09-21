@@ -21,7 +21,7 @@ object SlickAirportRepository {
 
     override val entities = Tables.airports
 
-    override def delete(iataCode: String): IO[Throwable, Int] = {
+    override def deleteByIataCode(iataCode: String): IO[Throwable, Int] = {
       val query = entities.filter(_.iataCode === iataCode)
       (query.delete, db).toZio
     }
@@ -75,8 +75,8 @@ object SlickAirportRepository {
     * @return
     *   number of deleted rows
     */
-  def delete(iataCode: String): ZIO[Has[AirportRepository], Throwable, Int] =
-    ZIO.accessM[Has[AirportRepository]](_.get.delete(iataCode))
+  def deleteByIataCode(iataCode: String): ZIO[Has[AirportRepository], Throwable, Int] =
+    ZIO.accessM[Has[AirportRepository]](_.get.deleteByIataCode(iataCode))
 
   def findByIataCode(code: String): ZIO[Has[AirportRepository], Throwable, Option[AirportDbo]] =
     ZIO.accessM[Has[AirportRepository]](_.get.findByIataCode(code))

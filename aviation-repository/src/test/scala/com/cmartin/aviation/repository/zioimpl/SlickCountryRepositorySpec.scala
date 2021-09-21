@@ -47,12 +47,7 @@ class SlickCountryRepositorySpec
 
     val resultEither = runtime.unsafeRun(program.provideLayer(env).either)
 
-    resultEither.isLeft shouldBe true
-
-    resultEither.swap.map {
-      case _: SQLIntegrityConstraintViolationException => succeed
-      case _                                           => fail("unexpected error")
-    }
+    resultEither.left.value shouldBe a[SQLIntegrityConstraintViolationException]
   }
 
   "Find" should "retrieve a Country by code" in {

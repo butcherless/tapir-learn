@@ -17,6 +17,8 @@ class SlickAirportRepositorySpec
     (testEnv >>> SlickCountryRepository.live) ++
       (testEnv >>> SlickAirportRepository.live)
 
+  behavior of "SlickAirportRepository"
+
   "Insert" should "insert a Country into the database" in {
 
     val program = for {
@@ -54,11 +56,7 @@ class SlickAirportRepositorySpec
 
     val resultEither = runtime.unsafeRun(program.provideLayer(env).either)
 
-    resultEither.isLeft shouldBe true
-    resultEither.swap.map {
-      case _: SQLIntegrityConstraintViolationException => succeed
-      case _                                           => fail("unexpected error")
-    }
+    resultEither.left.value shouldBe a[SQLIntegrityConstraintViolationException]
   }
 
   "Find" should "retrieve an Airport by iata code" in {
@@ -94,11 +92,12 @@ class SlickAirportRepositorySpec
       _ <- SlickAirportRepository.insert(lisDbo.copy(countryId = portugalId))
       airports <- SlickAirportRepository.findByCountryCode(spainCode)
       count <- SlickAirportRepository.count()
-    } yield (airports, count)
+    } yield (airports, spainId, count)
     val layeredProgram = program.provideLayer(env)
-    val (airports, count) = runtime.unsafeRun(layeredProgram)
+    val (airports, spainId, count) = runtime.unsafeRun(layeredProgram)
 
     airports should have size 2
+    airports.forall(_.countryId == spainId) shouldBe true
     count shouldBe 3
   }
 
@@ -119,7 +118,6 @@ class SlickAirportRepositorySpec
     val airports = runtime.unsafeRun(layeredProgram)
 
     airports should have size 3
-
   }
 
   it should "return None for a missing Airport" in {
@@ -152,12 +150,12 @@ class SlickAirportRepositorySpec
     val program = for {
       id <- SlickCountryRepository.insert(spainDbo)
       _ <- SlickAirportRepository.insert(madDbo.copy(countryId = id))
-      count <- SlickAirportRepository.delete(madIataCode)
+      count <- SlickAirportRepository.deleteByIataCode(madIataCode)
     } yield count
 
     val count = runtime.unsafeRun(program.provideLayer(env))
 
-    assert(count == 1)
+    count shouldBe 1
   }
 
 }

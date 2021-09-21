@@ -42,8 +42,10 @@ object Model {
 
   final case class AirlineDbo(
       name: String,
+      iataCode: String,
+      icaoCode: String,
       foundationDate: LocalDate,
-      countryId: Long,
+      countryId: Long = 0L,
       id: Option[Long] = None
   ) extends LongDbo
 

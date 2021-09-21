@@ -23,7 +23,8 @@ object SlickSchemaHelper {
           override def createSchema(): IO[Throwable, Unit] =
             ZIO.fromDBIO(
               (Tables.countries.schema ++
-                Tables.airports.schema)
+                Tables.airports.schema ++
+                Tables.airlines.schema)
                 .create
             )
               .provide(Has(db))
@@ -31,7 +32,8 @@ object SlickSchemaHelper {
           override def dropSchema(): IO[Throwable, Unit] =
             ZIO.fromDBIO(
               (Tables.countries.schema ++
-                Tables.airports.schema)
+                Tables.airports.schema ++
+                Tables.airlines.schema)
                 .dropIfExists
             )
               .provide(Has(db))
