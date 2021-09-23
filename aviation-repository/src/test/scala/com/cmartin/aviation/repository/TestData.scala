@@ -55,4 +55,9 @@ object TestData {
   val tapIcaoCode = "tap"
   val tapFoundationDate = LocalDate.of(1945, 3, 14)
   val tapDbo = AirlineDbo(tapName, tapIataCode, tapIcaoCode, tapFoundationDate)
+
+  // ROUTE
+  val madBcnDistance: Double = 262.0
+  val madTfnDistance: Double = 957.0
+  val bcnTfnDistance: Double = 1185.0
 }

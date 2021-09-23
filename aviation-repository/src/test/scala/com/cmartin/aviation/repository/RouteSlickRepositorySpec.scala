@@ -81,7 +81,7 @@ class RouteSlickRepositorySpec extends BaseRepositorySpec {
     }
   }
 
-  "Find" should "retrieve a Route sequence by destination airport" in {
+  it should "retrieve a Route sequence by destination airport" in {
     val result = for {
       countryId <- dao.countryRepository.insert(spainDbo)
       madId <- dao.airportRepository.insert(madDbo.copy(countryId = countryId))

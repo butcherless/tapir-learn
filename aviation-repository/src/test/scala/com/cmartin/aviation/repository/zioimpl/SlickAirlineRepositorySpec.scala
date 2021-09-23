@@ -27,10 +27,11 @@ class SlickAirlineRepositorySpec
       airlineId <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
     } yield airlineId
 
-    val layeredProgram = program.provideLayer(env)
-    val id = runtime.unsafeRun(layeredProgram)
+    val id = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
-    assert(id > 0)
+    id should be > 0L
   }
 
   it should "insert a sequence of Airlines into the database" in {
@@ -42,8 +43,9 @@ class SlickAirlineRepositorySpec
       )
     } yield ids
 
-    val layeredProgram = program.provideLayer(env)
-    val ids = runtime.unsafeRun(layeredProgram)
+    val ids = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     assert(ids.forall(_ > 0L), "non positive entity identifier")
   }
@@ -55,7 +57,9 @@ class SlickAirlineRepositorySpec
       _ <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
     } yield ()
 
-    val resultEither = runtime.unsafeRun(program.provideLayer(env).either)
+    val resultEither = runtime.unsafeRun(
+      program.provideLayer(env).either
+    )
 
     resultEither.left.value shouldBe a[SQLIntegrityConstraintViolationException]
   }
@@ -66,8 +70,10 @@ class SlickAirlineRepositorySpec
       aid <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
       airline <- SlickAirlineRepository.findByIataCode(ibeIataCode)
     } yield (airline, countryId, aid)
-    val layeredProgram = program.provideLayer(env)
-    val (dboOpt, cid, aid) = runtime.unsafeRun(layeredProgram)
+
+    val (dboOpt, cid, aid) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     dboOpt shouldBe Some(ibeDbo.copy(countryId = cid, id = Some(aid)))
   }
@@ -94,8 +100,10 @@ class SlickAirlineRepositorySpec
       airlines <- SlickAirlineRepository.findByCountryCode(spainCode)
       count <- SlickAirlineRepository.count()
     } yield (airlines, spainId, count)
-    val layeredProgram = program.provideLayer(env)
-    val (airlines, spainId, count) = runtime.unsafeRun(layeredProgram)
+
+    val (airlines, spainId, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     airlines should have size 2
     airlines.forall(_.countryId == spainId) shouldBe true
@@ -115,8 +123,9 @@ class SlickAirlineRepositorySpec
       airlines <- SlickAirlineRepository.findByName("Iberia")
     } yield airlines
 
-    val layeredProgram = program.provideLayer(env)
-    val airlines = runtime.unsafeRun(layeredProgram)
+    val airlines = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     airlines should have size 3
   }
@@ -125,8 +134,10 @@ class SlickAirlineRepositorySpec
     val program = for {
       airline <- SlickAirlineRepository.findByIataCode(ibeIataCode)
     } yield (airline)
-    val layeredProgram = program.provideLayer(env)
-    val dboOpt = runtime.unsafeRun(layeredProgram)
+
+    val dboOpt = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     dboOpt shouldBe None
   }
@@ -140,7 +151,9 @@ class SlickAirlineRepositorySpec
       updated <- SlickAirlineRepository.findByIataCode(ibeIataCode)
     } yield (updated, count)
 
-    val (updated, count) = runtime.unsafeRun(program.provideLayer(env))
+    val (updated, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     count shouldBe 1
     updated.isDefined shouldBe true
@@ -151,10 +164,12 @@ class SlickAirlineRepositorySpec
     val program = for {
       countryId <- SlickCountryRepository.insert(spainDbo)
       _ <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
-      count <- SlickAirlineRepository.count()
+      count <- SlickAirlineRepository.deleteByIataCode(ibeIataCode)
     } yield count
 
-    val count = runtime.unsafeRun(program.provideLayer(env))
+    val count = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     count shouldBe 1
   }

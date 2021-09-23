@@ -32,5 +32,6 @@ object Common {
   def handleServiceError(error: ServiceError): OutputError =
     error match {
       case MissingEntityError(message) => NotFoundError(NotFoundError.toString, error.message)
+      case e: ServiceError             => ServerError(ServerError.toString, e.message)
     }
 }

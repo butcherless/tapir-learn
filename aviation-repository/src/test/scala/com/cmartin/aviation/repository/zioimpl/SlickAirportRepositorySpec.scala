@@ -26,10 +26,11 @@ class SlickAirportRepositorySpec
       airportId <- SlickAirportRepository.insert(madDbo.copy(countryId = countryId))
     } yield airportId
 
-    val layeredProgram = program.provideLayer(env)
-    val id = runtime.unsafeRun(layeredProgram)
+    val id = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
-    assert(id > 0)
+    id should be > 0L
   }
 
   it should "insert a sequence of Airports into the database" in {
@@ -41,8 +42,9 @@ class SlickAirportRepositorySpec
       )
     } yield ids
 
-    val layeredProgram = program.provideLayer(env)
-    val ids = runtime.unsafeRun(layeredProgram)
+    val ids = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     assert(ids.forall(_ > 0L), "non positive entity identifier")
   }
@@ -54,7 +56,9 @@ class SlickAirportRepositorySpec
       _ <- SlickAirportRepository.insert(madDbo.copy(countryId = countryId))
     } yield ()
 
-    val resultEither = runtime.unsafeRun(program.provideLayer(env).either)
+    val resultEither = runtime.unsafeRun(
+      program.provideLayer(env).either
+    )
 
     resultEither.left.value shouldBe a[SQLIntegrityConstraintViolationException]
   }
@@ -65,8 +69,10 @@ class SlickAirportRepositorySpec
       aid <- SlickAirportRepository.insert(madDbo.copy(countryId = countryId))
       airport <- SlickAirportRepository.findByIataCode(madIataCode)
     } yield (airport, countryId, aid)
-    val layeredProgram = program.provideLayer(env)
-    val (dboOpt, cid, aid) = runtime.unsafeRun(layeredProgram)
+
+    val (dboOpt, cid, aid) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     dboOpt shouldBe Some(madDbo.copy(countryId = cid, id = Some(aid)))
   }
@@ -77,8 +83,10 @@ class SlickAirportRepositorySpec
       aid <- SlickAirportRepository.insert(madDbo.copy(countryId = countryId))
       airport <- SlickAirportRepository.findByIcaoCode(madIcaoCode)
     } yield (airport, countryId, aid)
-    val layeredProgram = program.provideLayer(env)
-    val (dboOpt, cid, aid) = runtime.unsafeRun(layeredProgram)
+
+    val (dboOpt, cid, aid) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     dboOpt shouldBe Some(madDbo.copy(countryId = cid, id = Some(aid)))
   }
@@ -93,8 +101,10 @@ class SlickAirportRepositorySpec
       airports <- SlickAirportRepository.findByCountryCode(spainCode)
       count <- SlickAirportRepository.count()
     } yield (airports, spainId, count)
-    val layeredProgram = program.provideLayer(env)
-    val (airports, spainId, count) = runtime.unsafeRun(layeredProgram)
+
+    val (airports, spainId, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     airports should have size 2
     airports.forall(_.countryId == spainId) shouldBe true
@@ -114,8 +124,9 @@ class SlickAirportRepositorySpec
       airports <- SlickAirportRepository.findByName("Barajas")
     } yield airports
 
-    val layeredProgram = program.provideLayer(env)
-    val airports = runtime.unsafeRun(layeredProgram)
+    val airports = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     airports should have size 3
   }
@@ -124,8 +135,10 @@ class SlickAirportRepositorySpec
     val program = for {
       airport <- SlickAirportRepository.findByIataCode(madIataCode)
     } yield (airport)
-    val layeredProgram = program.provideLayer(env)
-    val dboOpt = runtime.unsafeRun(layeredProgram)
+
+    val dboOpt = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     dboOpt shouldBe None
   }
@@ -139,7 +152,9 @@ class SlickAirportRepositorySpec
       updated <- SlickAirportRepository.findByIataCode(madIataCode)
     } yield (updated, count)
 
-    val (updated, count) = runtime.unsafeRun(program.provideLayer(env))
+    val (updated, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     count shouldBe 1
     updated.isDefined shouldBe true
@@ -153,7 +168,9 @@ class SlickAirportRepositorySpec
       count <- SlickAirportRepository.deleteByIataCode(madIataCode)
     } yield count
 
-    val count = runtime.unsafeRun(program.provideLayer(env))
+    val count = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     count shouldBe 1
   }

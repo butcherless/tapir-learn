@@ -17,7 +17,7 @@ object Model {
     */
   trait RelationDbo extends IdentifiedDbo[LongTuple]
 
-  /** Country entity
+  /** A nation with its own government, occupying a particular territory.
     *
     * @param name
     *   country nmme
@@ -32,6 +32,20 @@ object Model {
       id: Option[Long] = None
   ) extends LongDbo
 
+  /** A complex of runways and buildings for the take-off, landing, and maintenance of civil aircraft, with facilities
+    * for passengers.
+    *
+    * @param name
+    *   airport name
+    * @param iataCode
+    *   iata 3-letter code
+    * @param icaoCode
+    *   icao 4-letter code
+    * @param countryId
+    *   Identifier of the country to which it belongs
+    * @param id
+    *   entity identifier
+    */
   final case class AirportDbo(
       name: String,
       iataCode: String,

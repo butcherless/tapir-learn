@@ -3,9 +3,9 @@ package com.cmartin.aviation.repository.zioimpl
 import com.cmartin.aviation.repository.Common.schemaHelperProgram
 import com.cmartin.aviation.repository.zioimpl.common.runtime
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.EitherValues
 
 abstract class SlickBaseRepositorySpec
     extends AnyFlatSpec

@@ -22,10 +22,11 @@ class SlickCountryRepositorySpec
       id <- SlickCountryRepository.insert(spainDbo)
     } yield id
 
-    val layeredProgram = program.provideLayer(env)
-    val id = runtime.unsafeRun(layeredProgram)
+    val id = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
-    assert(id > 0)
+    id should be > 0L
   }
 
   it should "insert a sequence of Countries into the database" in {
@@ -33,8 +34,9 @@ class SlickCountryRepositorySpec
       ids <- SlickCountryRepository.insert(Seq(spainDbo, portugalDbo))
     } yield ids
 
-    val layeredProgram = program.provideLayer(env)
-    val ids = runtime.unsafeRun(layeredProgram)
+    val ids = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     assert(ids.forall(_ > 0L), "non positive entity identifier")
   }
@@ -45,7 +47,9 @@ class SlickCountryRepositorySpec
       _ <- SlickCountryRepository.insert(spainDbo)
     } yield ()
 
-    val resultEither = runtime.unsafeRun(program.provideLayer(env).either)
+    val resultEither = runtime.unsafeRun(
+      program.provideLayer(env).either
+    )
 
     resultEither.left.value shouldBe a[SQLIntegrityConstraintViolationException]
   }
@@ -56,8 +60,9 @@ class SlickCountryRepositorySpec
       dbo <- SlickCountryRepository.findByCode(spainCode)
     } yield dbo
 
-    val layeredProgram = program.provideLayer(env)
-    val dboOpt = runtime.unsafeRun(layeredProgram)
+    val dboOpt = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     dboOpt shouldBe Some(spainDbo.copy(id = dboOpt.get.id))
   }
@@ -67,8 +72,9 @@ class SlickCountryRepositorySpec
       dbo <- SlickCountryRepository.findByCode(spainCode)
     } yield dbo
 
-    val layeredProgram = program.provideLayer(env)
-    val dboOpt = runtime.unsafeRun(layeredProgram)
+    val dboOpt = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     dboOpt shouldBe None
   }
@@ -81,8 +87,9 @@ class SlickCountryRepositorySpec
       updated <- SlickCountryRepository.findByCode(spainCode)
     } yield (updated, count)
 
-    val layeredProgram = program.provideLayer(env)
-    val (dboOpt, count) = runtime.unsafeRun(layeredProgram)
+    val (dboOpt, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
     dboOpt shouldBe Some(CountryDbo(updatedSpainText, spainCode, dboOpt.get.id))
     count shouldBe 1
@@ -94,9 +101,11 @@ class SlickCountryRepositorySpec
       count <- SlickCountryRepository.delete(spainDbo.code)
     } yield count
 
-    val count = runtime.unsafeRun(program.provideLayer(env))
+    val count = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
-    assert(count == 1)
+    count shouldBe 1
   }
 
   it should "return zero deleted items for a missing Country" in {
@@ -105,10 +114,12 @@ class SlickCountryRepositorySpec
       count <- SlickCountryRepository.count()
     } yield (cs, count)
 
-    val (cs, count) = runtime.unsafeRun(program.provideLayer(env))
+    val (cs, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
 
-    assert(cs == 0)
-    assert(count == 0)
+    cs shouldBe 0
+    count shouldBe 0
   }
 
 }

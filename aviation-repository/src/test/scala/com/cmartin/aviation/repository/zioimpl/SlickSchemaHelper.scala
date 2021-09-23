@@ -24,7 +24,8 @@ object SlickSchemaHelper {
             ZIO.fromDBIO(
               (Tables.countries.schema ++
                 Tables.airports.schema ++
-                Tables.airlines.schema)
+                Tables.airlines.schema ++
+                Tables.routes.schema)
                 .create
             )
               .provide(Has(db))
@@ -33,7 +34,8 @@ object SlickSchemaHelper {
             ZIO.fromDBIO(
               (Tables.countries.schema ++
                 Tables.airports.schema ++
-                Tables.airlines.schema)
+                Tables.airlines.schema ++
+                Tables.routes.schema)
                 .dropIfExists
             )
               .provide(Has(db))

@@ -12,7 +12,8 @@ object common {
 
   implicit class Dbio2Zio[R](ctx: (DBIO[R], DatabaseProvider)) {
     def toZio: IO[Throwable, R] =
-      ZIO.fromDBIO(ctx._1).provide(Has(ctx._2))
+      ZIO.fromDBIO(ctx._1)
+        .provide(Has(ctx._2))
   }
 
 }

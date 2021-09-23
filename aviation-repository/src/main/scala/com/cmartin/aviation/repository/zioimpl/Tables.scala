@@ -1,10 +1,6 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.Model.AirlineDbo
-import com.cmartin.aviation.repository.Model.AirportDbo
-import com.cmartin.aviation.repository.Model.CountryDbo
-import com.cmartin.aviation.repository.Model.LongDbo
-import com.cmartin.aviation.repository.Model.TableNames
+import com.cmartin.aviation.repository.Model._
 import slick.jdbc.JdbcProfile
 import slick.lifted.Index
 import slick.lifted.ProvenShape
@@ -85,6 +81,39 @@ trait Tables { self: JdbcProfile =>
   }
 
   val airlines = TableQuery[Airlines]
+
+  /* R O U T E
+   */
+  final class Routes(tag: Tag) extends LongBasedTable[RouteDbo](tag, TableNames.routes) {
+    // property columns:
+    def distance = column[Double]("DISTANCE")
+
+    // foreign key columns:
+    def originId = column[Long]("ORIGIN_ID")
+
+    def destinationId = column[Long]("DESTINATION_ID")
+
+    def * = (distance, originId, destinationId, id.?).<>(RouteDbo.tupled, RouteDbo.unapply)
+
+    // foreign keys
+    def origin =
+      foreignKey("FK_ORIGIN_AIRPORT", originId, airports)(
+        origin => origin.id,
+        onDelete = ForeignKeyAction.Cascade
+      )
+
+    def destination =
+      foreignKey("FK_DESTINATION_AIRPORT", destinationId, airports)(
+        destination => destination.id,
+        onDelete = ForeignKeyAction.Cascade
+      )
+
+    // indexes, compound
+    def originDestinationIndex =
+      index("origin_destination_index", (originId, destinationId), unique = true)
+  }
+
+  val routes = TableQuery[Routes]
 }
 
 object Tables extends Tables with JdbcProfile
