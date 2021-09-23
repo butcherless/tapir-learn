@@ -23,26 +23,6 @@ class SlickRouteRepositorySpec
 
   behavior of "SlickRouteRepository"
 
-  /*
-  "Update" should "update a Route retrieved from the repository" in {
-    val updatedDistance = 1.23
-    val program = for {
-      (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
-      id <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
-      dbo <- SlickRouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
-      count <- SlickRouteRepository.update(dbo.get.copy(distance = updatedDistance))
-      updated <- SlickRouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
-    } yield (updated, count)
-
-    val (updated, count) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
-
-    count shouldBe 1
-    updated.isDefined shouldBe true
-    updated.get.distance shouldBe updatedDistance
-  }*/
-
   "Insert" should "insert a Route into the repository" in {
     val program = for {
       (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
@@ -112,6 +92,25 @@ class SlickRouteRepositorySpec
     )
 
     resultEither.left.value shouldBe a[SQLIntegrityConstraintViolationException]
+  }
+
+  "Update" should "update a Route retrieved from the repository" in {
+    val updatedDistance = 1.23
+    val program = for {
+      (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      id <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      dbo <- SlickRouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
+      count <- SlickRouteRepository.update(dbo.get.copy(distance = updatedDistance))
+      updated <- SlickRouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
+    } yield (updated, count)
+
+    val (updated, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
+
+    count shouldBe 1
+    updated.isDefined shouldBe true
+    updated.get.distance shouldBe updatedDistance
   }
 
   "Delete" should "delete a Route from the repository" in {

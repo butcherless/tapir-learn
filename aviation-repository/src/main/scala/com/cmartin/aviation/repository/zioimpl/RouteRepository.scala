@@ -8,5 +8,6 @@ trait RouteRepository
 
   def findByIataOrigin(iataCode: String): IO[Throwable, Seq[RouteDbo]]
   def findByIataDestination(iataCode: String): IO[Throwable, Seq[RouteDbo]]
+  def findByOriginAndDestination(iataOrigin: String, iataDestination: String): IO[Throwable, Option[RouteDbo]]
   def deleteByOriginAndDestination(iataOrigin: String, iataDestination: String): IO[Throwable, Int]
 }

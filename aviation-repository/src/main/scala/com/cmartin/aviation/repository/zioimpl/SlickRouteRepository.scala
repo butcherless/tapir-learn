@@ -43,6 +43,19 @@ object SlickRouteRepository {
 
     }
 
+    override def findByOriginAndDestination(
+        iataOrigin: String,
+        iataDestination: String
+    ): IO[Throwable, Option[RouteDbo]] = {
+      val query = for {
+        route <- entities
+        origin <- route.origin if origin.iataCode === iataOrigin
+        destination <- route.destination if destination.iataCode === iataDestination
+      } yield route
+
+      (query.result.headOption, db).toZio
+    }
+
     override def deleteByOriginAndDestination(iataOrigin: String, iataDestination: String): IO[Throwable, Int] = {
       val airportsQuery = for {
         origin <- airports if origin.iataCode === iataOrigin
@@ -76,6 +89,9 @@ object SlickRouteRepository {
 
   def update(dbo: RouteDbo): ZIO[Has[RouteRepository], Throwable, Int] =
     ZIO.accessM[Has[RouteRepository]](_.get.update(dbo))
+
+  def findByOriginAndDestination(iataOrigin: String, iataDestination: String) =
+    ZIO.accessM[Has[RouteRepository]](_.get.findByOriginAndDestination(iataOrigin, iataDestination))
 
   def deleteByOriginAndDestination(
       iataOrigin: String,
