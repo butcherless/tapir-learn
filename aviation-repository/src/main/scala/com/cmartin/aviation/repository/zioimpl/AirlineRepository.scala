@@ -1,7 +1,6 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model.AirlineDbo
-import com.cmartin.aviation.repository.Model.CountryDbo
 import zio.IO
 
 trait AirlineRepository
