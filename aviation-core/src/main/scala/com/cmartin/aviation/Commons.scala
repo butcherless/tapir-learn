@@ -3,7 +3,7 @@ package com.cmartin.aviation
 import zio.Runtime
 import zio.ULayer
 import zio.ZEnv
-import zio.ZIO
+import zio._
 import zio.logging._
 import zio.logging.slf4j.Slf4jLogger
 
@@ -11,7 +11,8 @@ import domain.Model._
 
 object Commons {
 
-  type ServiceResponse[A] = ZIO[Logging, ServiceError, A]
+  type ServiceResponseOld[A] = ZIO[Logging, ServiceError, A]
+  type ServiceResponse[A] = IO[ServiceError, A]
   type RepositoryResponse[A] = ZIO[Logging, RepositoryError, A]
 
   val runtime: Runtime[ZEnv] =

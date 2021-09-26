@@ -65,7 +65,7 @@ lazy val `aviation-service` = (project in file("aviation-service"))
     name := "aviation-service",
     parallelExecution := false
   )
-  .dependsOn(`aviation-core`)
+  .dependsOn(`aviation-core`, `aviation-repository`)
 
 lazy val `aviation-repository` = (project in file("aviation-repository"))
   .configs(IntegrationTest)

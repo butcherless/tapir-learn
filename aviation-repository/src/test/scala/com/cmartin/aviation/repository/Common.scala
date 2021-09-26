@@ -54,14 +54,12 @@ object Common {
   )
 
   val testEnv: ZLayer[Any, Throwable, Has[DatabaseProvider]] =
-    (ZLayer.succeed(config) ++ ZLayer.succeed[JdbcProfile](
-      slick.jdbc.H2Profile
-    )) >>> DatabaseProvider.live
+    (ZLayer.succeed(config) ++
+      ZLayer.succeed[JdbcProfile](slick.jdbc.H2Profile)) >>> DatabaseProvider.live
 
   val schemaHelperLayer =
-    (ZLayer.succeed(config) ++ ZLayer.succeed[JdbcProfile](
-      slick.jdbc.H2Profile
-    )) >>> DatabaseProvider.live >>> SlickSchemaHelper.live
+    (ZLayer.succeed(config) ++
+      ZLayer.succeed[JdbcProfile](slick.jdbc.H2Profile)) >>> DatabaseProvider.live >>> SlickSchemaHelper.live
 
   val schemaHelperProgram = (for {
     _ <- SlickSchemaHelper.dropSchema()

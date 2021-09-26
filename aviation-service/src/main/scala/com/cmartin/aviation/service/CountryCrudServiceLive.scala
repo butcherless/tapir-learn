@@ -5,14 +5,16 @@ import com.cmartin.aviation.domain.Model.Country
 import com.cmartin.aviation.domain.Model.CountryCode
 import com.cmartin.aviation.domain.Model.MissingEntityError
 import com.cmartin.aviation.domain.Model.ServiceError
-import com.cmartin.aviation.port.CountryRepository
+import com.cmartin.aviation.port.CountryCrudRepository
 import com.cmartin.aviation.port.CountryService
 import zio.IO
 import zio.logging._
+import zio._
 
-import CountryCrudService._
+import CountryCrudServiceLive._
 
-class CountryCrudService(countryRepository: CountryRepository) extends CountryService {
+case class CountryCrudServiceLive(logging: Logging, countryRepository: CountryCrudRepository)
+    extends CountryService {
 
   override def create(country: Country): ServiceResponse[Country] = {
     val program = for {
@@ -20,13 +22,13 @@ class CountryCrudService(countryRepository: CountryRepository) extends CountrySe
       _ <- countryRepository.create(country)
     } yield country
 
-    program
+    program.provide(logging)
   }
 
   override def findByCode(code: CountryCode): ServiceResponse[Country] = {
 
     val program = for {
-      _ <- log.debug(s"findByCode: $code")
+      //_ <- log.debug(s"findByCode: $code")
       option <- countryRepository.findByCode(code)
       country <- manageNotFound(option)(s"No country found for code: $code")
     } yield country
@@ -36,7 +38,8 @@ class CountryCrudService(countryRepository: CountryRepository) extends CountrySe
 
   override def update(country: Country): ServiceResponse[Country] = {
     val program = for {
-      _ <- log.debug(s"update: $country")
+      //_ <- log.debug(s"update: $country")
+      _ <- UIO("")
     } yield Country(CountryCode("es"), "Spain")
 
     program
@@ -44,7 +47,8 @@ class CountryCrudService(countryRepository: CountryRepository) extends CountrySe
 
   override def deleteByCode(code: CountryCode): ServiceResponse[Int] = {
     val program = for {
-      _ <- log.debug(s"deleteByCode: $code")
+      //_ <- log.debug(s"deleteByCode: $code")
+      _ <- UIO("")
     } yield 1
 
     program
@@ -52,9 +56,14 @@ class CountryCrudService(countryRepository: CountryRepository) extends CountrySe
 
 }
 
-object CountryCrudService {
+object CountryCrudServiceLive {
+  val layer: URLayer[Has[Logging] with Has[CountryCrudRepository], Has[CountryCrudServiceLive]] =
+    (CountryCrudServiceLive(_, _)).toLayer
+
+  /*
   def apply(countryRepository: CountryRepository): CountryCrudService =
     new CountryCrudService(countryRepository: CountryRepository)
+   */
 
   def manageNotFound[A](o: Option[A])(message: String): IO[ServiceError, A] = {
     o.fold[IO[ServiceError, A]](
