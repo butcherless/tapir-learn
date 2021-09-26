@@ -1,9 +1,10 @@
 package com.cmartin.aviation.service
 
-import com.cmartin.aviation.domain.Model.Country
+import com.cmartin.aviation.domain.Model._
 import zio._
 import zio.logging._
 import zio.logging.slf4j.Slf4jLogger
+import com.cmartin.aviation.domain.Model
 
 object LayerPoc {
 
@@ -15,10 +16,18 @@ object LayerPoc {
       def insert(country: Country): ZIO[Has[MyCountryRepository], String, Long] =
         ZIO.serviceWith[MyCountryRepository](_.insert(country))
     }
+
+    trait MyAirportRepository {
+      def insert(airport: Airport): IO[String, Long]
+    }
+    object MyAirportRepository {
+      def insert(airport: Airport): ZIO[Has[MyAirportRepository], String, Long] =
+        ZIO.serviceWith[MyAirportRepository](_.insert(airport))
+    }
   }
 
   object RepositoryImplementations {
-    import Repositories.MyCountryRepository
+    import Repositories._
 
     case class MyCountryRepositoryLive(logging: Logging)
         extends MyCountryRepository {
@@ -36,6 +45,24 @@ object LayerPoc {
       val layer: URLayer[Has[Logging], Has[MyCountryRepository]] =
         (MyCountryRepositoryLive(_)).toLayer
     }
+
+    case class MyAirportRepositoryLive(logging: Logging)
+        extends MyAirportRepository {
+
+      override def insert(airport: Airport): IO[String, Long] =
+        (
+          for {
+            _ <- log.debug(s"insert: $airport")
+            id <- IO.succeed(1L)
+          } yield id
+        ).provide(logging)
+    }
+
+    object MyAirportRepositoryLive {
+      val layer: URLayer[Has[Logging], Has[MyAirportRepository]] =
+        (MyAirportRepositoryLive(_)).toLayer
+    }
+
   }
 
   object Services {
@@ -47,11 +74,21 @@ object LayerPoc {
       def create(country: Country): ZIO[Has[MyCountryService], String, Country] =
         ZIO.serviceWith[MyCountryService](_.create(country))
     }
+
+    trait MyAirportService {
+      def create(airport: Airport): IO[String, Airport]
+    }
+
+    object MyAirportService {
+      def create(airport: Airport): ZIO[Has[MyAirportService], String, Airport] =
+        ZIO.serviceWith[MyAirportService](_.create(airport))
+    }
+
   }
 
   object ServiceImplementations {
-    import Services.MyCountryService
-    import Repositories.MyCountryRepository
+    import Services._
+    import Repositories._
 
     case class MyCountryServiceLive(logging: Logging, countryRepository: MyCountryRepository)
         extends MyCountryService {
@@ -69,6 +106,30 @@ object LayerPoc {
     object MyCountryServiceLive {
       val layer: URLayer[Has[Logging] with Has[MyCountryRepository], Has[MyCountryService]] =
         (MyCountryServiceLive(_, _)).toLayer
+    }
+
+    case class MyAirportServiceLive(
+        logging: Logging,
+        countryRepository: MyCountryRepository,
+        airportRepository: MyAirportRepository
+    ) extends MyAirportService {
+
+      override def create(airport: Airport): IO[String, Airport] = {
+
+        val program = for {
+          _ <- log.debug(s"create: $country")
+          id <- countryRepository.insert(country)
+          id <- airportRepository.insert(airport)
+        } yield airport
+
+        program.provide(logging)
+      }
+    }
+
+    object MyAirportServiceLive {
+      val layer
+          : URLayer[Has[Logging] with Has[MyCountryRepository] with Has[MyAirportRepository], Has[MyAirportService]] =
+        (MyAirportServiceLive(_, _, _)).toLayer
     }
   }
 
@@ -98,6 +159,17 @@ object LayerPoc {
     MyCountryService.create(country)
   val serviceResult = runtime.unsafeRun(
     serviceProgram.provideLayer(srvL)
+  )
+
+  val repos =
+    loggingEnv >>> MyCountryRepositoryLive.layer ++ MyAirportRepositoryLive.layer
+
+  val serv = loggingEnv ++ repos >>> MyAirportServiceLive.layer
+
+  val airport: Airport = ???
+  val airportSrvProg = MyAirportService.create(airport)
+  val airportSrvRes = runtime.unsafeRun(
+    airportSrvProg.provideLayer(serv)
   )
 
 }
