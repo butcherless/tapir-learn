@@ -140,10 +140,14 @@ object LayerPoc {
 
   val runtime = zio.Runtime.default
   val country: Country = ???
-  val loggingEnv: ZLayer[Any, Nothing, Has[Logging]] =
+  val loggingEnv: ULayer[Has[Logging]] =
     Slf4jLogger.make((_, message) => message).map(Has(_))
 
-  val countryRepoEnv: ZLayer[Any, Nothing, Has[MyCountryRepository]] =
+  /* Repository Layer
+     - requirement: Logging
+     - output: Repository Layer
+   */
+  val countryRepoEnv: ULayer[Has[MyCountryRepository]] =
     (loggingEnv >>> MyCountryRepositoryLive.layer)
 
   // insert computation 'has' a Repository dependency
@@ -153,23 +157,38 @@ object LayerPoc {
     repositoryProgram.provideLayer(countryRepoEnv)
   )
 
-  val srvL = loggingEnv ++ countryRepoEnv >>> MyCountryServiceLive.layer
+  /* Service Layer
+     - requirement: Logging + Repository
+     - output: Service Layer
+   */
+  val countryServEnv: ULayer[Has[MyCountryService]] =
+    loggingEnv >+> MyCountryRepositoryLive.layer >>> MyCountryServiceLive.layer
 
   val serviceProgram: ZIO[Has[MyCountryService], String, Country] =
     MyCountryService.create(country)
   val serviceResult = runtime.unsafeRun(
-    serviceProgram.provideLayer(srvL)
+    serviceProgram.provideLayer(countryServEnv)
   )
 
-  val repos =
-    loggingEnv >>> MyCountryRepositoryLive.layer ++ MyAirportRepositoryLive.layer
+  /* Repositories Layer
+     - requirement: Logging
+     - output: Logging + RepoA + RepoB Layer
+   */
+  val repositoriesEnv: ULayer[Has[Logging] with Has[MyCountryRepository] with Has[MyAirportRepository]] =
+    loggingEnv >+> MyCountryRepositoryLive.layer ++ MyAirportRepositoryLive.layer
 
-  val serv = loggingEnv ++ repos >>> MyAirportServiceLive.layer
+  /* Service Layer
+     - requirement: Logging + RepoA + RepoB
+     - output: Service Layer
+   */
+  val airportServEnv: ULayer[Has[MyAirportService]] =
+    repositoriesEnv >>> MyAirportServiceLive.layer
 
   val airport: Airport = ???
-  val airportSrvProg = MyAirportService.create(airport)
-  val airportSrvRes = runtime.unsafeRun(
-    airportSrvProg.provideLayer(serv)
+  val airportSrvProg: ZIO[Has[MyAirportService], String, Airport] =
+    MyAirportService.create(airport)
+  val airportSrvRes: Airport = runtime.unsafeRun(
+    airportSrvProg.provideLayer(airportServEnv)
   )
 
 }
