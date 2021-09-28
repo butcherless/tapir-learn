@@ -115,11 +115,12 @@ object LayerPoc {
     ) extends MyAirportService {
 
       override def create(airport: Airport): IO[String, Airport] = {
+        val country: Country = ???
 
         val program = for {
-          _ <- log.debug(s"create: $country")
-          id <- countryRepository.insert(country)
-          id <- airportRepository.insert(airport)
+          _ <- log.debug(s"create: $airport")
+          cid <- countryRepository.insert(country) // TODO find country
+          aid <- airportRepository.insert(airport)
         } yield airport
 
         program.provide(logging)
@@ -133,62 +134,80 @@ object LayerPoc {
     }
   }
 
-  import RepositoryImplementations._
-  import ServiceImplementations._
-  import Repositories._
-  import Services._
-
-  val runtime = zio.Runtime.default
-  val country: Country = ???
+  /* common infrastructure */
   val loggingEnv: ULayer[Has[Logging]] =
     Slf4jLogger.make((_, message) => message).map(Has(_))
+  val runtime = zio.Runtime.default
 
-  /* Repository Layer
+  /* module use */
+  object CountryRepositoryUse {
+    import RepositoryImplementations._
+    import Repositories._
+
+    val country: Country = ???
+
+    /* Repository Layer
      - requirement: Logging
      - output: Repository Layer
-   */
-  val countryRepoEnv: ULayer[Has[MyCountryRepository]] =
-    (loggingEnv >>> MyCountryRepositoryLive.layer)
+     */
+    val countryRepoEnv: ULayer[Has[MyCountryRepository]] =
+      (loggingEnv >>> MyCountryRepositoryLive.layer)
 
-  // insert computation 'has' a Repository dependency
-  val repositoryProgram: ZIO[Has[MyCountryRepository], String, Long] =
-    MyCountryRepository.insert(country)
-  val repositoryResult = runtime.unsafeRun(
-    repositoryProgram.provideLayer(countryRepoEnv)
-  )
+    // insert computation 'has' a Repository dependency
+    val repositoryProgram: ZIO[Has[MyCountryRepository], String, Long] =
+      MyCountryRepository.insert(country)
+    val repositoryResult = runtime.unsafeRun(
+      repositoryProgram.provideLayer(countryRepoEnv)
+    )
+  }
 
-  /* Service Layer
+  object CountryServiceUse {
+    import RepositoryImplementations._
+    import Services._
+    import ServiceImplementations._
+
+    val country: Country = ???
+
+    /* Service Layer
      - requirement: Logging + Repository
      - output: Service Layer
-   */
-  val countryServEnv: ULayer[Has[MyCountryService]] =
-    loggingEnv >+> MyCountryRepositoryLive.layer >>> MyCountryServiceLive.layer
+     */
+    val countryServEnv: ULayer[Has[MyCountryService]] =
+      loggingEnv >+> MyCountryRepositoryLive.layer >>> MyCountryServiceLive.layer
 
-  val serviceProgram: ZIO[Has[MyCountryService], String, Country] =
-    MyCountryService.create(country)
-  val serviceResult = runtime.unsafeRun(
-    serviceProgram.provideLayer(countryServEnv)
-  )
+    val serviceProgram: ZIO[Has[MyCountryService], String, Country] =
+      MyCountryService.create(country)
+    val serviceResult = runtime.unsafeRun(
+      serviceProgram.provideLayer(countryServEnv)
+    )
+  }
 
-  /* Repositories Layer
+  object AirportServiceUse {
+    import ServiceImplementations._
+    import Services._
+    import RepositoryImplementations._
+    import Repositories._
+
+    /* Repositories Layer
      - requirement: Logging
      - output: Logging + RepoA + RepoB Layer
-   */
-  val repositoriesEnv: ULayer[Has[Logging] with Has[MyCountryRepository] with Has[MyAirportRepository]] =
-    loggingEnv >+> MyCountryRepositoryLive.layer ++ MyAirportRepositoryLive.layer
+     */
+    val repositoriesEnv: ULayer[Has[Logging] with Has[MyCountryRepository] with Has[MyAirportRepository]] =
+      loggingEnv >+> MyCountryRepositoryLive.layer ++ MyAirportRepositoryLive.layer
 
-  /* Service Layer
+    /* Service Layer
      - requirement: Logging + RepoA + RepoB
      - output: Service Layer
-   */
-  val airportServEnv: ULayer[Has[MyAirportService]] =
-    repositoriesEnv >>> MyAirportServiceLive.layer
+     */
+    val airportServEnv: ULayer[Has[MyAirportService]] =
+      repositoriesEnv >>> MyAirportServiceLive.layer
 
-  val airport: Airport = ???
-  val airportSrvProg: ZIO[Has[MyAirportService], String, Airport] =
-    MyAirportService.create(airport)
-  val airportSrvRes: Airport = runtime.unsafeRun(
-    airportSrvProg.provideLayer(airportServEnv)
-  )
+    val airport: Airport = ???
+    val airportSrvProg: ZIO[Has[MyAirportService], String, Airport] =
+      MyAirportService.create(airport)
+    val airportSrvRes: Airport = runtime.unsafeRun(
+      airportSrvProg.provideLayer(airportServEnv)
+    )
+  }
 
 }
