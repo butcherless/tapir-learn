@@ -11,7 +11,7 @@ trait ActuatorApi {
   lazy val healthRoute =
     ZioHttpInterpreter()
       .toHttp(ActuatorEndpoint.healthEndpoint) { _ =>
-        ZIO.succeed(Right(ApiConverters.modelToApi()))
+        ZIO.succeed((ApiConverters.modelToApi()))
       }
 }
 
