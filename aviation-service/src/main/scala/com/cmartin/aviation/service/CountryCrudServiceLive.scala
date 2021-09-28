@@ -8,8 +8,8 @@ import com.cmartin.aviation.domain.Model.ServiceError
 import com.cmartin.aviation.port.CountryCrudRepository
 import com.cmartin.aviation.port.CountryService
 import zio.IO
-import zio.logging._
 import zio._
+import zio.logging._
 
 import CountryCrudServiceLive._
 

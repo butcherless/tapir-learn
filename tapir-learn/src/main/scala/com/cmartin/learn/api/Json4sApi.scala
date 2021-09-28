@@ -14,8 +14,8 @@ import sttp.model.StatusCode
 import sttp.tapir.Codec.JsonCodec
 import sttp.tapir.DecodeResult.Error
 import sttp.tapir.DecodeResult.Value
-import sttp.tapir.SchemaType.SCoproduct
 import sttp.tapir.Schema.SName
+import sttp.tapir.SchemaType.SCoproduct
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.json4s._

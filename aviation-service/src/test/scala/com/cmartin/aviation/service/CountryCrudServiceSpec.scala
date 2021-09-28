@@ -2,13 +2,12 @@ package com.cmartin.aviation.service
 
 import com.cmartin.aviation.Commons._
 import com.cmartin.aviation.domain.Model._
+import com.cmartin.aviation.port.CountryCrudRepository
 import com.cmartin.aviation.port.CountryService
+import com.cmartin.aviation.repository.zioimpl.CountryCrudRepositoryLive
+import com.cmartin.aviation.repository.zioimpl.CountryRepository
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-
-import com.cmartin.aviation.repository.zioimpl.CountryCrudRepositoryLive
-import com.cmartin.aviation.port.CountryCrudRepository
-import com.cmartin.aviation.repository.zioimpl.CountryRepository
 import zio.Has
 import zio.URLayer
 import zio.logging.Logging

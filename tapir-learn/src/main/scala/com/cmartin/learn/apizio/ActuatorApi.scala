@@ -10,9 +10,9 @@ trait ActuatorApi {
   // tapir endpoint description to zio-http routes via .toHttp function
   lazy val healthRoute =
     ZioHttpInterpreter()
-      .toHttp(ActuatorEndpoint.healthEndpoint) { _ =>
-        ZIO.succeed((ApiConverters.modelToApi()))
-      }
+      .toHttp(ActuatorEndpoint.healthEndpoint)(_ =>
+        ZIO.succeed(ApiConverters.modelToApi())
+      )
 }
 
 object ActuatorApi extends ActuatorApi

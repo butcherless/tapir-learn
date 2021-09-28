@@ -1,10 +1,10 @@
 package com.cmartin.aviation.service
 
+import com.cmartin.aviation.domain.Model
 import com.cmartin.aviation.domain.Model._
 import zio._
 import zio.logging._
 import zio.logging.slf4j.Slf4jLogger
-import com.cmartin.aviation.domain.Model
 
 object LayerPoc {
 
