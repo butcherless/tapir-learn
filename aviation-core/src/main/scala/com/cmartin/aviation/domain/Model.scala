@@ -21,6 +21,9 @@ object Model {
   object IataCode extends Subtype[String]
   type IataCode = IataCode.Type
 
+  object IcaoCode extends Subtype[String]
+  type IcaoCode = IcaoCode.Type
+
   case class Country(
       code: CountryCode,
       name: String
@@ -29,7 +32,7 @@ object Model {
   case class Airport(
       name: String,
       iataCode: IataCode,
-      icaoCode: String,
+      icaoCode: IcaoCode,
       country: Country
   )
 }

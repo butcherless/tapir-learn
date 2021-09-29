@@ -51,7 +51,7 @@ lazy val `aviation-core` = (project in file("aviation-core"))
   .settings(
     Defaults.itSettings,
     commonSettings,
-    libraryDependencies ++= commonMain,
+    libraryDependencies ++= coreMain,
     name := "aviation-core"
   )
   .settings(coverageExcludedPackages := "<empty>;.*Configuration.*")
@@ -72,7 +72,6 @@ lazy val `aviation-service` = (project in file("aviation-service"))
   .settings(
     Defaults.itSettings,
     commonSettings,
-    libraryDependencies ++= repoMain ++ repoTest,
     name := "aviation-service",
     parallelExecution := false
   )

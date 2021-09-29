@@ -2,17 +2,17 @@ import sbt._
 
 object Dependencies {
 
-  val commonMain = Seq(
-    "ch.qos.logback" % "logback-classic" % Versions.logback,
-    "dev.zio" %% "zio-logging-slf4j" % Versions.zioLogging,
-    "dev.zio" %% "zio-prelude" % Versions.zioPrelude
-  )
+  val commonMain = Seq()
 
   val commonTest = Seq(
     "org.scalatest" %% "scalatest" % Versions.scalatest % "it, test"
   )
 
-  val coreMain = Seq()
+  val coreMain = Seq(
+    "ch.qos.logback" % "logback-classic" % Versions.logback,
+    "dev.zio" %% "zio-logging-slf4j" % Versions.zioLogging,
+    "dev.zio" %% "zio-prelude" % Versions.zioPrelude
+  )
 
   val coreTest = Seq()
 

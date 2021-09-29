@@ -1,6 +1,5 @@
 package com.cmartin.aviation.service
 
-import com.cmartin.aviation.domain.Model
 import com.cmartin.aviation.domain.Model._
 import zio._
 import zio.logging._
@@ -11,10 +10,18 @@ object LayerPoc {
   object Repositories {
     trait MyCountryRepository {
       def insert(country: Country): IO[String, Long]
+      def findByCode(code: CountryCode): IO[String, Option[Country]]
+      def existsByCode(code: CountryCode): IO[String, Boolean]
     }
     object MyCountryRepository {
       def insert(country: Country): ZIO[Has[MyCountryRepository], String, Long] =
         ZIO.serviceWith[MyCountryRepository](_.insert(country))
+
+      def findByCode(code: CountryCode): ZIO[Has[MyCountryRepository], String, Option[Country]] =
+        ZIO.serviceWith[MyCountryRepository](_.findByCode(code))
+
+      def existsByCode(code: CountryCode): ZIO[Has[MyCountryRepository], String, Boolean] =
+        ZIO.serviceWith[MyCountryRepository](_.existsByCode(code))
     }
 
     trait MyAirportRepository {
@@ -32,6 +39,14 @@ object LayerPoc {
     case class MyCountryRepositoryLive(logging: Logging)
         extends MyCountryRepository {
 
+      override def existsByCode(code: CountryCode): IO[String, Boolean] =
+        (
+          for {
+            _ <- log.debug(s"existsByCode: $code")
+            exists <- UIO.succeed(true) // simulation
+          } yield exists
+        ).provide(logging)
+
       override def insert(country: Country): IO[String, Long] =
         (
           for {
@@ -39,6 +54,14 @@ object LayerPoc {
             id <- IO.succeed(1L)
           } yield id
         ).provide(logging)
+
+      override def findByCode(code: CountryCode): IO[String, Option[Country]] =
+        (
+          for {
+            _ <- log.debug(s"findByCode: $code")
+          } yield Some(Country(code, s"Country-name-for-$code"))
+        ).provide(logging)
+
     }
 
     object MyCountryRepositoryLive {
@@ -83,7 +106,6 @@ object LayerPoc {
       def create(airport: Airport): ZIO[Has[MyAirportService], String, Airport] =
         ZIO.serviceWith[MyAirportService](_.create(airport))
     }
-
   }
 
   object ServiceImplementations {
@@ -115,15 +137,22 @@ object LayerPoc {
     ) extends MyAirportService {
 
       override def create(airport: Airport): IO[String, Airport] = {
-        val country: Country = ???
-
         val program = for {
           _ <- log.debug(s"create: $airport")
-          cid <- countryRepository.insert(country) // TODO find country
-          aid <- airportRepository.insert(airport)
+          _ <- ZIO.ifM(countryRepository.existsByCode(airport.country.code))(
+            airportRepository.insert(airport),
+            IO.fail(s"Country not found for code: ${airport.country.code}")
+          )
         } yield airport
 
         program.provide(logging)
+      }
+    }
+
+    private def manageUniqueResult[T](domainOpt: Option[T], message: String): IO[String, T] = {
+      domainOpt match {
+        case Some(value) => IO.succeed(value)
+        case None        => IO.fail(message)
       }
     }
 

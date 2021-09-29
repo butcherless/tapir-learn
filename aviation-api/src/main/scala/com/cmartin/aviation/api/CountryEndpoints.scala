@@ -95,8 +95,8 @@ object CountryEndpoints extends CountryEndpoints {
   val countryViewExample = CountryView(CountryCode("es"), "Spain")
 
   object Implicits {
-    implicit val encodeInstant: Encoder[CountryCode] = Encoder.encodeString.contramap[CountryCode](_.s)
-    implicit val decodeInstant: Decoder[CountryCode] = Decoder.decodeString.map(CountryCode.apply)
-    implicit val amountSchema: Schema[CountryCode] = Schema(SchemaType.SString())
+    implicit val encodeCountryCode: Encoder[CountryCode] = Encoder.encodeString.contramap[CountryCode](_.s)
+    implicit val decodeCountryCode: Decoder[CountryCode] = Decoder.decodeString.map(CountryCode.apply)
+    implicit val countryCodeSchema: Schema[CountryCode] = Schema(SchemaType.SString())
   }
 }
