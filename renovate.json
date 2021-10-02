@@ -1,17 +1,14 @@
 {
-  "extends": [
-    "config:base",
-    ":dependencyDashboard"
+  "automerge": true,
+  "labels": [
+    "type: dependencies"
   ],
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
+      "matchManagers": [
+        "sbt"
       ],
-      "automerge": true
+      "enabled": false
     }
   ]
 }
