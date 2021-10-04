@@ -4,7 +4,7 @@ import com.cmartin.aviation.Commons._
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.CountryCrudRepository
 import com.cmartin.aviation.port.CountryService
-import com.cmartin.aviation.repository.zioimpl.CountryCrudRepositoryLive
+import com.cmartin.aviation.repository.zioimpl.CountryPersisterLive
 import com.cmartin.aviation.repository.zioimpl.CountryRepository
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -29,11 +29,11 @@ class CountryCrudServiceSpec extends AnyFlatSpec with Matchers {
     val env: URLayer[Has[Logging] with Has[CountryCrudRepository], Has[CountryCrudServiceLive]] =
       CountryCrudServiceLive.layer
 
-    val repoLayer: URLayer[Has[CountryRepository], Has[CountryCrudRepository]] = CountryCrudRepositoryLive.layer
+    val repoLayer = CountryPersisterLive.layer
 
     val l1 = Logging
 
-    val l2 = CountryCrudRepositoryLive.layer
+    val l2 = CountryPersisterLive.layer
     //>>> CountryCrudServiceLive.layer
 
     // W H E N
@@ -48,5 +48,12 @@ class CountryCrudServiceSpec extends AnyFlatSpec with Matchers {
     //assert(true, "todo")
   }
 
-  it should "build a service layer" in {}
+  it should "build a service layer" in {
+    val code = CountryCode("es")
+    info(s"code: $code")
+    val unwrap = CountryCode.unwrap(code)
+    info(s"unwrapped: $unwrap")
+    val toString = code.toString()
+    toString shouldBe unwrap
+  }
 }

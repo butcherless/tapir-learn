@@ -18,6 +18,7 @@ object Commons {
   val runtime: Runtime[ZEnv] =
     Runtime.default
 
-  val loggingEnv: ULayer[Logging] =
+  val loggingEnv: ZLayer[Any, Nothing, Has[Logging]] =
     Slf4jLogger.make((_, message) => message)
+      .map(Has(_))
 }

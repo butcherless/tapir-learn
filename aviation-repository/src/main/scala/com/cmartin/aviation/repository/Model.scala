@@ -1,6 +1,7 @@
 package com.cmartin.aviation.repository
 
 import java.time.LocalDate
+import com.cmartin.aviation.domain.Model._
 
 object Model {
   type LongTuple = (Long, Long)

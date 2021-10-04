@@ -6,7 +6,8 @@ import com.cmartin.aviation.repository.zioimpl.SlickSchemaHelper
 import com.typesafe.config.ConfigFactory
 import slick.interop.zio.DatabaseProvider
 import slick.jdbc.JdbcProfile
-import zio.{Has, ZLayer}
+import zio.Has
+import zio.ZLayer
 
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters._

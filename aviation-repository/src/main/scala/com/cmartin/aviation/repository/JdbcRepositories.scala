@@ -13,7 +13,7 @@ import JdbcDefinitions.BaseDefinitions
 import com.cmartin.aviation.Commons.ServiceResponse
 import zio.{IO, Task, ZIO}
 import com.cmartin.aviation.domain.Model._
-import com.cmartin.aviation.port.CountryRepository
+import com.cmartin.aviation.port.CountryPersister
 import zio.logging._
 
 object JdbcRepositories {
