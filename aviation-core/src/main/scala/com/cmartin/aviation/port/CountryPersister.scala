@@ -1,10 +1,7 @@
 package com.cmartin.aviation.port
 
-import com.cmartin.aviation.Commons.RepositoryResponse
 import com.cmartin.aviation.domain.Model._
-import zio.Has
-import zio.IO
-import zio.ZIO
+import zio.{Has, IO, ZIO}
 
 trait CountryPersister {
   def insert(country: Country): IO[ServiceError, Long]

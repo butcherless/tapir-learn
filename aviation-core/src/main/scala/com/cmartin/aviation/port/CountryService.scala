@@ -3,7 +3,6 @@ package com.cmartin.aviation.port
 import com.cmartin.aviation.Commons.ServiceResponse
 import com.cmartin.aviation.domain.Model._
 import zio._
-import zio.logging._
 
 trait CountryService {
 
