@@ -10,6 +10,11 @@ object Mappers {
       CountryDbo(country.name, country.code)
   }
 
+  implicit class AirportToDbo(airport: Airport) {
+    def toDbo(countryId: Long): AirportDbo =
+      AirportDbo(airport.name, airport.iataCode, airport.icaoCode, countryId)
+  }
+
   implicit class CountryOptToDomain(dboOption: Option[CountryDbo]) {
     def toDomain: Option[Country] =
       dboOption.map(dbo => Country(CountryCode(dbo.code), dbo.name))

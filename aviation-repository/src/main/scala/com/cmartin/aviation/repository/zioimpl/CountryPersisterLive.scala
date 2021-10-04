@@ -7,8 +7,10 @@ import com.cmartin.aviation.repository.zioimpl.Mappers._
 import zio._
 import zio.logging._
 
-case class CountryPersisterLive(logging: Logging, countryRepository: CountryRepository)
-    extends CountryPersister {
+case class CountryPersisterLive(
+    logging: Logging,
+    countryRepository: CountryRepository
+) extends CountryPersister {
 
   override def existsByCode(code: CountryCode): IO[ServiceError, Boolean] = {
     val program = for {

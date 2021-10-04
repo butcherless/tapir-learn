@@ -71,6 +71,9 @@ object Model {
       id: Option[Long] = None
   ) extends LongDbo
 
+  final case class RepositoryException(message: String)
+      extends RuntimeException("")
+
   object TableNames {
     val airlines = "AIRLINES"
     val airports = "AIRPORTS"
