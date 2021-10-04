@@ -1,15 +1,11 @@
 package com.cmartin.aviation.service
 
-import com.cmartin.aviation.Commons._
 import com.cmartin.aviation.domain.Model._
-import com.cmartin.aviation.port.CountryCrudRepository
-import com.cmartin.aviation.port.CountryService
+import com.cmartin.aviation.port.{CountryCrudRepository, CountryService}
 import com.cmartin.aviation.repository.zioimpl.CountryPersisterLive
-import com.cmartin.aviation.repository.zioimpl.CountryRepository
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import zio.Has
-import zio.URLayer
+import zio.{Has, URLayer}
 import zio.logging.Logging
 class CountryCrudServiceSpec extends AnyFlatSpec with Matchers {
 
