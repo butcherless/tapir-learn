@@ -1,7 +1,7 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Common.testEnv
-import com.cmartin.aviation.repository.CountryRepository
+import com.cmartin.aviation.repository.{AirportRepository, CountryRepository}
 import com.cmartin.aviation.repository.Model.AirportDbo
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.Model.RouteDbo
@@ -16,10 +16,11 @@ import java.sql.SQLIntegrityConstraintViolationException
 class SlickRouteRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env =
-    (testEnv >>> CountryRepositoryLive.layer) ++
-      (testEnv >>> SlickAirportRepository.live) ++
-      (testEnv >>> SlickRouteRepository.live)
+  val env = testEnv >>>
+     CountryRepositoryLive.layer ++
+       AirportRepositoryLive.layer ++
+       SlickRouteRepository.live
+
 
   behavior of "SlickRouteRepository"
 
@@ -69,7 +70,7 @@ class SlickRouteRepositorySpec
   it should "fail to insert a Route with missing origin airport into the repository" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      destinationId <- SlickAirportRepository.insert(bcnDbo.copy(countryId = countryId))
+      destinationId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
       _ <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, 0L, destinationId))
     } yield ()
 
@@ -83,7 +84,7 @@ class SlickRouteRepositorySpec
   it should "fail to insert a Route with missing destination airport into the repository" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      originId <- SlickAirportRepository.insert(bcnDbo.copy(countryId = countryId))
+      originId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
       _ <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, 0L))
     } yield ()
 
@@ -130,9 +131,9 @@ class SlickRouteRepositorySpec
   "Find" should "retrieve a Route sequence by origin airport" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      madId <- SlickAirportRepository.insert(madDbo.copy(countryId = countryId))
-      bcnId <- SlickAirportRepository.insert(bcnDbo.copy(countryId = countryId))
-      tfnId <- SlickAirportRepository.insert(tfnDbo.copy(countryId = countryId))
+      madId <- AirportRepository.insert(madDbo.copy(countryId = countryId))
+      bcnId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
+      tfnId <- AirportRepository.insert(tfnDbo.copy(countryId = countryId))
       _ <- insertRoundTripRoute(madBcnDistance, madId, bcnId)
       _ <- insertRoundTripRoute(madTfnDistance, madId, tfnId)
       _ <- insertRoundTripRoute(bcnTfnDistance, bcnId, tfnId)
@@ -156,9 +157,9 @@ class SlickRouteRepositorySpec
   it should "retrieve a Route sequence by destination airport" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      madId <- SlickAirportRepository.insert(madDbo.copy(countryId = countryId))
-      bcnId <- SlickAirportRepository.insert(bcnDbo.copy(countryId = countryId))
-      tfnId <- SlickAirportRepository.insert(tfnDbo.copy(countryId = countryId))
+      madId <- AirportRepository.insert(madDbo.copy(countryId = countryId))
+      bcnId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
+      tfnId <- AirportRepository.insert(tfnDbo.copy(countryId = countryId))
       _ <- insertRoundTripRoute(madBcnDistance, madId, bcnId)
       _ <- insertRoundTripRoute(madTfnDistance, madId, tfnId)
       _ <- insertRoundTripRoute(bcnTfnDistance, bcnId, tfnId)
@@ -186,8 +187,8 @@ class SlickRouteRepositorySpec
   ): ZIO[Has[CountryRepository] with Has[AirportRepository], Throwable, (Long, Long)] = {
     for {
       countryId <- CountryRepository.insert(country)
-      originId <- SlickAirportRepository.insert(origin.copy(countryId = countryId))
-      destinationId <- SlickAirportRepository.insert(destination.copy(countryId = countryId))
+      originId <- AirportRepository.insert(origin.copy(countryId = countryId))
+      destinationId <- AirportRepository.insert(destination.copy(countryId = countryId))
     } yield (originId, destinationId)
   }
 
