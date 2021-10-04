@@ -14,8 +14,9 @@ class SlickAirportRepositorySpec
     extends SlickBaseRepositorySpec {
 
   val env: TaskLayer[Has[CountryRepository] with Has[AirportRepository]] =
-    (testEnv >>> CountryRepositoryLive.layer) ++
-      (testEnv >>> AirportRepositoryLive.layer)
+    testEnv >>>
+      CountryRepositoryLive.layer ++
+       AirportRepositoryLive.layer
 
   behavior of "SlickAirportRepository"
 

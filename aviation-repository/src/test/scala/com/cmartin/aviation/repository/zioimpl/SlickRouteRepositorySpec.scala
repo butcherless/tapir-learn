@@ -1,15 +1,12 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Common.testEnv
-import com.cmartin.aviation.repository.{AirportRepository, CountryRepository}
-import com.cmartin.aviation.repository.Model.AirportDbo
-import com.cmartin.aviation.repository.Model.CountryDbo
-import com.cmartin.aviation.repository.Model.RouteDbo
+import com.cmartin.aviation.repository.Model.{AirportDbo, CountryDbo, RouteDbo}
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.common.runtime
+import com.cmartin.aviation.repository.{AirportRepository, CountryRepository}
 import org.scalatest.Inside._
-import zio.Has
-import zio.ZIO
+import zio.{Has, ZIO}
 
 import java.sql.SQLIntegrityConstraintViolationException
 
@@ -17,17 +14,16 @@ class SlickRouteRepositorySpec
     extends SlickBaseRepositorySpec {
 
   val env = testEnv >>>
-     CountryRepositoryLive.layer ++
-       AirportRepositoryLive.layer ++
-       SlickRouteRepository.live
-
+    CountryRepositoryLive.layer ++
+    AirportRepositoryLive.layer ++
+    RouteRepositoryLive.layer
 
   behavior of "SlickRouteRepository"
 
   "Insert" should "insert a Route into the repository" in {
     val program = for {
       (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
-      id <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
     } yield id
 
     val id = runtime.unsafeRun(
@@ -41,7 +37,7 @@ class SlickRouteRepositorySpec
 
     val program = for {
       (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
-      ids <- SlickRouteRepository.insert(
+      ids <- RouteRepository.insert(
         Seq(RouteDbo(madBcnDistance, originId, destinationId), RouteDbo(madBcnDistance, destinationId, originId))
       )
     } yield ids
@@ -56,8 +52,8 @@ class SlickRouteRepositorySpec
   it should "fail to insert a duplicate Route into the repository" in {
     val program = for {
       (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
-      _ <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
-      _ <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      _ <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      _ <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
     } yield ()
 
     val resultEither = runtime.unsafeRun(
@@ -71,7 +67,7 @@ class SlickRouteRepositorySpec
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
       destinationId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
-      _ <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, 0L, destinationId))
+      _ <- RouteRepository.insert(RouteDbo(madBcnDistance, 0L, destinationId))
     } yield ()
 
     val resultEither = runtime.unsafeRun(
@@ -85,7 +81,7 @@ class SlickRouteRepositorySpec
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
       originId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
-      _ <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, 0L))
+      _ <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, 0L))
     } yield ()
 
     val resultEither = runtime.unsafeRun(
@@ -99,10 +95,10 @@ class SlickRouteRepositorySpec
     val updatedDistance = 1.23
     val program = for {
       (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
-      id <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
-      dbo <- SlickRouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
-      count <- SlickRouteRepository.update(dbo.get.copy(distance = updatedDistance))
-      updated <- SlickRouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
+      id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      dbo <- RouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
+      count <- RouteRepository.update(dbo.get.copy(distance = updatedDistance))
+      updated <- RouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
     } yield (updated, count)
 
     val (updated, count) = runtime.unsafeRun(
@@ -117,8 +113,8 @@ class SlickRouteRepositorySpec
   "Delete" should "delete a Route from the repository" in {
     val program = for {
       (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
-      id <- SlickRouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
-      count <- SlickRouteRepository.deleteByOriginAndDestination(madIataCode, bcnIataCode)
+      id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      count <- RouteRepository.deleteByOriginAndDestination(madIataCode, bcnIataCode)
     } yield count
 
     val count = runtime.unsafeRun(
@@ -137,7 +133,7 @@ class SlickRouteRepositorySpec
       _ <- insertRoundTripRoute(madBcnDistance, madId, bcnId)
       _ <- insertRoundTripRoute(madTfnDistance, madId, tfnId)
       _ <- insertRoundTripRoute(bcnTfnDistance, bcnId, tfnId)
-      routes <- SlickRouteRepository.findByIataOrigin(madIataCode)
+      routes <- RouteRepository.findByIataOrigin(madIataCode)
     } yield (routes, madId)
 
     val (routes, madId) = runtime.unsafeRun(
@@ -163,7 +159,7 @@ class SlickRouteRepositorySpec
       _ <- insertRoundTripRoute(madBcnDistance, madId, bcnId)
       _ <- insertRoundTripRoute(madTfnDistance, madId, tfnId)
       _ <- insertRoundTripRoute(bcnTfnDistance, bcnId, tfnId)
-      routes <- SlickRouteRepository.findByIataDestination(bcnIataCode)
+      routes <- RouteRepository.findByIataDestination(bcnIataCode)
     } yield (routes, bcnId)
 
     val (routes, bcnId) = runtime.unsafeRun(
@@ -194,8 +190,8 @@ class SlickRouteRepositorySpec
 
   private def insertRoundTripRoute(distance: Double, origin: Long, destination: Long) =
     for {
-      _ <- SlickRouteRepository.insert(RouteDbo(distance, origin, destination))
-      _ <- SlickRouteRepository.insert(RouteDbo(distance, destination, origin))
+      _ <- RouteRepository.insert(RouteDbo(distance, origin, destination))
+      _ <- RouteRepository.insert(RouteDbo(distance, destination, origin))
     } yield ()
 
 }
