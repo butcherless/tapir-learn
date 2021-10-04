@@ -6,20 +6,21 @@ import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.common.runtime
 import zio.Has
 import zio.TaskLayer
+import com.cmartin.aviation.repository.CountryRepository
 
 import java.sql.SQLIntegrityConstraintViolationException
 
-class SlickCountryRepositorySpec
+class CountryRepositorySpec
     extends SlickBaseRepositorySpec {
 
   val env: TaskLayer[Has[CountryRepository]] =
-    testEnv >>> SlickCountryRepository.live
+    testEnv >>> CountryRepositoryLive.layer
 
-  behavior of "SlickCountryRepository"
+  behavior of "CountryRepository"
 
   "Insert" should "insert a Country into the database" in {
     val program = for {
-      id <- SlickCountryRepository.insert(spainDbo)
+      id <- CountryRepository.insert(spainDbo)
     } yield id
 
     val id = runtime.unsafeRun(
@@ -31,7 +32,7 @@ class SlickCountryRepositorySpec
 
   it should "insert a sequence of Countries into the database" in {
     val program = for {
-      ids <- SlickCountryRepository.insert(Seq(spainDbo, portugalDbo))
+      ids <- CountryRepository.insert(Seq(spainDbo, portugalDbo))
     } yield ids
 
     val ids = runtime.unsafeRun(
@@ -43,8 +44,8 @@ class SlickCountryRepositorySpec
 
   it should "fail to insert a duplicate Country into the database" in {
     val program = for {
-      _ <- SlickCountryRepository.insert(spainDbo)
-      _ <- SlickCountryRepository.insert(spainDbo)
+      _ <- CountryRepository.insert(spainDbo)
+      _ <- CountryRepository.insert(spainDbo)
     } yield ()
 
     val resultEither = runtime.unsafeRun(
@@ -56,8 +57,8 @@ class SlickCountryRepositorySpec
 
   "Find" should "retrieve a Country by code" in {
     val program = for {
-      _ <- SlickCountryRepository.insert(spainDbo)
-      dbo <- SlickCountryRepository.findByCode(spainCode)
+      _ <- CountryRepository.insert(spainDbo)
+      dbo <- CountryRepository.findByCode(spainCode)
     } yield dbo
 
     val dboOpt = runtime.unsafeRun(
@@ -69,7 +70,7 @@ class SlickCountryRepositorySpec
 
   it should "return None for a missing Country" in {
     val program = for {
-      dbo <- SlickCountryRepository.findByCode(spainCode)
+      dbo <- CountryRepository.findByCode(spainCode)
     } yield dbo
 
     val dboOpt = runtime.unsafeRun(
@@ -81,10 +82,10 @@ class SlickCountryRepositorySpec
 
   "Update" should "update a country retrieved from the database" in {
     val program = for {
-      _ <- SlickCountryRepository.insert(spainDbo)
-      dbo <- SlickCountryRepository.findByCode(spainCode)
-      count <- SlickCountryRepository.update(dbo.get.copy(name = updatedSpainText))
-      updated <- SlickCountryRepository.findByCode(spainCode)
+      _ <- CountryRepository.insert(spainDbo)
+      dbo <- CountryRepository.findByCode(spainCode)
+      count <- CountryRepository.update(dbo.get.copy(name = updatedSpainText))
+      updated <- CountryRepository.findByCode(spainCode)
     } yield (updated, count)
 
     val (dboOpt, count) = runtime.unsafeRun(
@@ -97,8 +98,8 @@ class SlickCountryRepositorySpec
 
   "Delete" should "delete a country from the database" in {
     val program = for {
-      id <- SlickCountryRepository.insert(spainDbo)
-      count <- SlickCountryRepository.delete(spainDbo.code)
+      id <- CountryRepository.insert(spainDbo)
+      count <- CountryRepository.delete(spainDbo.code)
     } yield count
 
     val count = runtime.unsafeRun(
@@ -110,8 +111,8 @@ class SlickCountryRepositorySpec
 
   it should "return zero deleted items for a missing Country" in {
     val program = for {
-      cs <- SlickCountryRepository.delete(spainDbo.code)
-      count <- SlickCountryRepository.count()
+      cs <- CountryRepository.delete(spainDbo.code)
+      count <- CountryRepository.count()
     } yield (cs, count)
 
     val (cs, count) = runtime.unsafeRun(

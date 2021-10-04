@@ -6,6 +6,7 @@ import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
 import slick.interop.zio.DatabaseProvider
 import slick.jdbc.JdbcProfile
 import zio.IO
+import com.cmartin.aviation.repository.BaseRepository
 
 object Abstractions {
 

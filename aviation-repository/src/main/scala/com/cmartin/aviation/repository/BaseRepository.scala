@@ -1,4 +1,4 @@
-package com.cmartin.aviation.repository.zioimpl
+package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.LongDbo
 import zio.IO

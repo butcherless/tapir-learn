@@ -9,7 +9,6 @@ import zio.Has
 import zio.IO
 import zio.ZIO
 import zio.ZLayer
-import slick.dbio.DBIO
 import slick.interop.zio.syntax._
 
 import Abstractions.AbstractLongRepository

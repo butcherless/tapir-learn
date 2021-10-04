@@ -1,15 +1,11 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.domain.Model
 import com.cmartin.aviation.domain.Model._
-import com.cmartin.aviation.port.CountryCrudRepository
 import com.cmartin.aviation.port.CountryPersister
-import com.cmartin.aviation.repository.Model.CountryDbo
+import com.cmartin.aviation.repository.CountryRepository
+import com.cmartin.aviation.repository.zioimpl.Mappers._
 import zio._
 import zio.logging._
-
-import Mappers._
-import Mappers._
 
 case class CountryPersisterLive(logging: Logging, countryRepository: CountryRepository)
     extends CountryPersister {
@@ -46,6 +42,21 @@ case class CountryPersisterLive(logging: Logging, countryRepository: CountryRepo
       _ <- log.debug(s"findByCode: $code")
       dbo <- countryRepository.findByCode(code)
     } yield dbo.toDomain
+
+    program
+      .provide(logging)
+      .mapError {
+        case e @ _ => UnexpectedServiceError(e.getMessage())
+      }
+  }
+
+  override def update(country: Country): IO[ServiceError, Int] = ???
+
+  override def delete(code: CountryCode): IO[ServiceError, Int] = {
+    val program = for {
+      _ <- log.debug(s"delete: $code")
+      dbo <- countryRepository.delete(code)
+    } yield dbo
 
     program
       .provide(logging)

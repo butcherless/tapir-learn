@@ -10,13 +10,14 @@ import zio.TaskLayer
 import zio.URLayer
 import zio.ZLayer
 import zio.logging.Logging
+import com.cmartin.aviation.repository.CountryRepository
 
 class CountryPersisterLiveSpec
     extends SlickBaseRepositorySpec {
 
   val repoEnv: TaskLayer[Has[CountryRepository]] =
     testEnv >>>
-      SlickCountryRepository.live
+      CountryRepositoryLive.layer
 
   val env: TaskLayer[Has[CountryPersister]] =
     Commons.loggingEnv ++ repoEnv >>> CountryPersisterLive.layer

@@ -2,6 +2,7 @@ package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model.AirlineDbo
 import zio.IO
+import com.cmartin.aviation.repository.BaseRepository
 
 trait AirlineRepository
     extends BaseRepository[AirlineDbo] {

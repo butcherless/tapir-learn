@@ -3,20 +3,17 @@ package com.cmartin.aviation.repository
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.Model.CountryDbo
-import com.cmartin.aviation.repository.SlickInfrastructure.Repositories
-import com.cmartin.aviation.repository.SlickInfrastructure.SlickCountryRepository
-import slick.interop.zio.DatabaseProvider
-import zio.Function1ToLayerSyntax
-import zio.Has
-import zio.IO
-import zio.UIO
-import zio.URLayer
-import zio.ZLayer
-import zio.logging.Logging
-import zio.logging.log
+import zio.{Function1ToLayerSyntax, Has, IO, UIO, URLayer}
+import zio.logging.{Logging, log}
 
 object SlickRepositories {
+
+  //TODO remove
   class CountryRepositoryImpl extends CountryPersister {
+
+    override def update(country: Country): IO[ServiceError, Int] = ???
+
+    override def delete(code: CountryCode): IO[ServiceError, Int] = ???
 
     override def existsByCode(code: CountryCode): IO[ServiceError, Boolean] = ???
 
@@ -54,6 +51,10 @@ object SlickRepositories {
           _ <- log.debug(s"findByCode: $code")
         } yield Some(Country(code, s"Country-name-for-$code")) //TODO slick impl
       ).provide(logging)
+
+    override def update(country: Country): IO[ServiceError, Int] = ???
+
+    override def delete(code: CountryCode): IO[ServiceError, Int] = ???
 
   }
 

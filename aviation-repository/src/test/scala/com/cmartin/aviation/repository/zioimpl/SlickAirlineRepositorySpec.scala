@@ -7,6 +7,7 @@ import com.cmartin.aviation.repository.zioimpl.common.runtime
 import zio.Has
 import zio.TaskLayer
 import zio.ZLayer
+import com.cmartin.aviation.repository.CountryRepository
 
 import java.sql.SQLIntegrityConstraintViolationException
 import java.time.LocalDate
@@ -15,7 +16,7 @@ class SlickAirlineRepositorySpec
     extends SlickBaseRepositorySpec {
 
   val env: TaskLayer[Has[CountryRepository] with Has[AirlineRepository]] =
-    (testEnv >>> SlickCountryRepository.live) ++
+    (testEnv >>> CountryRepositoryLive.layer) ++
       (testEnv >>> SlickAirlineRepository.live)
 
   behavior of "SlickAirlineRepository"
@@ -23,7 +24,7 @@ class SlickAirlineRepositorySpec
   "Insert" should "insert an Airline into the database" in {
 
     val program = for {
-      countryId <- SlickCountryRepository.insert(spainDbo)
+      countryId <- CountryRepository.insert(spainDbo)
       airlineId <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
     } yield airlineId
 
@@ -37,7 +38,7 @@ class SlickAirlineRepositorySpec
   it should "insert a sequence of Airlines into the database" in {
 
     val program = for {
-      countryId <- SlickCountryRepository.insert(spainDbo)
+      countryId <- CountryRepository.insert(spainDbo)
       ids <- SlickAirlineRepository.insert(
         Seq(ibeDbo.copy(countryId = countryId), aeaDbo.copy(countryId = countryId))
       )
@@ -52,7 +53,7 @@ class SlickAirlineRepositorySpec
 
   it should "fail to insert a duplicate Airline into the database" in {
     val program = for {
-      countryId <- SlickCountryRepository.insert(spainDbo)
+      countryId <- CountryRepository.insert(spainDbo)
       _ <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
       _ <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
     } yield ()
@@ -66,7 +67,7 @@ class SlickAirlineRepositorySpec
 
   "Find" should "retrieve an Airline by iata code" in {
     val program = for {
-      countryId <- SlickCountryRepository.insert(spainDbo)
+      countryId <- CountryRepository.insert(spainDbo)
       aid <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
       airline <- SlickAirlineRepository.findByIataCode(ibeIataCode)
     } yield (airline, countryId, aid)
@@ -80,7 +81,7 @@ class SlickAirlineRepositorySpec
 
   it should "retrieve an Airline by icao code" in {
     val program = for {
-      countryId <- SlickCountryRepository.insert(spainDbo)
+      countryId <- CountryRepository.insert(spainDbo)
       aid <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
       airline <- SlickAirlineRepository.findByIcaoCode(ibeIcaoCode)
     } yield (airline, countryId, aid)
@@ -92,8 +93,8 @@ class SlickAirlineRepositorySpec
 
   it should "retrieve a sequence of Airlines by country code" in {
     val program = for {
-      spainId <- SlickCountryRepository.insert(spainDbo)
-      portugalId <- SlickCountryRepository.insert(portugalDbo)
+      spainId <- CountryRepository.insert(spainDbo)
+      portugalId <- CountryRepository.insert(portugalDbo)
       _ <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = spainId))
       _ <- SlickAirlineRepository.insert(aeaDbo.copy(countryId = spainId))
       _ <- SlickAirlineRepository.insert(tapDbo.copy(countryId = portugalId))
@@ -116,7 +117,7 @@ class SlickAirlineRepositorySpec
     val airlineThree = AirlineDbo("Aeronaves de los cielos de Iberia", "iata3", "icao3", LocalDate.now())
 
     val program = for {
-      id <- SlickCountryRepository.insert(spainDbo)
+      id <- CountryRepository.insert(spainDbo)
       _ <- SlickAirlineRepository.insert(airlineOne.copy(countryId = id))
       _ <- SlickAirlineRepository.insert(airlineTwo.copy(countryId = id))
       _ <- SlickAirlineRepository.insert(airlineThree.copy(countryId = id))
@@ -144,7 +145,7 @@ class SlickAirlineRepositorySpec
 
   "Update" should "update an Airport retrieved from the database" in {
     val program = for {
-      id <- SlickCountryRepository.insert(spainDbo)
+      id <- CountryRepository.insert(spainDbo)
       _ <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = id))
       dbo <- SlickAirlineRepository.findByIataCode(ibeIataCode)
       count <- SlickAirlineRepository.update(dbo.get.copy(name = updatedIbeText))
@@ -162,7 +163,7 @@ class SlickAirlineRepositorySpec
 
   "Delete" should "delete an Airline from the database" in {
     val program = for {
-      countryId <- SlickCountryRepository.insert(spainDbo)
+      countryId <- CountryRepository.insert(spainDbo)
       _ <- SlickAirlineRepository.insert(ibeDbo.copy(countryId = countryId))
       count <- SlickAirlineRepository.deleteByIataCode(ibeIataCode)
     } yield count

@@ -10,6 +10,8 @@ trait CountryPersister {
   def insert(country: Country): IO[ServiceError, Long]
   def existsByCode(code: CountryCode): IO[ServiceError, Boolean]
   def findByCode(code: CountryCode): IO[ServiceError, Option[Country]]
+  def update(country: Country): IO[ServiceError, Int]
+  def delete(code: CountryCode): IO[ServiceError, Int]
 }
 
 object CountryPersister {
@@ -21,4 +23,11 @@ object CountryPersister {
 
   def findByCode(code: CountryCode): ZIO[Has[CountryPersister], ServiceError, Option[Country]] =
     ZIO.serviceWith[CountryPersister](_.findByCode(code))
+
+  def update(country: Country): ZIO[Has[CountryPersister], ServiceError, Int] =
+    ZIO.serviceWith[CountryPersister](_.update(country))
+
+  def delete(code: CountryCode): ZIO[Has[CountryPersister], ServiceError, Int] =
+    ZIO.serviceWith[CountryPersister](_.delete(code))
+
 }
