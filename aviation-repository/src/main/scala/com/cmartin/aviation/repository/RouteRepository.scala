@@ -22,7 +22,10 @@ object RouteRepository {
   def update(dbo: RouteDbo): ZIO[Has[RouteRepository], Throwable, Int] =
     ZIO.accessM[Has[RouteRepository]](_.get.update(dbo))
 
-  def findByOriginAndDestination(iataOrigin: String, iataDestination: String) =
+  def findByOriginAndDestination(
+      iataOrigin: String,
+      iataDestination: String
+  ): ZIO[Has[RouteRepository], Throwable, Option[RouteDbo]] =
     ZIO.accessM[Has[RouteRepository]](_.get.findByOriginAndDestination(iataOrigin, iataDestination))
 
   def deleteByOriginAndDestination(

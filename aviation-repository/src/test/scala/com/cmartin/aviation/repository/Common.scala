@@ -6,8 +6,7 @@ import com.cmartin.aviation.repository.zioimpl.SlickSchemaHelper
 import com.typesafe.config.ConfigFactory
 import slick.interop.zio.DatabaseProvider
 import slick.jdbc.JdbcProfile
-import zio.Has
-import zio.ZLayer
+import zio.{Has, TaskLayer, ZLayer}
 
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters._
@@ -17,7 +16,8 @@ object Common {
   val configPath = "h2_dc"
   val dao = new TestDao(configPath)
 
-  class TestDao(configPath: String) extends DataAccessObject(configPath) {
+  class TestDao(configPath: String)
+      extends DataAccessObject(configPath) {
     import api._
 
     private val schema =
@@ -54,7 +54,7 @@ object Common {
     ).asJava
   )
 
-  val testEnv: ZLayer[Any, Throwable, Has[DatabaseProvider]] =
+  val testEnv: TaskLayer[Has[DatabaseProvider]] =
     (ZLayer.succeed(config) ++
       ZLayer.succeed[JdbcProfile](slick.jdbc.H2Profile)) >>> DatabaseProvider.live
 

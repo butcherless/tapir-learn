@@ -3,14 +3,10 @@ package com.cmartin.aviation.repository.zioimpl
 import com.cmartin.aviation.Commons
 import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.Common.testEnv
+import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.common.runtime
-import zio.Has
-import zio.TaskLayer
-import zio.URLayer
-import zio.ZLayer
-import zio.logging.Logging
-import com.cmartin.aviation.repository.CountryRepository
+import zio.{Has, TaskLayer}
 
 class CountryPersisterLiveSpec
     extends SlickBaseRepositorySpec {
