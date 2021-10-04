@@ -10,8 +10,8 @@ import zio.IO
 import zio.ZIO
 import zio.ZLayer
 import slick.interop.zio.syntax._
-
 import Abstractions.AbstractLongRepository
+import com.cmartin.aviation.repository.RouteRepository
 
 class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
     extends AbstractLongRepository[RouteDbo, Routes](db, profile)

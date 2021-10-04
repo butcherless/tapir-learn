@@ -1,6 +1,5 @@
-package com.cmartin.aviation.repository.zioimpl
+package com.cmartin.aviation.repository
 
-import com.cmartin.aviation.repository.BaseRepository
 import com.cmartin.aviation.repository.Model.RouteDbo
 import zio.{Has, IO, ZIO}
 
