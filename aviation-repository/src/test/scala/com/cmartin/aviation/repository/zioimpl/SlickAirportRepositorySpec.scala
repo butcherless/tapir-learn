@@ -134,7 +134,7 @@ class SlickAirportRepositorySpec
   it should "return None for a missing Airport" in {
     val program = for {
       airport <- AirportRepository.findByIataCode(madIataCode)
-    } yield (airport)
+    } yield airport
 
     val dboOpt = runtime.unsafeRun(
       program.provideLayer(env)
