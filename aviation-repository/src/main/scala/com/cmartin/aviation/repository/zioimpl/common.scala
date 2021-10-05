@@ -1,10 +1,12 @@
 package com.cmartin.aviation.repository.zioimpl
 
+import com.cmartin.aviation.repository.Model._
 import slick.dbio.DBIO
 import slick.interop.zio.DatabaseProvider
 import slick.interop.zio.syntax._
 import zio.Has
 import zio.IO
+import zio.Task
 import zio.ZIO
 
 object common {
@@ -16,4 +18,9 @@ object common {
         .provide(Has(ctx._2))
   }
 
+  def manageNotFound[A](o: Option[A])(message: String): Task[A] = {
+    o.fold[Task[A]](
+      Task.fail(RepositoryException(message))
+    )(a => Task.succeed(a))
+  }
 }

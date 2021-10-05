@@ -1,7 +1,9 @@
 package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.CountryDbo
-import zio.{Has, IO, ZIO}
+import zio.Has
+import zio.IO
+import zio.ZIO
 
 trait CountryRepository
     extends BaseRepository[CountryDbo] {
@@ -31,4 +33,3 @@ object CountryRepository {
     ZIO.accessM[Has[CountryRepository]](_.get.count())
 
 }
-

@@ -1,12 +1,12 @@
 package com.cmartin.aviation.repository.zioimpl
 
+import com.cmartin.aviation.repository.BaseRepository
 import com.cmartin.aviation.repository.Model.LongDbo
 import com.cmartin.aviation.repository.zioimpl.Tables.LongBasedTable
 import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
 import slick.interop.zio.DatabaseProvider
 import slick.jdbc.JdbcProfile
 import zio.IO
-import com.cmartin.aviation.repository.BaseRepository
 
 object Abstractions {
 

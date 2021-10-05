@@ -1,7 +1,8 @@
 package com.cmartin.aviation.repository
 
-import java.time.LocalDate
 import com.cmartin.aviation.domain.Model._
+
+import java.time.LocalDate
 
 object Model {
   type LongTuple = (Long, Long)
@@ -33,8 +34,8 @@ object Model {
       id: Option[Long] = None
   ) extends LongDbo
 
-  /** A complex of runways and buildings for the take-off, landing, and maintenance of civil aircraft, with facilities
-    * for passengers.
+  /** A complex of runways and buildings for the take-off, landing, and
+    * maintenance of civil aircraft, with facilities for passengers.
     *
     * @param name
     *   airport name
@@ -55,6 +56,22 @@ object Model {
       id: Option[Long] = None
   ) extends LongDbo
 
+  /** An organization providing a regular public service of air transport on one
+    * or more routes.
+    *
+    * @param name
+    *   the commercial name of the Airline, Iberia
+    * @param iataCode
+    *   iata 3-letter code
+    * @param icaoCode
+    *   icao 4-letter code
+    * @param foundationDate
+    *   the date on which its activity began, 1927-06-28
+    * @param countryId
+    *   Identifier of the airline to which it belongs
+    * @param id
+    *   entity identifier
+    */
   final case class AirlineDbo(
       name: String,
       iataCode: String,
@@ -64,6 +81,17 @@ object Model {
       id: Option[Long] = None
   ) extends LongDbo
 
+  /** A way or course taken in getting from a starting point to a destination.
+    *
+    * @param distance
+    *   number of nautical miles between the two Airports, 957 nm.
+    * @param originId
+    *   Origin airport identifier
+    * @param destinationId
+    *   Destination airport identifier
+    * @param id
+    *   entity identifier
+    */
   final case class RouteDbo(
       distance: Double,
       originId: Long,
