@@ -15,7 +15,7 @@
         <appender-ref ref="ASYNC"/>
     </root>
 
-    <logger name="com.cmartin.learn" level="debug" additivity="false">
+    <logger name="com.cmartin.aviation" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 

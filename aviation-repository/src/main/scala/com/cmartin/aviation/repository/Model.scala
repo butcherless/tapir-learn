@@ -100,7 +100,9 @@ object Model {
   ) extends LongDbo
 
   final case class RepositoryException(message: String)
-      extends RuntimeException("")
+      extends RuntimeException(message)
+  final case class MissingEntityException(message: String)
+      extends RuntimeException(message)
 
   object TableNames {
     val airlines = "AIRLINES"

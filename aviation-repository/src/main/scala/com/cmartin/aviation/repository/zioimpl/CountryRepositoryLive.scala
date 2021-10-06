@@ -8,7 +8,7 @@ import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
 import slick.interop.zio.DatabaseProvider
 import slick.jdbc.JdbcProfile
 import zio.Has
-import zio.IO
+import zio.Task
 import zio.ZLayer
 
 class CountryRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
@@ -19,12 +19,12 @@ class CountryRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
 
   override val entities = Tables.countries
 
-  override def findByCode(code: String): IO[Throwable, Option[CountryDbo]] = {
+  override def findByCode(code: String): Task[Option[CountryDbo]] = {
     val query = entities.filter(_.code === code)
     (query.result.headOption, db).toZio
   }
 
-  override def delete(code: String): IO[Throwable, Int] = {
+  override def delete(code: String): Task[Int] = {
     val query = entities.filter(_.code === code)
     (query.delete, db).toZio
   }

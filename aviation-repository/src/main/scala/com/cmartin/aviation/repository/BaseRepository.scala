@@ -1,13 +1,14 @@
 package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.LongDbo
-import zio.IO
+import zio.Task
 
 trait BaseRepository[E <: LongDbo] {
 
-  def insert(e: E): IO[Throwable, Long]
-  def insert(seq: Seq[E]): IO[Throwable, Seq[Long]]
-  def update(e: E): IO[Throwable, Int]
-  def count(): IO[Throwable, Int]
+  def find(id: Long): Task[Option[E]]
+  def insert(e: E): Task[Long]
+  def insert(seq: Seq[E]): Task[Seq[Long]]
+  def update(e: E): Task[Int]
+  def count(): Task[Int]
 
 }

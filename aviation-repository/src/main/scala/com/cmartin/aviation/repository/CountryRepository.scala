@@ -2,34 +2,35 @@ package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.CountryDbo
 import zio.Has
-import zio.IO
+import zio.RIO
+import zio.Task
 import zio.ZIO
 
 trait CountryRepository
     extends BaseRepository[CountryDbo] {
 
-  def findByCode(code: String): IO[Throwable, Option[CountryDbo]]
-  def delete(code: String): IO[Throwable, Int]
+  def findByCode(code: String): Task[Option[CountryDbo]]
+  def delete(code: String): Task[Int]
 
 }
 
 object CountryRepository {
-  def findByCode(code: String): ZIO[Has[CountryRepository], Throwable, Option[CountryDbo]] =
+  def findByCode(code: String): RIO[Has[CountryRepository], Option[CountryDbo]] =
     ZIO.accessM[Has[CountryRepository]](_.get.findByCode(code))
 
-  def insert(dbo: CountryDbo): ZIO[Has[CountryRepository], Throwable, Long] =
+  def insert(dbo: CountryDbo): RIO[Has[CountryRepository], Long] =
     ZIO.accessM[Has[CountryRepository]](_.get.insert(dbo))
 
-  def insert(seq: Seq[CountryDbo]): ZIO[Has[CountryRepository], Throwable, Seq[Long]] =
+  def insert(seq: Seq[CountryDbo]): RIO[Has[CountryRepository], Seq[Long]] =
     ZIO.accessM[Has[CountryRepository]](_.get.insert(seq))
 
-  def update(dbo: CountryDbo): ZIO[Has[CountryRepository], Throwable, Int] =
+  def update(dbo: CountryDbo): RIO[Has[CountryRepository], Int] =
     ZIO.accessM[Has[CountryRepository]](_.get.update(dbo))
 
-  def delete(code: String): ZIO[Has[CountryRepository], Throwable, Int] =
+  def delete(code: String): RIO[Has[CountryRepository], Int] =
     ZIO.accessM[Has[CountryRepository]](_.get.delete(code))
 
-  def count(): ZIO[Has[CountryRepository], Throwable, Int] =
+  def count(): RIO[Has[CountryRepository], Int] =
     ZIO.accessM[Has[CountryRepository]](_.get.count())
 
 }

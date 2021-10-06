@@ -17,7 +17,32 @@ object Mappers {
 
   implicit class CountryOptToDomain(dboOption: Option[CountryDbo]) {
     def toDomain: Option[Country] =
-      dboOption.map(dbo => Country(CountryCode(dbo.code), dbo.name))
+      dboOption.map(dbo =>
+        Country(CountryCode(dbo.code), dbo.name)
+      )
+  }
+
+  /*
+  implicit class AirportOptToDomain(dboOption: Option[AirportDbo]) {
+    def toDomain(countryDbo: CountryDbo): Option[Airport] =
+      dboOption.map(dbo =>
+        Airport(
+          dbo.name,
+          IataCode(dbo.iataCode),
+          IcaoCode(dbo.icaoCode),
+          Country(CountryCode(countryDbo.code), countryDbo.name)
+        )
+      )
+  }*/
+
+  implicit class AirportToDomain(dbo: AirportDbo) {
+    def toDomain(countryDbo: CountryDbo): Airport =
+      Airport(
+        dbo.name,
+        IataCode(dbo.iataCode),
+        IcaoCode(dbo.icaoCode),
+        Country(CountryCode(countryDbo.code), countryDbo.name)
+      )
   }
 
 }

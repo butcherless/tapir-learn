@@ -10,6 +10,8 @@ import zio.IO
 import zio.Task
 import zio.ZIO
 
+import java.sql.SQLIntegrityConstraintViolationException
+
 object common {
   val runtime = zio.Runtime.default
 
@@ -21,12 +23,14 @@ object common {
 
   def manageNotFound[A](o: Option[A])(message: String): Task[A] = {
     o.fold[Task[A]](
-      Task.fail(RepositoryException(message))
+      Task.fail(MissingEntityException(message))
     )(a => Task.succeed(a))
   }
 
   def manageError(e: Throwable): ServiceError = e match {
-    case e @ _ => UnexpectedServiceError(e.getMessage())
+    case e: SQLIntegrityConstraintViolationException => DuplicateEntityError(e.getMessage())
+    case e: MissingEntityException                   => MissingEntityError(e.getMessage())
+    case e @ _                                       => UnexpectedServiceError(e.getMessage() + e.getClass().getName())
   }
 
 }

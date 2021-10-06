@@ -7,6 +7,7 @@ import com.cmartin.aviation.repository.AirportRepository
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model._
 import com.cmartin.aviation.repository.zioimpl.Mappers._
+import com.cmartin.aviation.repository.zioimpl.common._
 import zio._
 import zio.logging._
 
@@ -16,8 +17,6 @@ case class AirportPersisterLive(
     airportRepository: AirportRepository
 ) extends AirportPersister {
 
-  import AirportPersisterLive._
-
   override def insert(airport: Airport): IO[ServiceError, Long] = {
     val program = for {
       _ <- log.debug(s"insert: $airport")
@@ -25,12 +24,10 @@ case class AirportPersisterLive(
       country <- manageNotFound(option)(s"No country found for code: ${airport.country.code}")
       id <- airportRepository.insert(airport.toDbo(country.id.get)) // safe access by primary key
     } yield id
-    //TODO manageError function
+
     program
       .provide(logging)
-      .mapError {
-        case e @ _ => UnexpectedServiceError(e.getMessage())
-      }
+      .mapError(manageError)
   }
 
   override def existsByCode(code: IataCode): IO[ServiceError, Boolean] = {
@@ -41,12 +38,29 @@ case class AirportPersisterLive(
 
     program
       .provide(logging)
-      .mapError {
-        case e @ _ => UnexpectedServiceError(e.getMessage())
-      }
+      .mapError(manageError)
   }
 
-  override def findByCode(code: IataCode): IO[ServiceError, Option[Airport]] = ???
+  override def findByCode(code: IataCode): IO[ServiceError, Option[Airport]] = {
+    val program = for {
+      _ <- log.debug(s"findByCode: $code")
+      airportOpt <- airportRepository.findByIataCode(code)
+      airportWithCountryOpt <- findCountryAndToDomain(airportOpt)
+    } yield airportWithCountryOpt
+
+    program
+      .provide(logging)
+      .mapError(manageError)
+  }
+
+  private def findCountryAndToDomain(dboOpt: Option[AirportDbo]): Task[Option[Airport]] =
+    dboOpt match {
+      case Some(dbo) =>
+        countryRepository.find(dbo.countryId)
+          .map(opt => Some(dbo.toDomain(opt.get))) // safe access by foreign key
+      case None =>
+        Task.none
+    }
 
   override def update(airport: Airport): IO[ServiceError, Int] = ???
 
@@ -58,19 +72,14 @@ case class AirportPersisterLive(
 
     program
       .provide(logging)
-      .mapError {
-        case e @ _ => UnexpectedServiceError(e.getMessage())
-      }
+      .mapError(manageError)
 
   }
 }
 
 object AirportPersisterLive {
 
-  def manageNotFound[A](o: Option[A])(message: String): Task[A] = {
-    o.fold[Task[A]](
-      Task.fail(RepositoryException(message))
-    )(a => Task.succeed(a))
-  }
+  val layer: URLayer[Has[Logging] with Has[CountryRepository] with Has[AirportRepository], Has[AirportPersister]] =
+    (AirportPersisterLive(_, _, _)).toLayer
 
 }

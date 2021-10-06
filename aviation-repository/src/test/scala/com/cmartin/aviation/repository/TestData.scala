@@ -24,8 +24,9 @@ object TestData {
 
   // AIRPORT
   val madName = "Barajas"
-  val madIataCode = "MAD"
-  val madIcaoCode = "LEMD"
+  val madIataCode = IataCode("MAD")
+  val madIcaoCode = IcaoCode("LEMD")
+  val madAirport = Airport(madName, madIataCode, madIcaoCode, spainCountry)
   val madDbo = AirportDbo(madName, madIataCode, madIcaoCode)
   val bcnIataCode = "BCN"
   val bcnDbo = AirportDbo("El Prat", bcnIataCode, "LEBL")
