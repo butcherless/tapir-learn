@@ -6,7 +6,7 @@ import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model
 import com.cmartin.aviation.repository.Model._
 import com.cmartin.aviation.repository.zioimpl.Mappers._
-import com.cmartin.aviation.repository.zioimpl.common.manageNotFound
+import com.cmartin.aviation.repository.zioimpl.common._
 import zio._
 import zio.logging._
 
@@ -23,12 +23,9 @@ case class CountryPersisterLive(
       dbo <- countryRepository.findByCode(code)
     } yield dbo.isDefined
 
-    //TODO manageError function
     program
       .provide(logging)
-      .mapError {
-        case e @ _ => UnexpectedServiceError(e.getMessage())
-      }
+      .mapError(manageError)
   }
 
   override def insert(country: Country): IO[ServiceError, Long] = {
@@ -37,12 +34,9 @@ case class CountryPersisterLive(
       id <- countryRepository.insert(country.toDbo)
     } yield id
 
-    //TODO manageError function
     program
       .provide(logging)
-      .mapError {
-        case e @ _ => UnexpectedServiceError(e.getMessage())
-      }
+      .mapError(manageError)
   }
 
   override def findByCode(code: CountryCode): IO[ServiceError, Option[Country]] = {
@@ -51,12 +45,9 @@ case class CountryPersisterLive(
       dbo <- countryRepository.findByCode(code)
     } yield dbo.toDomain
 
-    //TODO manageError function
     program
       .provide(logging)
-      .mapError {
-        case e @ _ => UnexpectedServiceError(e.getMessage())
-      }
+      .mapError(manageError)
   }
 
   override def update(country: Country): IO[ServiceError, Int] = {
@@ -68,12 +59,9 @@ case class CountryPersisterLive(
       count <- countryRepository.update(updated)
     } yield count
 
-    //TODO manageError function
     program
       .provide(logging)
-      .mapError {
-        case e @ _ => UnexpectedServiceError(e.getMessage())
-      }
+      .mapError(manageError)
   }
 
   override def delete(code: CountryCode): IO[ServiceError, Int] = {
@@ -82,12 +70,9 @@ case class CountryPersisterLive(
       dbo <- countryRepository.delete(code)
     } yield dbo
 
-    //TODO manageError function
     program
       .provide(logging)
-      .mapError {
-        case e @ _ => UnexpectedServiceError(e.getMessage())
-      }
+      .mapError(manageError)
   }
 
 }

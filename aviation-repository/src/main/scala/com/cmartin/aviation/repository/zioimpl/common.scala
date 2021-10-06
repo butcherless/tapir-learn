@@ -1,5 +1,6 @@
 package com.cmartin.aviation.repository.zioimpl
 
+import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.repository.Model._
 import slick.dbio.DBIO
 import slick.interop.zio.DatabaseProvider
@@ -23,4 +24,9 @@ object common {
       Task.fail(RepositoryException(message))
     )(a => Task.succeed(a))
   }
+
+  def manageError(e: Throwable): ServiceError = e match {
+    case e @ _ => UnexpectedServiceError(e.getMessage())
+  }
+
 }
