@@ -22,7 +22,7 @@ object Dependencies {
     "io.scalac" %% "zio-slick-interop" % "0.4"
   )
 
-  val repoTest = Seq(
+  val h2Test = Seq(
     "com.h2database" % "h2" % Versions.h2 % "test"
   )
 

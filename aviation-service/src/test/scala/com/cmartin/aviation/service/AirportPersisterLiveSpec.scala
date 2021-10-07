@@ -1,34 +1,42 @@
-package com.cmartin.aviation.repository.zioimpl
+package com.cmartin.aviation.service
 
 import com.cmartin.aviation.Commons
 import com.cmartin.aviation.domain.Model._
+import com.cmartin.aviation.port.AirportPersister
 import com.cmartin.aviation.port.CountryPersister
+import com.cmartin.aviation.repository.AirportRepository
 import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.TestData._
+import com.cmartin.aviation.repository.zioimpl.AirportRepositoryLive
+import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.common.runtime
 import zio.Has
 import zio.TaskLayer
 import zio.ZLayer
 
-class CountryPersisterLiveSpec
+class AirportPersisterLiveSpec
     extends SlickBaseRepositorySpec {
 
-  val env: TaskLayer[Has[CountryPersister]] =
+  val env: TaskLayer[Has[CountryPersister] with Has[AirportPersister]] =
     testEnv >>>
       CountryRepositoryLive.layer ++
-      Commons.loggingEnv >>> CountryPersisterLive.layer
+      AirportRepositoryLive.layer ++
+      Commons.loggingEnv >>>
+      CountryPersisterLive.layer ++
+      AirportPersisterLive.layer
 
-  // Simulator for database infrastructure exceptions
-  val mockEnv: TaskLayer[Has[CountryPersister]] =
+  val mockEnv =
     ZLayer.succeed(TestRepositories.countryRepository) ++
-      Commons.loggingEnv >>> CountryPersisterLive.layer
+      ZLayer.succeed(TestRepositories.airportRepository) ++
+      Commons.loggingEnv >>> AirportPersisterLive.layer
 
-  behavior of "CountryPersisterLive"
+  behavior of "AirportPersisterLive"
 
-  "Insert" should "insert a Country into the database" in {
+  "Insert" should "insert an Airport into the database" in {
     val program = for {
-      id <- CountryPersister.insert(spainCountry)
+      _ <- CountryPersister.insert(spainCountry)
+      id <- AirportPersister.insert(madAirport)
     } yield id
 
     val id = runtime.unsafeRun(
@@ -41,7 +49,8 @@ class CountryPersisterLiveSpec
   it should "fail to insert a duplicate Country into the database" in {
     val program = for {
       _ <- CountryPersister.insert(spainCountry)
-      _ <- CountryPersister.insert(spainCountry)
+      _ <- AirportPersister.insert(madAirport)
+      _ <- AirportPersister.insert(madAirport)
     } yield ()
 
     val either = runtime.unsafeRun(
@@ -50,10 +59,11 @@ class CountryPersisterLiveSpec
     either.left.value shouldBe a[DuplicateEntityError]
   }
 
-  "Exists" should "return true for an existing Country" in {
+  "Exists" should "return true for an existing Airport" in {
     val program = for {
       _ <- CountryPersister.insert(spainCountry)
-      exists <- CountryPersister.existsByCode(spainCode)
+      _ <- AirportPersister.insert(madAirport)
+      exists <- AirportPersister.existsByCode(madIataCode)
     } yield exists
 
     val exists = runtime.unsafeRun(
@@ -63,9 +73,9 @@ class CountryPersisterLiveSpec
     exists shouldBe true
   }
 
-  it should "return false for a missing Country" in {
+  it should "return false for a missing Airport" in {
     val program = for {
-      exists <- CountryPersister.existsByCode(spainCode)
+      exists <- AirportPersister.existsByCode(madIataCode)
     } yield exists
 
     val exists = runtime.unsafeRun(
@@ -77,7 +87,7 @@ class CountryPersisterLiveSpec
 
   it should "manage a database exception: existsByCode" in {
     val program = for {
-      _ <- CountryPersister.existsByCode(spainCode)
+      _ <- AirportPersister.existsByCode(madIataCode)
     } yield ()
 
     val either = runtime.unsafeRun(
@@ -87,35 +97,36 @@ class CountryPersisterLiveSpec
     either.left.value shouldBe a[UnexpectedServiceError]
   }
 
-  "Find" should "retrive a Country by its code" in {
+  "Find" should "retrive an Airport by its code" in {
     val program = for {
       _ <- CountryPersister.insert(spainCountry)
-      countryOpt <- CountryPersister.findByCode(spainCode)
-    } yield countryOpt
+      _ <- AirportPersister.insert(madAirport)
+      airportOpt <- AirportPersister.findByCode(madIataCode)
+    } yield airportOpt
 
-    val countryOpt = runtime.unsafeRun(
+    val airportOpt = runtime.unsafeRun(
       program.provideLayer(env)
     )
 
-    countryOpt shouldBe Some(spainCountry)
+    airportOpt shouldBe Some(madAirport)
   }
 
-  it should "retrive None for a missing Country" in {
+  it should "retrieve None for a missing Airport" in {
     val program = for {
-      countryOpt <- CountryPersister.findByCode(spainCode)
-    } yield countryOpt
+      airportOpt <- AirportPersister.findByCode(madIataCode)
+    } yield airportOpt
 
-    val countryOpt = runtime.unsafeRun(
+    val airportOpt = runtime.unsafeRun(
       program.provideLayer(env)
     )
 
-    countryOpt shouldBe None
+    airportOpt shouldBe None
   }
 
   it should "manage a database exception: findByCode" in {
     val program = for {
-      _ <- CountryPersister.findByCode(spainCode)
-    } yield ()
+      airportOpt <- AirportPersister.findByCode(madIataCode)
+    } yield airportOpt
 
     val either = runtime.unsafeRun(
       program.provideLayer(mockEnv).either
@@ -124,39 +135,11 @@ class CountryPersisterLiveSpec
     either.left.value shouldBe a[UnexpectedServiceError]
   }
 
-  "Update" should "update a Country" in {
-    val updatedCountry = Country(spainCode, updatedSpainText)
+  "Delete" should "delete an Airport by its iata code" in {
     val program = for {
       _ <- CountryPersister.insert(spainCountry)
-      count <- CountryPersister.update(updatedCountry)
-      countryOpt <- CountryPersister.findByCode(spainCode)
-    } yield (countryOpt, count)
-
-    val (countryOpt, count) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
-
-    count shouldBe 1
-    countryOpt shouldBe Some(updatedCountry)
-  }
-
-  it should "manage a database exception: update" in {
-    val updatedCountry = Country(spainCode, updatedSpainText)
-    val program = for {
-      _ <- CountryPersister.update(updatedCountry)
-    } yield ()
-
-    val either = runtime.unsafeRun(
-      program.provideLayer(env).either
-    )
-
-    either.left.value shouldBe a[MissingEntityError]
-  }
-
-  "Delete" should "delete a Country by its code" in {
-    val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      count <- CountryPersister.delete(spainCode)
+      _ <- AirportPersister.insert(madAirport)
+      count <- AirportPersister.delete(madIataCode)
     } yield count
 
     val count = runtime.unsafeRun(
@@ -168,7 +151,7 @@ class CountryPersisterLiveSpec
 
   it should "manage a database exception: delete" in {
     val program = for {
-      _ <- CountryPersister.delete(spainCode)
+      _ <- AirportPersister.delete(madIataCode)
     } yield ()
 
     val either = runtime.unsafeRun(

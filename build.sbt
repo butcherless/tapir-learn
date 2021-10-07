@@ -61,7 +61,7 @@ lazy val `aviation-repository` = (project in file("aviation-repository"))
   .settings(
     Defaults.itSettings,
     commonSettings,
-    libraryDependencies ++= repoMain ++ repoTest,
+    libraryDependencies ++= repoMain ++ h2Test,
     name := "aviation-repository",
     parallelExecution := false
   )
@@ -72,10 +72,13 @@ lazy val `aviation-service` = (project in file("aviation-service"))
   .settings(
     Defaults.itSettings,
     commonSettings,
+    libraryDependencies ++= h2Test,
     name := "aviation-service",
     parallelExecution := false
   )
-  .dependsOn(`aviation-core`, `aviation-repository` % "test->compile")
+  .dependsOn(`aviation-core`, `aviation-repository`, `aviation-test-utils` % "test->compile")
+//TODO repository interface / implementation modules
+//TODO .dependsOn(`aviation-core`, `aviation-repository` % "test->compile")
 
 lazy val `aviation-api` = (project in file("aviation-api"))
   .configs(IntegrationTest)
@@ -92,6 +95,14 @@ lazy val `aviation-api` = (project in file("aviation-api"))
   // plugins
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
+
+lazy val `aviation-test-utils` = (project in file("aviation-test-utils"))
+  .settings(
+//    libraryDependencies ++= apiMain ++ apiTest,
+    assemblyJarName := "aviation-test-utils.jar",
+    name := "aviation-test-utils"
+  )
+  .dependsOn(`aviation-core`, `aviation-repository`)
 
 // clear screen and banner
 lazy val cls = taskKey[Unit]("Prints a separator")

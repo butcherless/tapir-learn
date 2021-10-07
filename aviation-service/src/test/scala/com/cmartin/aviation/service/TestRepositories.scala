@@ -1,4 +1,4 @@
-package com.cmartin.aviation.repository.zioimpl
+package com.cmartin.aviation.service
 
 import com.cmartin.aviation.repository.AirportRepository
 import com.cmartin.aviation.repository.CountryRepository
