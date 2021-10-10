@@ -8,6 +8,7 @@ import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
 import slick.interop.zio.DatabaseProvider
 import slick.jdbc.JdbcProfile
 import zio.Has
+import zio.Task
 import zio.IO
 import zio.ZLayer
 
@@ -19,33 +20,43 @@ class AirlineRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
 
   override val entities = Tables.airlines
 
-  override def deleteByIataCode(iataCode: String): IO[Throwable, Int] = {
+  override def deleteByIataCode(iataCode: String): Task[Int] = {
     val query = entities.filter(_.iataCode === iataCode)
-    (query.delete, db).toZio
+    query.delete
+      .toZio
+      .provide(Has(db))
   }
 
-  override def findByIataCode(code: String): IO[Throwable, Option[AirlineDbo]] = {
+  override def findByIataCode(code: String): Task[Option[AirlineDbo]] = {
     val query = entities.filter(_.iataCode === code)
-    (query.result.headOption, db).toZio
+    query.result.headOption
+      .toZio
+      .provide(Has(db))
   }
 
-  override def findByIcaoCode(code: String): IO[Throwable, Option[AirlineDbo]] = {
+  override def findByIcaoCode(code: String): Task[Option[AirlineDbo]] = {
     val query = entities.filter(_.icaoCode === code)
-    (query.result.headOption, db).toZio
+    query.result.headOption
+      .toZio
+      .provide(Has(db))
   }
 
-  override def findByCountryCode(code: String): IO[Throwable, Seq[AirlineDbo]] = {
+  override def findByCountryCode(code: String): Task[Seq[AirlineDbo]] = {
     val query = for {
       airline <- entities
       country <- airline.country if country.code === code
     } yield airline
 
-    (query.result, db).toZio
+    query.result
+      .toZio
+      .provide(Has(db))
   }
 
-  override def findByName(name: String): IO[Throwable, Seq[AirlineDbo]] = {
+  override def findByName(name: String): Task[Seq[AirlineDbo]] = {
     val query = entities.filter(_.name like s"%$name%")
-    (query.result, db).toZio
+    query.result
+      .toZio
+      .provide(Has(db))
   }
 
 }

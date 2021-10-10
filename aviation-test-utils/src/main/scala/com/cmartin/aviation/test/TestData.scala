@@ -40,9 +40,10 @@ object TestData {
   // AIRLINE
   val ibeName = "Iberia"
   val updatedIbeText = "IBERIA"
-  val ibeIataCode = "ib"
-  val ibeIcaoCode = "ibe"
+  val ibeIataCode = IataCode("ib")
+  val ibeIcaoCode = IcaoCode("ibe")
   val ibeFoundationDate = LocalDate.of(1927, 6, 28)
+  val ibeAirline = Airline(ibeName, ibeIataCode, ibeIcaoCode, ibeFoundationDate, spainCountry)
   val ibeDbo = AirlineDbo(ibeName, ibeIataCode, ibeIcaoCode, ibeFoundationDate)
 
   val aeaName = "Air Europa"

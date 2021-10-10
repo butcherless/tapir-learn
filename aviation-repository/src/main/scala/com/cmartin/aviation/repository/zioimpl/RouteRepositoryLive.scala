@@ -1,17 +1,18 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model.RouteDbo
+import com.cmartin.aviation.repository.RouteRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Routes
 import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
 import slick.interop.zio.DatabaseProvider
+import slick.interop.zio.syntax._
 import slick.jdbc.JdbcProfile
 import zio.Has
 import zio.IO
 import zio.ZIO
 import zio.ZLayer
-import slick.interop.zio.syntax._
+
 import Abstractions.AbstractLongRepository
-import com.cmartin.aviation.repository.RouteRepository
 
 class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
     extends AbstractLongRepository[RouteDbo, Routes](db, profile)
@@ -28,7 +29,9 @@ class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
       airport <- route.origin if airport.iataCode === iataCode
     } yield route
 
-    (query.result, db).toZio
+    query.result
+      .toZio
+      .provide(Has(db))
   }
   override def findByIataDestination(iataCode: String): IO[Throwable, Seq[RouteDbo]] = {
     val query = for {
@@ -36,8 +39,9 @@ class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
       airport <- route.destination if airport.iataCode === iataCode
     } yield route
 
-    (query.result, db).toZio
-
+    query.result
+      .toZio
+      .provide(Has(db))
   }
 
   override def findByOriginAndDestination(
@@ -50,7 +54,9 @@ class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
       destination <- route.destination if destination.iataCode === iataDestination
     } yield route
 
-    (query.result.headOption, db).toZio
+    query.result.headOption
+      .toZio
+      .provide(Has(db))
   }
 
   override def deleteByOriginAndDestination(iataOrigin: String, iataDestination: String): IO[Throwable, Int] = {
@@ -66,7 +72,8 @@ class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
       )
     } yield count
 
-    program.provide(Has(db))
+    program
+      .provide(Has(db))
   }
 
 }

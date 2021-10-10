@@ -21,17 +21,23 @@ class AirportRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
 
   override def deleteByIataCode(iataCode: String): IO[Throwable, Int] = {
     val query = entities.filter(_.iataCode === iataCode)
-    (query.delete, db).toZio
+    query.delete
+      .toZio
+      .provide(Has(db))
   }
 
   override def findByIataCode(code: String): IO[Throwable, Option[AirportDbo]] = {
     val query = entities.filter(_.iataCode === code)
-    (query.result.headOption, db).toZio
+    query.result.headOption
+      .toZio
+      .provide(Has(db))
   }
 
   override def findByIcaoCode(code: String): IO[Throwable, Option[AirportDbo]] = {
     val query = entities.filter(_.icaoCode === code)
-    (query.result.headOption, db).toZio
+    query.result.headOption
+      .toZio
+      .provide(Has(db))
   }
 
   override def findByCountryCode(code: String): IO[Throwable, Seq[AirportDbo]] = {
@@ -40,12 +46,16 @@ class AirportRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
       country <- airport.country if country.code === code
     } yield airport
 
-    (query.result, db).toZio
+    query.result
+      .toZio
+      .provide(Has(db))
   }
 
   override def findByName(name: String): IO[Throwable, Seq[AirportDbo]] = {
     val query = entities.filter(_.name like s"%$name%")
-    (query.result, db).toZio
+    query.result
+      .toZio
+      .provide(Has(db))
   }
 
 }

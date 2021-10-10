@@ -14,6 +14,10 @@ object Mappers {
     def toDbo(countryId: Long): AirportDbo =
       AirportDbo(airport.name, airport.iataCode, airport.icaoCode, countryId)
   }
+  implicit class AirlineToDbo(airline: Airline) {
+    def toDbo(countryId: Long): AirlineDbo =
+      AirlineDbo(airline.name, airline.iataCode, airline.icaoCode, airline.foundationDate, countryId)
+  }
 
   implicit class CountryOptToDomain(dboOption: Option[CountryDbo]) {
     def toDomain: Option[Country] =
@@ -41,6 +45,16 @@ object Mappers {
         dbo.name,
         IataCode(dbo.iataCode),
         IcaoCode(dbo.icaoCode),
+        Country(CountryCode(countryDbo.code), countryDbo.name)
+      )
+  }
+  implicit class AirlineToDomain(dbo: AirlineDbo) {
+    def toDomain(countryDbo: CountryDbo): Airline =
+      Airline(
+        dbo.name,
+        IataCode(dbo.iataCode),
+        IcaoCode(dbo.icaoCode),
+        dbo.foundationDate,
         Country(CountryCode(countryDbo.code), countryDbo.name)
       )
   }

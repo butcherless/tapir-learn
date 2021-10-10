@@ -2,6 +2,8 @@ package com.cmartin.aviation.domain
 
 import zio.prelude.Subtype
 
+import java.time.LocalDate
+
 object Model {
 
   //TODO move to domain
@@ -34,6 +36,14 @@ object Model {
       name: String,
       iataCode: IataCode,
       icaoCode: IcaoCode,
+      country: Country
+  )
+
+  case class Airline(
+      name: String,
+      iataCode: IataCode, //TODO AirlineIataCode
+      icaoCode: IcaoCode, //TODO AirlineIcaoCode
+      foundationDate: LocalDate,
       country: Country
   )
 }

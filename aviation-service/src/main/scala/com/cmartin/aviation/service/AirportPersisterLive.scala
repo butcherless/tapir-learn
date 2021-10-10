@@ -73,7 +73,6 @@ case class AirportPersisterLive(
     program
       .provide(logging)
       .mapError(manageError)
-
   }
 }
 

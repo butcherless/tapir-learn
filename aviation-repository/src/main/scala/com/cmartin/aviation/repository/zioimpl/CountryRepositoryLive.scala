@@ -21,12 +21,16 @@ class CountryRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
 
   override def findByCode(code: String): Task[Option[CountryDbo]] = {
     val query = entities.filter(_.code === code)
-    (query.result.headOption, db).toZio
+    query.result.headOption
+      .toZio
+      .provide(Has(db))
   }
 
   override def delete(code: String): Task[Int] = {
     val query = entities.filter(_.code === code)
-    (query.delete, db).toZio
+    query.delete
+      .toZio
+      .provide(Has(db))
   }
 
 }

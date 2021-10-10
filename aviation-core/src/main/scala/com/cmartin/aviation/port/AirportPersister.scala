@@ -1,7 +1,9 @@
 package com.cmartin.aviation.port
 
 import com.cmartin.aviation.domain.Model._
-import zio.{Has, IO, ZIO}
+import zio.Has
+import zio.IO
+import zio.ZIO
 
 trait AirportPersister {
   def insert(airport: Airport): IO[ServiceError, Long]
