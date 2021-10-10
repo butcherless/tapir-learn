@@ -72,7 +72,7 @@ lazy val `aviation-service` = (project in file("aviation-service"))
   .settings(
     Defaults.itSettings,
     commonSettings,
-    libraryDependencies ++= h2Test,
+    libraryDependencies ++= serviceTest,
     name := "aviation-service",
     parallelExecution := false
   )

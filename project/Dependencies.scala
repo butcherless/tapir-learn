@@ -23,7 +23,12 @@ object Dependencies {
   )
 
   val h2Test = Seq(
-    "com.h2database" % "h2" % Versions.h2 % "test"
+    "com.h2database" % "h2" % Versions.h2 % Test
+  )
+
+  val serviceTest = Seq(
+    "org.scalamock" %% "scalamock" % Versions.scalaMock % Test,
+    "com.h2database" % "h2" % Versions.h2 % Test
   )
 
   val apiMain = Seq(

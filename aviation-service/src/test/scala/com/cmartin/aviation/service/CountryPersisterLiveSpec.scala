@@ -6,14 +6,14 @@ import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.TestData._
+import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.common.runtime
 import zio.Has
 import zio.TaskLayer
 import zio.ZLayer
-import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
 
 class CountryPersisterLiveSpec
-    extends SlickBaseRepositorySpec {
+    extends SlickBasePersisterSpec {
 
   val env: TaskLayer[Has[CountryPersister]] =
     testEnv >>>
@@ -21,8 +21,9 @@ class CountryPersisterLiveSpec
       Commons.loggingEnv >>> CountryPersisterLive.layer
 
   // Simulator for database infrastructure exceptions
+  val countryRepoMock = mock[CountryRepository]
   val mockEnv: TaskLayer[Has[CountryPersister]] =
-    ZLayer.succeed(TestRepositories.countryRepository) ++
+    ZLayer.succeed(countryRepoMock) ++
       Commons.loggingEnv >>> CountryPersisterLive.layer
 
   behavior of "CountryPersisterLive"
@@ -77,6 +78,12 @@ class CountryPersisterLiveSpec
   }
 
   it should "manage a database exception: existsByCode" in {
+    //GIVEN
+    (countryRepoMock.findByCode _)
+      .expects(spainCode)
+      .returns(TestRepositories.failDefault())
+      .once()
+
     val program = for {
       _ <- CountryPersister.existsByCode(spainCode)
     } yield ()
@@ -114,6 +121,12 @@ class CountryPersisterLiveSpec
   }
 
   it should "manage a database exception: findByCode" in {
+    //GIVEN
+    (countryRepoMock.findByCode _)
+      .expects(spainCode)
+      .returns(TestRepositories.failDefault())
+      .once()
+
     val program = for {
       _ <- CountryPersister.findByCode(spainCode)
     } yield ()
@@ -168,6 +181,12 @@ class CountryPersisterLiveSpec
   }
 
   it should "manage a database exception: delete" in {
+    //GIVEN
+    (countryRepoMock.delete _)
+      .expects(spainCode)
+      .returns(TestRepositories.failDefault())
+      .once()
+
     val program = for {
       _ <- CountryPersister.delete(spainCode)
     } yield ()

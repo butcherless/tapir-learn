@@ -10,11 +10,15 @@ import com.cmartin.aviation.repository.zioimpl.AirlineRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.common.runtime
 import zio.Has
+import zio.IO
 import zio.TaskLayer
 import zio.ZLayer
+import com.cmartin.aviation.repository.CountryRepository
+import com.cmartin.aviation.repository.AirlineRepository
+import java.sql.SQLTimeoutException
 
 class AirlinePersisterLiveSpec
-    extends SlickBaseRepositorySpec {
+    extends SlickBasePersisterSpec {
 
   val env: TaskLayer[Has[CountryPersister] with Has[AirlinePersister]] =
     testEnv >>>
@@ -24,9 +28,12 @@ class AirlinePersisterLiveSpec
       CountryPersisterLive.layer ++
       AirlinePersisterLive.layer
 
+  val countryRepoMock = mock[CountryRepository]
+  val airlineRepoMock = mock[AirlineRepository]
+
   val mockEnv =
-    ZLayer.succeed(TestRepositories.countryRepository) ++
-      ZLayer.succeed(TestRepositories.airlineRepository) ++
+    ZLayer.succeed(countryRepoMock) ++
+      ZLayer.succeed(airlineRepoMock) ++
       Commons.loggingEnv >>> AirlinePersisterLive.layer
 
   behavior of "AirlinePersisterLive"
@@ -84,6 +91,13 @@ class AirlinePersisterLiveSpec
   }
 
   it should "manage a database exception: existsByCode" in {
+    //GIVEN
+    (airlineRepoMock.findByIataCode _)
+      .expects(ibeIataCode)
+      .returns(TestRepositories.failDefault())
+      .once()
+
+    // WHEN
     val program = for {
       _ <- AirlinePersister.existsByCode(ibeIataCode)
     } yield ()
@@ -122,6 +136,12 @@ class AirlinePersisterLiveSpec
   }
 
   it should "manage a database exception: findByCode" in {
+    //GIVEN
+    (airlineRepoMock.findByIataCode _)
+      .expects(ibeIataCode)
+      .returns(TestRepositories.failDefault())
+      .once()
+
     val program = for {
       _ <- AirlinePersister.findByCode(ibeIataCode)
     } yield ()
@@ -161,6 +181,12 @@ class AirlinePersisterLiveSpec
   }
 
   it should "manage a database exception: findByCountry" in {
+    //GIVEN
+    (airlineRepoMock.findByCountryCode _)
+      .expects(spainCode)
+      .returns(TestRepositories.failDefault())
+      .once()
+
     val program = for {
       _ <- AirlinePersister.findByCountry(spainCode)
     } yield ()
@@ -207,6 +233,12 @@ class AirlinePersisterLiveSpec
   }
 
   it should "manage a database exception: delete" in {
+    //GIVEN
+    (airlineRepoMock.deleteByIataCode _)
+      .expects(ibeIataCode)
+      .returns(TestRepositories.failDefault())
+      .once()
+
     val program = for {
       _ <- AirlinePersister.delete(ibeIataCode)
     } yield ()
