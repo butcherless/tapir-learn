@@ -8,6 +8,7 @@ import zio.IO
 import zio.Task
 
 import java.sql.SQLTimeoutException
+import com.cmartin.aviation.repository.AirlineRepository
 
 object TestRepositories {
   val countryRepository = new CountryRepository {
@@ -25,11 +26,11 @@ object TestRepositories {
     override def findByCode(code: String): IO[Throwable, Option[CountryDbo]] = code match {
       //case "es" =>        IO.some(CountryDbo(spainText, spainCode, Some(1L)))
       case _ =>
-        IO.fail(new SQLTimeoutException("statement timeout reached"))
+        failDefault()
     }
 
     override def delete(code: String): IO[Throwable, Int] =
-      IO.fail(new SQLTimeoutException("statement timeout reached"))
+      failDefault()
   }
 
   val airportRepository = new AirportRepository {
@@ -45,16 +46,46 @@ object TestRepositories {
     override def count(): IO[Throwable, Int] = ???
 
     override def deleteByIataCode(code: String): IO[Throwable, Int] =
-      IO.fail(new SQLTimeoutException("statement timeout reached"))
+      failDefault()
 
     override def findByIataCode(code: String): IO[Throwable, Option[AirportDbo]] =
-      IO.fail(new SQLTimeoutException("statement timeout reached"))
+      failDefault()
 
     override def findByIcaoCode(code: String): IO[Throwable, Option[AirportDbo]] = ???
 
     override def findByCountryCode(code: String): IO[Throwable, Seq[AirportDbo]] = ???
 
     override def findByName(name: String): IO[Throwable, Seq[AirportDbo]] = ???
+  }
+
+  val airlineRepository = new AirlineRepository {
+
+    override def find(id: Long): Task[Option[AirlineDbo]] = ???
+
+    override def insert(e: AirlineDbo): Task[Long] = ???
+
+    override def insert(seq: Seq[AirlineDbo]): Task[Seq[Long]] = ???
+
+    override def update(e: AirlineDbo): Task[Int] = ???
+
+    override def count(): Task[Int] = ???
+
+    override def findByName(name: String): Task[Seq[AirlineDbo]] = ???
+
+    override def findByIataCode(code: String): Task[Option[AirlineDbo]] =
+      failDefault()
+
+    override def findByIcaoCode(code: String): Task[Option[AirlineDbo]] = ???
+
+    override def findByCountryCode(code: String): Task[Seq[AirlineDbo]] =
+      failDefault()
+
+    override def deleteByIataCode(code: String): Task[Int] =
+      failDefault()
 
   }
+
+  private def failDefault() =
+    IO.fail(new SQLTimeoutException("statement timeout reached"))
+
 }

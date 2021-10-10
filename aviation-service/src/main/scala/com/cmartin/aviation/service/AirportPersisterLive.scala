@@ -17,6 +17,7 @@ case class AirportPersisterLive(
     airportRepository: AirportRepository
 ) extends AirportPersister {
 
+  import AirportPersisterLive.buildDbo
   override def insert(airport: Airport): IO[ServiceError, Long] = {
     val program = for {
       _ <- log.debug(s"insert: $airport")
@@ -62,7 +63,21 @@ case class AirportPersisterLive(
         Task.none
     }
 
-  override def update(airport: Airport): IO[ServiceError, Int] = ???
+  override def update(airport: Airport): IO[ServiceError, Int] = {
+    val program = for {
+      _ <- log.debug(s"update: $airport")
+      countryOpt <- countryRepository.findByCode(airport.country.code)
+      country <- manageNotFound(countryOpt)(s"No country found for code: ${airport.country.code}")
+      airportOpt <- airportRepository.findByIataCode(airport.iataCode)
+      found <- manageNotFound(airportOpt)(s"No airport found for code: ${airport.iataCode}")
+      updated <- buildDbo(airport, found.id, country.id)
+      count <- airportRepository.update(updated)
+    } yield count
+
+    program
+      .provide(logging)
+      .mapError(manageError)
+  }
 
   override def delete(code: IataCode): IO[ServiceError, Int] = {
     val program = for {
@@ -80,5 +95,14 @@ object AirportPersisterLive {
 
   val layer: URLayer[Has[Logging] with Has[CountryRepository] with Has[AirportRepository], Has[AirportPersister]] =
     (AirportPersisterLive(_, _, _)).toLayer
+
+  def buildDbo(airport: Airport, id: Option[Long], countryId: Option[Long]): UIO[AirportDbo] =
+    IO.succeed(AirportDbo(
+      name = airport.name,
+      iataCode = airport.iataCode,
+      icaoCode = airport.icaoCode,
+      countryId = countryId.get, // safe access by foreign key
+      id = id
+    ))
 
 }

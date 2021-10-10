@@ -11,6 +11,7 @@ import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.common.runtime
 import zio.Has
 import zio.TaskLayer
+import zio.ZLayer
 
 class AirlinePersisterLiveSpec
     extends SlickBaseRepositorySpec {
@@ -22,6 +23,11 @@ class AirlinePersisterLiveSpec
       Commons.loggingEnv >>>
       CountryPersisterLive.layer ++
       AirlinePersisterLive.layer
+
+  val mockEnv =
+    ZLayer.succeed(TestRepositories.countryRepository) ++
+      ZLayer.succeed(TestRepositories.airlineRepository) ++
+      Commons.loggingEnv >>> AirlinePersisterLive.layer
 
   behavior of "AirlinePersisterLive"
 
@@ -77,6 +83,18 @@ class AirlinePersisterLiveSpec
     exists shouldBe false
   }
 
+  it should "manage a database exception: existsByCode" in {
+    val program = for {
+      _ <- AirlinePersister.existsByCode(ibeIataCode)
+    } yield ()
+
+    val either = runtime.unsafeRun(
+      program.provideLayer(mockEnv).either
+    )
+
+    either.left.value shouldBe a[UnexpectedServiceError]
+  }
+
   "Find" should "retrive an Airline by its code" in {
     val program = for {
       _ <- CountryPersister.insert(spainCountry)
@@ -103,6 +121,33 @@ class AirlinePersisterLiveSpec
     airlineOpt shouldBe None
   }
 
+  it should "manage a database exception: findByCode" in {
+    val program = for {
+      _ <- AirlinePersister.findByCode(ibeIataCode)
+    } yield ()
+
+    val either = runtime.unsafeRun(
+      program.provideLayer(mockEnv).either
+    )
+
+    either.left.value shouldBe a[UnexpectedServiceError]
+  }
+
+  it should "retrieve a sequence of airlines that belong to a country" in {
+    val program = for {
+      _ <- CountryPersister.insert(spainCountry)
+      _ <- AirlinePersister.insert(ibeAirline)
+      _ <- AirlinePersister.insert(aeaAirline)
+      airlines <- AirlinePersister.findByCountry(spainCode)
+    } yield airlines
+
+    val airlines = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
+
+    airlines shouldBe Seq(ibeAirline, aeaAirline)
+  }
+
   it should "retrieve an empty sequence for a missing Country" in {
     val program = for {
       airlines <- AirlinePersister.findByCountry(spainCode)
@@ -114,6 +159,38 @@ class AirlinePersisterLiveSpec
 
     airlines shouldBe empty
   }
+
+  it should "manage a database exception: findByCountry" in {
+    val program = for {
+      _ <- AirlinePersister.findByCountry(spainCode)
+    } yield ()
+
+    val either = runtime.unsafeRun(
+      program.provideLayer(mockEnv).either
+    )
+
+    either.left.value shouldBe a[UnexpectedServiceError]
+  }
+
+  "Update" should "update an Airline" in {
+    val updatedAirline = Airline(updatedIbeText, IataCode("ib"), IcaoCode("IBE"), ibeFoundationDate, spainCountry)
+
+    val program = for {
+      _ <- CountryPersister.insert(spainCountry)
+      id <- AirlinePersister.insert(ibeAirline)
+      count <- AirlinePersister.update(updatedAirline)
+      airlineOpt <- AirlinePersister.findByCode(ibeIataCode)
+    } yield (airlineOpt, count)
+
+    val (airlineOpt, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
+
+    count shouldBe 1
+    airlineOpt shouldBe Some(updatedAirline)
+  }
+
+  //TODO manage a db exception: update, use Mock impl
 
   "Delete" should "delete an Airline by its iata code" in {
     val program = for {
@@ -127,5 +204,17 @@ class AirlinePersisterLiveSpec
     )
 
     count shouldBe 1
+  }
+
+  it should "manage a database exception: delete" in {
+    val program = for {
+      _ <- AirlinePersister.delete(ibeIataCode)
+    } yield ()
+
+    val either = runtime.unsafeRun(
+      program.provideLayer(mockEnv).either
+    )
+
+    either.left.value shouldBe a[UnexpectedServiceError]
   }
 }

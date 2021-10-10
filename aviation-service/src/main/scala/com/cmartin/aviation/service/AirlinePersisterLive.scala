@@ -16,7 +16,7 @@ final case class AirlinePersisterLive(
     airlineRepository: AirlineRepository
 ) extends AirlinePersister {
 
-  import AirlinePersisterLive._
+  import AirlinePersisterLive.buildDbo
 
   override def insert(airline: Airline): IO[ServiceError, Long] = {
     val program = for {

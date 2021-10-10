@@ -125,8 +125,8 @@ class AirportPersisterLiveSpec
 
   it should "manage a database exception: findByCode" in {
     val program = for {
-      airportOpt <- AirportPersister.findByCode(madIataCode)
-    } yield airportOpt
+      _ <- AirportPersister.findByCode(madIataCode)
+    } yield ()
 
     val either = runtime.unsafeRun(
       program.provideLayer(mockEnv).either
@@ -134,6 +134,26 @@ class AirportPersisterLiveSpec
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }
+
+  "Update" should "update an Airport" in {
+    val updatedAirport = Airport(updatedMadText, IataCode("MAD"), IcaoCode("lemd"), spainCountry)
+
+    val program = for {
+      _ <- CountryPersister.insert(spainCountry)
+      id <- AirportPersister.insert(madAirport)
+      count <- AirportPersister.update(updatedAirport)
+      airportOpt <- AirportPersister.findByCode(madIataCode)
+    } yield (airportOpt, count)
+
+    val (airportOpt, count) = runtime.unsafeRun(
+      program.provideLayer(env)
+    )
+
+    count shouldBe 1
+    airportOpt shouldBe Some(updatedAirport)
+  }
+
+  //TODO manage a db exception: update, use Mock impl
 
   "Delete" should "delete an Airport by its iata code" in {
     val program = for {
