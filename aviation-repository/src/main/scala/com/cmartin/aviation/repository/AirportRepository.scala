@@ -22,7 +22,7 @@ object AirportRepository {
     ZIO.accessM[Has[AirportRepository]](_.get.insert(dbo))
 
   def insert(seq: Seq[AirportDbo]): RIO[Has[AirportRepository], Seq[Long]] =
-    ZIO.accessM[Has[AirportRepository]](_.get.insert(seq))
+    ZIO.accessM[Has[AirportRepository]](_.get.insertSeq(seq))
 
   def update(dbo: AirportDbo): RIO[Has[AirportRepository], Int] =
     ZIO.accessM[Has[AirportRepository]](_.get.update(dbo))

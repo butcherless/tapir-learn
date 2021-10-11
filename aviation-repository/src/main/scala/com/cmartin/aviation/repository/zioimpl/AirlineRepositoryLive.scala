@@ -8,8 +8,8 @@ import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
 import slick.interop.zio.DatabaseProvider
 import slick.jdbc.JdbcProfile
 import zio.Has
-import zio.Task
 import zio.IO
+import zio.Task
 import zio.ZLayer
 
 class AirlineRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)

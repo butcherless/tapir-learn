@@ -30,7 +30,7 @@ object common {
   def manageError(e: Throwable): ServiceError = e match {
     case e: SQLIntegrityConstraintViolationException => DuplicateEntityError(e.getMessage())
     case e: MissingEntityException                   => MissingEntityError(e.getMessage())
-    case e @ _                                       => UnexpectedServiceError(e.getMessage() + e.getClass().getName())
+    case e @ _                                       => UnexpectedServiceError(e.getMessage())
   }
 
 }

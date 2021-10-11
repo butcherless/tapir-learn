@@ -4,17 +4,20 @@ import com.cmartin.aviation.Commons
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.AirlinePersister
 import com.cmartin.aviation.port.CountryPersister
+import com.cmartin.aviation.repository.AirlineRepository
 import com.cmartin.aviation.repository.Common.testEnv
+import com.cmartin.aviation.repository.CountryRepository
+import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.AirlineRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.common.runtime
 import zio.Has
 import zio.IO
+import zio.Task
 import zio.TaskLayer
 import zio.ZLayer
-import com.cmartin.aviation.repository.CountryRepository
-import com.cmartin.aviation.repository.AirlineRepository
+
 import java.sql.SQLTimeoutException
 
 class AirlinePersisterLiveSpec
@@ -28,13 +31,15 @@ class AirlinePersisterLiveSpec
       CountryPersisterLive.layer ++
       AirlinePersisterLive.layer
 
-  val countryRepoMock = mock[CountryRepository]
   val airlineRepoMock = mock[AirlineRepository]
 
   val mockEnv =
-    ZLayer.succeed(countryRepoMock) ++
+    testEnv >>>
+      CountryRepositoryLive.layer ++
       ZLayer.succeed(airlineRepoMock) ++
-      Commons.loggingEnv >>> AirlinePersisterLive.layer
+      Commons.loggingEnv >>>
+      CountryPersisterLive.layer ++
+      AirlinePersisterLive.layer
 
   behavior of "AirlinePersisterLive"
 
@@ -216,7 +221,34 @@ class AirlinePersisterLiveSpec
     airlineOpt shouldBe Some(updatedAirline)
   }
 
-  //TODO manage a db exception: update, use Mock impl
+  it should "manage a database exception: update" in {
+    // GIVEN
+    (airlineRepoMock.insert _)
+      .expects(ibeDbo.copy(countryId = 1L))
+      .returns(Task.succeed(1L))
+
+    (airlineRepoMock.findByIataCode _)
+      .expects(ibeIataCode)
+      .returns(Task.some(ibeDbo.copy(countryId = 1L)))
+
+    (airlineRepoMock.update _)
+      .expects(*)
+      .returns(TestRepositories.failDefault())
+
+    val updatedAirline = Airline(updatedIbeText, IataCode("ib"), IcaoCode("IBE"), ibeFoundationDate, spainCountry)
+
+    val program = for {
+      _ <- CountryPersister.insert(spainCountry)
+      _ <- AirlinePersister.insert(ibeAirline)
+      _ <- AirlinePersister.update(updatedAirline)
+    } yield ()
+
+    val either = runtime.unsafeRun(
+      program.provideLayer(mockEnv).either
+    )
+
+    either.left.value shouldBe a[UnexpectedServiceError]
+  }
 
   "Delete" should "delete an Airline by its iata code" in {
     val program = for {

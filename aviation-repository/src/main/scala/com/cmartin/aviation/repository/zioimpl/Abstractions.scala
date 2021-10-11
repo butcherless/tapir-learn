@@ -45,7 +45,7 @@ object Abstractions {
         .provide(Has(db))
     }
 
-    override def insert(seq: Seq[E]): Task[Seq[Long]] = {
+    override def insertSeq(seq: Seq[E]): Task[Seq[Long]] = {
       val action = entities returning entities.map(_.id) ++= seq
       action
         .toZio

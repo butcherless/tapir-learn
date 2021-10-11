@@ -7,12 +7,12 @@ import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.AirportRepository
 import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.CountryRepository
-import com.cmartin.aviation.repository.AirportRepository
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.AirportRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.common.runtime
 import zio.Has
+import zio.Task
 import zio.TaskLayer
 import zio.ZLayer
 
@@ -27,13 +27,15 @@ class AirportPersisterLiveSpec
       CountryPersisterLive.layer ++
       AirportPersisterLive.layer
 
-  val countryRepoMock = mock[CountryRepository]
   val airportRepoMock = mock[AirportRepository]
 
   val mockEnv =
-    ZLayer.succeed(countryRepoMock) ++
+    testEnv >>>
+      CountryRepositoryLive.layer ++
       ZLayer.succeed(airportRepoMock) ++
-      Commons.loggingEnv >>> AirportPersisterLive.layer
+      Commons.loggingEnv >>>
+      CountryPersisterLive.layer ++
+      AirportPersisterLive.layer
 
   behavior of "AirportPersisterLive"
 
@@ -169,7 +171,34 @@ class AirportPersisterLiveSpec
     airportOpt shouldBe Some(updatedAirport)
   }
 
-  //TODO manage a db exception: update, use Mock impl
+  it should "manage a database exception: update" in {
+    // GIVEN
+    (airportRepoMock.insert _)
+      .expects(madDbo.copy(countryId = 1L))
+      .returns(Task.succeed(1L))
+
+    (airportRepoMock.findByIataCode _)
+      .expects(madIataCode)
+      .returns(Task.some(madDbo.copy(countryId = 1L)))
+
+    (airportRepoMock.update _)
+      .expects(*)
+      .returns(TestRepositories.failDefault())
+
+    val updatedAirport = Airport(updatedMadText, IataCode("MAD"), IcaoCode("lemd"), spainCountry)
+
+    val program = for {
+      _ <- CountryPersister.insert(spainCountry)
+      _ <- AirportPersister.insert(madAirport)
+      _ <- AirportPersister.update(updatedAirport)
+    } yield ()
+
+    val either = runtime.unsafeRun(
+      program.provideLayer(mockEnv).either
+    )
+
+    either.left.value shouldBe a[UnexpectedServiceError]
+  }
 
   "Delete" should "delete an Airport by its iata code" in {
     val program = for {

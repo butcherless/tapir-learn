@@ -1,7 +1,9 @@
 package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.RouteDbo
-import zio.{Has, IO, ZIO}
+import zio.Has
+import zio.IO
+import zio.ZIO
 
 trait RouteRepository
     extends BaseRepository[RouteDbo] {
@@ -17,7 +19,7 @@ object RouteRepository {
     ZIO.accessM[Has[RouteRepository]](_.get.insert(dbo))
 
   def insert(seq: Seq[RouteDbo]): ZIO[Has[RouteRepository], Throwable, Seq[Long]] =
-    ZIO.accessM[Has[RouteRepository]](_.get.insert(seq))
+    ZIO.accessM[Has[RouteRepository]](_.get.insertSeq(seq))
 
   def update(dbo: RouteDbo): ZIO[Has[RouteRepository], Throwable, Int] =
     ZIO.accessM[Has[RouteRepository]](_.get.update(dbo))
