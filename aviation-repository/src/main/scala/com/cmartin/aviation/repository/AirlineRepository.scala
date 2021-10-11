@@ -2,7 +2,6 @@ package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.AirlineDbo
 import zio.Has
-import zio.IO
 import zio.RIO
 import zio.Task
 import zio.ZIO

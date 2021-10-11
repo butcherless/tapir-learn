@@ -3,7 +3,6 @@ package com.cmartin.aviation.service
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.CountryRepository
-import com.cmartin.aviation.repository.Model
 import com.cmartin.aviation.repository.Model._
 import com.cmartin.aviation.repository.zioimpl.Mappers._
 import com.cmartin.aviation.repository.zioimpl.common._

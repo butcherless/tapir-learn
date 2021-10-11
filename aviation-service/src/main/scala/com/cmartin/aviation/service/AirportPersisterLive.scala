@@ -2,7 +2,6 @@ package com.cmartin.aviation.service
 
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.AirportPersister
-import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.AirportRepository
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model._

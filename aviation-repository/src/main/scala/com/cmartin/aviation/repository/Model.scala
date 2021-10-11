@@ -1,6 +1,5 @@
 package com.cmartin.aviation.repository
 
-import com.cmartin.aviation.domain.Model._
 
 import java.time.LocalDate
 

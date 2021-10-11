@@ -6,7 +6,6 @@ import com.cmartin.aviation.port.AirportPersister
 import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.AirportRepository
 import com.cmartin.aviation.repository.Common.testEnv
-import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.AirportRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
