@@ -3,7 +3,7 @@ package com.cmartin.aviation.repository.zioimpl
 import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.Model.AirportDbo
 import com.cmartin.aviation.repository.TestData._
-import com.cmartin.aviation.repository.zioimpl.common.runtime
+import zio.Runtime.{default => runtime}
 import zio.Has
 import zio.TaskLayer
 import com.cmartin.aviation.repository.{AirportRepository, CountryRepository}
@@ -16,7 +16,7 @@ class SlickAirportRepositorySpec
   val env: TaskLayer[Has[CountryRepository] with Has[AirportRepository]] =
     testEnv >>>
       CountryRepositoryLive.layer ++
-       AirportRepositoryLive.layer
+      AirportRepositoryLive.layer
 
   behavior of "SlickAirportRepository"
 

@@ -1,7 +1,7 @@
 package com.cmartin.aviation.service
 
 import com.cmartin.aviation.repository.Common.schemaHelperProgram
-import com.cmartin.aviation.repository.zioimpl.common.runtime
+import zio.Runtime.{default => runtime}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.EitherValues

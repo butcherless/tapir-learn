@@ -1,6 +1,6 @@
 package com.cmartin.aviation.poc
 
-import com.cmartin.aviation.Commons._
+import zio.Runtime.{default => runtime}
 import com.cmartin.aviation.domain.Model._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

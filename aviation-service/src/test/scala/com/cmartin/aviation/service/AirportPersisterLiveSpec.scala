@@ -9,7 +9,7 @@ import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.zioimpl.AirportRepositoryLive
 import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
-import com.cmartin.aviation.repository.zioimpl.common.runtime
+import zio.Runtime.{default => runtime}
 import zio.Has
 import zio.Task
 import zio.TaskLayer

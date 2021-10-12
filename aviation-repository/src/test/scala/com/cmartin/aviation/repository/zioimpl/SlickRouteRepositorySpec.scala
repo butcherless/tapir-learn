@@ -3,7 +3,7 @@ package com.cmartin.aviation.repository.zioimpl
 import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.Model.{AirportDbo, CountryDbo, RouteDbo}
 import com.cmartin.aviation.repository.TestData._
-import com.cmartin.aviation.repository.zioimpl.common.runtime
+import zio.Runtime.{default => runtime}
 import com.cmartin.aviation.repository.{AirportRepository, CountryRepository, RouteRepository}
 import org.scalatest.Inside._
 import zio.{Has, ZIO}

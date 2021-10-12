@@ -20,4 +20,5 @@ object Commons {
   val loggingEnv: ZLayer[Any, Nothing, Has[Logging]] =
     Slf4jLogger.make((_, message) => message)
       .map(Has(_))
+
 }
