@@ -6,8 +6,8 @@ import com.cmartin.aviation.api.Model.CountryView
 import com.cmartin.aviation.domain.Model.CountryCode
 import com.cmartin.aviation.port.CountryPersister
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
-import zio.logging._
 import zio._
+import zio.logging._
 
 class CountryPocApi(
     logging: Logging,

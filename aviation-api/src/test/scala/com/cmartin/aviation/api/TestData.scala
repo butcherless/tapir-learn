@@ -1,8 +1,8 @@
 package com.cmartin.aviation.api
 
-import com.cmartin.aviation.domain.Model._
 import akka.http.scaladsl.model.ContentTypes.`application/json`
 import akka.http.scaladsl.model.headers.`Content-Type`
+import com.cmartin.aviation.domain.Model._
 
 object TestData {
   val spainCountryCode = CountryCode("es")

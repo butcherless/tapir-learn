@@ -2,13 +2,17 @@ package com.cmartin.aviation.api
 
 import com.cmartin.aviation.Commons._
 import com.cmartin.aviation.domain.Model._
-import zio.{CancelableFuture, IO, ZIO, ZLayer}
+import zio.CancelableFuture
+import zio.IO
+import zio.ZIO
+import zio.ZLayer
 import zio.logging._
 import zio.logging.slf4j.Slf4jLogger
-import BaseEndpoint._
-import Model._
 
 import scala.concurrent.Future
+
+import BaseEndpoint._
+import Model._
 
 object Common {
 
