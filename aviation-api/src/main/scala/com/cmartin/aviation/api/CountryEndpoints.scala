@@ -98,7 +98,7 @@ object CountryEndpoints extends CountryEndpoints {
     implicit val encodeCountryCode: Encoder[CountryCode] =
       Encoder.encodeString.contramap[CountryCode](CountryCode.unwrap)
     implicit val decodeCountryCode: Decoder[CountryCode] =
-      Decoder.decodeString.map(CountryCode.apply)
+      Decoder.decodeString.map(CountryCode(_))
     implicit val countryCodeSchema: Schema[CountryCode] =
       Schema(SchemaType.SString())
   }

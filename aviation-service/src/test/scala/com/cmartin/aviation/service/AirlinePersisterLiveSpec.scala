@@ -26,8 +26,8 @@ class AirlinePersisterLiveSpec
       CountryPersisterLive.layer ++
       AirlinePersisterLive.layer
 
+  // Simulator for database infrastructure exceptions
   val airlineRepoMock = mock[AirlineRepository]
-
   val mockEnv =
     testEnv >>>
       CountryRepositoryLive.layer ++
