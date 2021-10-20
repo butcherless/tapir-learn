@@ -38,7 +38,8 @@ object AbstractRepositories {
       */
     def insert(e: E): F[Long]
 
-    /** Inserts a sequence of entities returning the generated sequence of identifiers
+    /** Inserts a sequence of entities returning the generated sequence of
+      * identifiers
       *
       * @param seq
       *   entity sequence

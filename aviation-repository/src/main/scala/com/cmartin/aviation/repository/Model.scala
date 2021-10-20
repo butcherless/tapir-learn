@@ -1,6 +1,5 @@
 package com.cmartin.aviation.repository
 
-
 import java.time.LocalDate
 
 object Model {
