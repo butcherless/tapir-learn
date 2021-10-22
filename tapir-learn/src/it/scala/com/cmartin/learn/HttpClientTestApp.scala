@@ -23,9 +23,8 @@ object HttpClientTestApp extends App {
     number <- nextIntBetween(500, 2000)
     delay <- UIO(number)
     _ <- ZIO.sleep(delay.milliseconds)
-    _ <- ZIO.foreachParN(fiberCount)(urls)(doGet) repeat Schedule.recurs(
-      loopCount - 1
-    )
+    _ <- ZIO.foreachPar(urls)(doGet).withParallelism(fiberCount)
+      .repeat(Schedule.recurs(loopCount - 1))
   } yield ()
 
   // Dummy method
