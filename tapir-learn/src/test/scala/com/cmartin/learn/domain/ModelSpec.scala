@@ -48,7 +48,7 @@ class ModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
 
     val apiAircraft = modelToApi(aircraft)
 
-    //TODO apiAircraft shouldBe AircraftDto(registration, age, model, Some(1L))
+    // TODO apiAircraft shouldBe AircraftDto(registration, age, model, Some(1L))
   }
 
   it should "convert a string to a Result" in {

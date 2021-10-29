@@ -70,5 +70,5 @@ trait AirlineEndpoints {
 
 object AirlineEndpoints extends AirlineEndpoints {
   val airlineViewExample =
-    AirlineView("Iberia", "IB", LocalDate.of(1927, 6, 28), "es") //TODO date
+    AirlineView("Iberia", "IB", LocalDate.of(1927, 6, 28), "es") // TODO date
 }

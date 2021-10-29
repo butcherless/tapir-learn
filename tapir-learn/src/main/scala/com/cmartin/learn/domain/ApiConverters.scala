@@ -25,7 +25,7 @@ trait ApiConverters {
     }
   }
 
-  //TODO
+  // TODO
   def apiToModel(a: AircraftDto): Aircraft = {
 
     Aircraft(a.registration, a.age, a.model.toModel, a.id.getOrElse(0))
@@ -56,7 +56,7 @@ trait ApiConverters {
 //      case _             => manageDefaultCase("model", s)
 //    }
 
-  //TODO
+  // TODO
   def modelToApi(a: Aircraft): AircraftDto =
     AircraftDto(a.registration, a.age, api.Model.AircraftType.Airbus332, Some(a.id))
 

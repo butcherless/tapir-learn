@@ -91,7 +91,7 @@ class AirportPersisterLiveSpec
   }
 
   it should "manage a database exception: existsByCode" in {
-    //GIVEN
+    // GIVEN
     (airportRepoMock.findByIataCode _)
       .expects(madIataCode)
       .returns(TestRepositories.failDefault())
@@ -135,7 +135,7 @@ class AirportPersisterLiveSpec
   }
 
   it should "manage a database exception: findByCode" in {
-    //GIVEN
+    // GIVEN
     (airportRepoMock.findByIataCode _)
       .expects(madIataCode)
       .returns(TestRepositories.failDefault())
@@ -214,7 +214,7 @@ class AirportPersisterLiveSpec
   }
 
   it should "manage a database exception: delete" in {
-    //GIVEN
+    // GIVEN
     (airportRepoMock.deleteByIataCode _)
       .expects(madIataCode)
       .returns(TestRepositories.failDefault())

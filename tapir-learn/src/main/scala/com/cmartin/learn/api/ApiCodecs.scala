@@ -46,14 +46,14 @@ trait ApiCodecs {
   implicit lazy val currencyEncoder: Encoder[Currency] =
     genericEncoder[Currency]()
 
-  //TODO refactor to generic select[T]
+  // TODO refactor to generic select[T]
   def select(o: Currency): Currency =
     o match {
       case c @ EUR => c
       case c @ USD => c
     }
 
-  //TODO https://github.com/circe/circe/blob/274ff5928d3784b8fc8e0ac2e9015c2d5b998b25/modules/tests/shared/src/test/scala/io/circe/JavaTimeCodecSuite.scala
+  // TODO https://github.com/circe/circe/blob/274ff5928d3784b8fc8e0ac2e9015c2d5b998b25/modules/tests/shared/src/test/scala/io/circe/JavaTimeCodecSuite.scala
 
   /*
       O U T P U T   C O D E C

@@ -32,12 +32,12 @@ trait TransferApi {
       .toRoute(
         TransferEndpoint.getTransferEndpoint
       )(
-        //businessLogic _ andThen
+        // businessLogic _ andThen
         //  handleErrors
         doControllerLogic
       )
 
-  //TODO refactor controller logic with ZIO
+  // TODO refactor controller logic with ZIO
   val runtime = zio.Runtime.default
   type EndpointResponse[T] = Future[Either[ErrorInfo, T]]
 

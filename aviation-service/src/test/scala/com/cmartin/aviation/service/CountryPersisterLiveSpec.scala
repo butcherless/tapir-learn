@@ -78,7 +78,7 @@ class CountryPersisterLiveSpec
   }
 
   it should "manage a database exception: existsByCode" in {
-    //GIVEN
+    // GIVEN
     (countryRepoMock.findByCode _)
       .expects(spainCode)
       .returns(TestRepositories.failDefault())
@@ -121,7 +121,7 @@ class CountryPersisterLiveSpec
   }
 
   it should "manage a database exception: findByCode" in {
-    //GIVEN
+    // GIVEN
     (countryRepoMock.findByCode _)
       .expects(spainCode)
       .returns(TestRepositories.failDefault())
@@ -181,7 +181,7 @@ class CountryPersisterLiveSpec
   }
 
   it should "manage a database exception: delete" in {
-    //GIVEN
+    // GIVEN
     (countryRepoMock.delete _)
       .expects(spainCode)
       .returns(TestRepositories.failDefault())

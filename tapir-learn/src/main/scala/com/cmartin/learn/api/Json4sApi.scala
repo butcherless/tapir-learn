@@ -104,7 +104,7 @@ trait Json4sApi extends LoggingSupport {
       .toRoute(
         postEntityEndpoint
       ) { entity =>
-        //TODO refactor zio.Task & slf4zio: log.debug(s"postEntityRoute.request: $entity")
+        // TODO refactor zio.Task & slf4zio: log.debug(s"postEntityRoute.request: $entity")
         Future.successful(Right(AircraftEndpoint.apiAircraftNFZExample))
       }
 
