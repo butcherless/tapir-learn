@@ -12,7 +12,7 @@ jobs:
     - name: Set up JDK 17
       uses: olafurpg/setup-scala@v13
       with:
-        java-version: '17'
+        java-version: '11'
         distribution: 'temurin'
     - name: compile main
       run: sbt -v -Dfile.encoding=UTF-8 --client compile
