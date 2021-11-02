@@ -23,7 +23,7 @@ trait TransferEndpoint extends ApiCodecs {
       E N D P O I N T S
    */
 
-  //json encode/decode via circe.generic.auto
+  // json encode/decode via circe.generic.auto
   lazy val getTransferEndpoint: Endpoint[TransferId, ErrorInfo, TransferDto, Any] =
     endpoint.get
       .name("get-transfer-endpoint")

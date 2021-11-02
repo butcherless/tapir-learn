@@ -24,7 +24,7 @@ object Model {
 
   case class ValidationErrors(message: String, exception: Option[Throwable] = None) extends ValidationError
 
-  //TODO opaque Type, regex, constraints
+  // TODO opaque Type, regex, constraints
   case class CountryView(
       code: CountryCode,
       name: String

@@ -9,7 +9,7 @@ object Model {
   sealed trait Currency
 
   // ADT
-  //sealed trait AircraftModel
+  // sealed trait AircraftModel
 
   // Actuator
   sealed trait Result

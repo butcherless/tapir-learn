@@ -15,8 +15,8 @@ object GetAndParseJsonZioCirce extends App {
 
     val request =
       basicRequest.
-          //get(uri"https://httpbin.org/get")
-          //.response(asJson[HttpBinResponse])
+          // get(uri"https://httpbin.org/get")
+          // .response(asJson[HttpBinResponse])
         get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[ApiBuildInfo])
 
@@ -31,7 +31,7 @@ object GetAndParseJsonZioCirce extends App {
         .exponential(50.milliseconds) *>
         Schedule
           .recurs(5)
-    //.tapOutput(i => console.putStrLn(s"$i")) , use logger
+    // .tapOutput(i => console.putStrLn(s"$i")) , use logger
 
     program
       .retry(schedulePolicy)

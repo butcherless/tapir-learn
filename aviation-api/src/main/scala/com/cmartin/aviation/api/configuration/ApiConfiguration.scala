@@ -12,7 +12,7 @@ trait ApiConfiguration {
   lazy val serverAddress: String = "localhost"
   lazy val serverPort: Int = 8080
 
-  //TODO dummy service
+  // TODO dummy service
   val countryService: CountryService = new CountryService {
 
     override def create(country: Model.Country): Commons.ServiceResponse[Model.Country] = ???

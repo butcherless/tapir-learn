@@ -91,7 +91,7 @@ class AirlinePersisterLiveSpec
   }
 
   it should "manage a database exception: existsByCode" in {
-    //GIVEN
+    // GIVEN
     (airlineRepoMock.findByIataCode _)
       .expects(ibeIataCode)
       .returns(TestRepositories.failDefault())
@@ -136,7 +136,7 @@ class AirlinePersisterLiveSpec
   }
 
   it should "manage a database exception: findByCode" in {
-    //GIVEN
+    // GIVEN
     (airlineRepoMock.findByIataCode _)
       .expects(ibeIataCode)
       .returns(TestRepositories.failDefault())
@@ -181,7 +181,7 @@ class AirlinePersisterLiveSpec
   }
 
   it should "manage a database exception: findByCountry" in {
-    //GIVEN
+    // GIVEN
     (airlineRepoMock.findByCountryCode _)
       .expects(spainCode)
       .returns(TestRepositories.failDefault())
@@ -260,7 +260,7 @@ class AirlinePersisterLiveSpec
   }
 
   it should "manage a database exception: delete" in {
-    //GIVEN
+    // GIVEN
     (airlineRepoMock.deleteByIataCode _)
       .expects(ibeIataCode)
       .returns(TestRepositories.failDefault())

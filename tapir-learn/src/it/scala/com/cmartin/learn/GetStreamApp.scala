@@ -22,7 +22,7 @@ object GetStreamApp extends App {
     val response =
       send(request)
 
-    //TODO
+    // TODO
     val program: ZIO[SttpClient, Throwable, Long] = response.flatMap { either =>
       either.body
         .fold(

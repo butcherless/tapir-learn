@@ -15,7 +15,7 @@ object CountryValidator {
   def validateCode(code: String): Validation[ValidationError, CountryCode] =
     for {
       _ <- validateEmptyText(code, EmptyProperty("code property is empty"))
-      _ <- validateCodeLength(code) //TODO refactor for generic use as validateEmptyText
+      _ <- validateCodeLength(code) // TODO refactor for generic use as validateEmptyText
     } yield CountryCode(code.toLowerCase())
 
   // TODO move to common validator
@@ -42,7 +42,7 @@ object CountryValidator {
     validatePostRequest(request)
   }
 
-  //TODO add regex validation, copy from existing
+  // TODO add regex validation, copy from existing
   def validateName(name: String): Validation[ValidationError, String] = {
     Validation.succeed(name)
   }

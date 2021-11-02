@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 object Model {
 
-  //TODO move to domain
+  // TODO move to domain
   trait ProgramError {
     val message: String
   }
@@ -41,8 +41,8 @@ object Model {
 
   case class Airline(
       name: String,
-      iataCode: IataCode, //TODO AirlineIataCode
-      icaoCode: IcaoCode, //TODO AirlineIcaoCode
+      iataCode: IataCode, // TODO AirlineIataCode
+      icaoCode: IcaoCode, // TODO AirlineIcaoCode
       foundationDate: LocalDate,
       country: Country
   )

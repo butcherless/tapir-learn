@@ -57,6 +57,6 @@ object SimulatorSpec {
     s1 <- CountryPocApi.doGetLogic("request")
   } yield s1
 
-  //TODO create api test to verify dependencies
-  //val res = runtime.unsafeRun(program.provideLayer(env))
+  // TODO create api test to verify dependencies
+  // val res = runtime.unsafeRun(program.provideLayer(env))
 }
