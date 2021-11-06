@@ -11,7 +11,7 @@ import sttp.tapir.json.circe._
 
 trait AirportEndpoints {
 
-  lazy val getByIataCodeEndpoint: Endpoint[String, OutputError, AirportView, Any] =
+  lazy val getByIataCodeEndpoint: PublicEndpoint[String, OutputError, AirportView, Any] =
     baseEndpoint.get
       .name("airport-get-by-iata-code-endpoint")
       .description("Retrieves an Airport by its iata code")
@@ -27,7 +27,7 @@ trait AirportEndpoints {
         )
       )
 
-  lazy val postEndpoint: Endpoint[AirportView, OutputError, (String, AirportView), Any] =
+  lazy val postEndpoint: PublicEndpoint[AirportView, OutputError, (String, AirportView), Any] =
     baseEndpoint.post
       .name("airport-post-endpoint")
       .description("Creates an Airport")
@@ -46,7 +46,7 @@ trait AirportEndpoints {
         )
       )
 
-  lazy val deleteEndpoint: Endpoint[String, OutputError, Unit, Any] =
+  lazy val deleteEndpoint: PublicEndpoint[String, OutputError, Unit, Any] =
     baseEndpoint.delete
       .name("airport-delete-endpoint")
       .description("Deletes an Airport by its iata code")

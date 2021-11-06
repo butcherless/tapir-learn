@@ -5,11 +5,11 @@ import io.circe.generic.auto._
 import sttp.client3._
 import sttp.client3.asynchttpclient.zio._
 import sttp.client3.circe._
-import zio._
 import zio.Console._
+import zio._
 
-object GetAndParseJsonZioCirce extends App {
-  override def run(args: List[String]): ZIO[ZEnv, Nothing, ExitCode] = {
+object GetAndParseJsonZioCirce extends ZIOAppDefault {
+  def run = {
 
     case class HttpBinResponse(origin: String, headers: Map[String, String])
 

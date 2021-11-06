@@ -4,7 +4,6 @@ import akka.http.scaladsl.model.headers.`Content-Location`
 import com.cmartin.aviation.domain.Model.CountryCode
 import io.circe.Decoder
 import io.circe.Encoder
-import io.circe.Json
 import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir._
@@ -17,7 +16,7 @@ import BaseEndpoint._
 trait CountryEndpoints {
   import CountryEndpoints.Implicits._
 
-  lazy val getByCodeEndpoint: Endpoint[String, OutputError, CountryView, Any] =
+  lazy val getByCodeEndpoint: PublicEndpoint[String, OutputError, CountryView, Any] =
     baseEndpoint.get
       .name("country-get-by-code-endpoint")
       .description("Retrieves a Country by its code")
@@ -33,7 +32,7 @@ trait CountryEndpoints {
         )
       )
 
-  lazy val postEndpoint: Endpoint[CountryView, OutputError, (String, CountryView), Any] =
+  lazy val postEndpoint: PublicEndpoint[CountryView, OutputError, (String, CountryView), Any] =
     baseEndpoint.post
       .name("country-post-endpoint")
       .description("Creates a Country")
@@ -52,7 +51,7 @@ trait CountryEndpoints {
         )
       )
 
-  lazy val putEndpoint: Endpoint[CountryView, OutputError, CountryView, Any] =
+  lazy val putEndpoint: PublicEndpoint[CountryView, OutputError, CountryView, Any] =
     baseEndpoint.put
       .name("country-put-endpoint")
       .description("Updates a Country")
@@ -70,7 +69,7 @@ trait CountryEndpoints {
         )
       )
 
-  lazy val deleteEndpoint: Endpoint[String, OutputError, Unit, Any] =
+  lazy val deleteEndpoint: PublicEndpoint[String, OutputError, Unit, Any] =
     baseEndpoint.delete
       .name("country-delete-endpoint")
       .description("Deletes a Country by its code")

@@ -3,15 +3,13 @@ package com.cmartin.learn
 import sttp.capabilities.zio.ZioStreams
 import sttp.client3._
 import sttp.client3.asynchttpclient.zio._
-import zio.App
-import zio.ZIO
-import zio._
+import zio.{ZIO, _}
 
 import scala.concurrent.duration.Duration
 
-object GetStreamApp extends App {
+object GetStreamApp extends ZIOAppDefault {
 
-  override def run(args: List[String]): ZIO[zio.ZEnv, Nothing, ExitCode] = {
+  def run = {
 
     val request =
       basicRequest

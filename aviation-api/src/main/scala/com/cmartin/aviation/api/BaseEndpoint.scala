@@ -21,7 +21,7 @@ trait BaseEndpoint {
   lazy val baseApiResource: EndpointInput[Unit] = apiText / apiVersionText
   lazy val baseApiPath: String = s"$apiText/$apiVersionText"
 
-  lazy val baseEndpoint: Endpoint[Unit, Unit, Unit, Any] =
+  lazy val baseEndpoint: PublicEndpoint[Unit, Unit, Unit, Any] =
     endpoint
       .in(baseApiResource)
       .name(apiVersionText)

@@ -10,9 +10,9 @@ trait ActuatorApi {
 
   lazy val route: Route =
     AkkaHttpServerInterpreter()
-      .toRoute(ActuatorEndpoint.healthEndpoint)(_ =>
-        Future.successful(
-          Right(BuildInfo.toView)
+      .toRoute(
+        ActuatorEndpoint.healthEndpoint.serverLogicSuccess(_ =>
+          Future.successful((BuildInfo.toView))
         )
       )
 }

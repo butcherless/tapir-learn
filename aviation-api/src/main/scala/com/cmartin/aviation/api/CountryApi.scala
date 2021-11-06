@@ -2,16 +2,15 @@ package com.cmartin.aviation.api
 
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import com.cmartin.aviation.api.BaseEndpoint._
+import com.cmartin.aviation.api.Common._
+import com.cmartin.aviation.api.Model._
 import com.cmartin.aviation.api.validator.CountryValidator
 import com.cmartin.aviation.api.validator.CountryValidator._
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.CountryService
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio.logging._
-
-import Common._
-import Model._
-import BaseEndpoint._
 
 class CountryApi(countryService: CountryService) {
   import CountryApi._
@@ -23,36 +22,39 @@ class CountryApi(countryService: CountryService) {
       deleteRoute
 
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(CountryEndpoints.getByCodeEndpoint) { request =>
+    AkkaHttpServerInterpreter().toRoute(
+      CountryEndpoints.getByCodeEndpoint.serverLogic { request =>
         run(
           doGetLogic(request)
         )
       }
+    )
 
   lazy val postRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(CountryEndpoints.postEndpoint) { request =>
+    AkkaHttpServerInterpreter().toRoute(
+      CountryEndpoints.postEndpoint.serverLogic { request =>
         run(
           doPostLogic(request)
         )
       }
+    )
 
   lazy val putRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(CountryEndpoints.putEndpoint) { request =>
+    AkkaHttpServerInterpreter().toRoute(
+      CountryEndpoints.putEndpoint.serverLogic { request =>
         run(
           doPutLogic(request)
         )
       }
+    )
 
   lazy val deleteRoute: Route =
     AkkaHttpServerInterpreter()
-      .toRoute(CountryEndpoints.deleteEndpoint) { request =>
+      .toRoute(CountryEndpoints.deleteEndpoint.serverLogic { request =>
         run(
           doDeleteLogic(request)
         )
-      }
+      })
 
   private def doGetLogic(request: String): ApiResponse[CountryView] = {
     for {

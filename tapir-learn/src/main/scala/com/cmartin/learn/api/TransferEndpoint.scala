@@ -2,10 +2,10 @@ package com.cmartin.learn.api
 
 import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain
+import com.cmartin.learn.domain.Model
 import com.cmartin.learn.domain.Model.EUR
 import io.circe.Json
 import io.circe.generic.auto._
-import org.json4s.DefaultFormats
 import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.generic.auto._
@@ -24,7 +24,7 @@ trait TransferEndpoint extends ApiCodecs {
    */
 
   // json encode/decode via circe.generic.auto
-  lazy val getTransferEndpoint: Endpoint[TransferId, ErrorInfo, TransferDto, Any] =
+  lazy val getTransferEndpoint: PublicEndpoint[TransferId, ErrorInfo, TransferDto, Any] =
     endpoint.get
       .name("get-transfer-endpoint")
       .description("Retrieve Transfer Endpoint")
@@ -34,6 +34,7 @@ trait TransferEndpoint extends ApiCodecs {
       .errorOut(
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
+
   lazy val getFilteredTransferEndpoint =
     endpoint.get
       .name("get-filtered-transfer-endpoint")
@@ -44,7 +45,8 @@ trait TransferEndpoint extends ApiCodecs {
       .errorOut(
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
-  lazy val getWithHeaderTransferEndpoint: Endpoint[(TransferId, Int), ErrorInfo, Unit, Any] =
+
+  lazy val getWithHeaderTransferEndpoint: PublicEndpoint[(TransferId, Int), ErrorInfo, Unit, Any] =
     endpoint.get
       .name("get-transfer-with-header-endpoint")
       .description("Retrieve Transfer with Header Endpoint")
@@ -55,7 +57,8 @@ trait TransferEndpoint extends ApiCodecs {
       .errorOut(
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
-  lazy val postTransferEndpoint: Endpoint[TransferDto, StatusCode, TransferDto, Any] =
+
+  lazy val postTransferEndpoint: PublicEndpoint[TransferDto, StatusCode, TransferDto, Any] =
     endpoint.post
       .name("post-transfer-endpoint")
       .description(("Create Transfer Endpoint"))
@@ -66,7 +69,8 @@ trait TransferEndpoint extends ApiCodecs {
           .and(jsonBody[TransferDto].example(transferExample))
       )
       .errorOut(statusCode)
-  lazy val postJsonEndpoint: Endpoint[Json, StatusCode, Json, Any] =
+
+  lazy val postJsonEndpoint: PublicEndpoint[Json, StatusCode, Json, Any] =
     endpoint.post
       .in(CommonEndpoint.baseEndpointInput / "bananas")
       .in(jsonBody[Json].example(jsonExample))
@@ -75,27 +79,31 @@ trait TransferEndpoint extends ApiCodecs {
           .and(jsonBody[Json].example(jsonExample))
       )
       .errorOut(statusCode)
-  lazy val getACEntityEndpoint: Endpoint[Unit, StatusCode, ACEntity, Any] =
+
+  lazy val getACEntityEndpoint: PublicEndpoint[Unit, StatusCode, ACEntity, Any] =
     endpoint.get
       .name("get-acEntity-endpoint")
       .description("Get AC Entity Endpoint")
       .in(CommonEndpoint.baseEndpointInput / "acEntity")
       .out(jsonBody[ACEntity].example(acEntityExample))
       .errorOut(statusCode)
-  lazy val getComOutputEndpoint: Endpoint[Unit, StatusCode, Output, Any] =
+
+  lazy val getComOutputEndpoint: PublicEndpoint[Unit, StatusCode, Output, Any] =
     endpoint.get
       .name("get-com-output-endpoint")
-      .description("Get Com Output Endpoint")
+      .description("Get Com Output PublicEndpoint")
       .in(CommonEndpoint.baseEndpointInput / "com-output")
-      .out(jsonBody[Output].example(Model.ComOut))
+      .out(jsonBody[Output])
       .errorOut(statusCode)
-  lazy val getShaOutputEndpoint: Endpoint[Unit, StatusCode, Output, Any] =
+
+  lazy val getShaOutputEndpoint: PublicEndpoint[Unit, StatusCode, Output, Any] =
     endpoint.get
       .name("get-sha-out-endpoint")
       .description("Get Sha Output Endpoint")
       .in(CommonEndpoint.baseEndpointInput / "sha-output")
-      .out(jsonBody[Output].example(Model.ShaOut))
+      .out(jsonBody[Output])
       .errorOut(statusCode)
+
   val transferIdPath =
     path[TransferId]("transferId")
       .validate(Validator.min(1))
@@ -127,7 +135,7 @@ object TransferEndpoint extends TransferEndpoint {
       .of(2020, 11, 7, 8, 5, 13, 345 * 1000000)
       .toInstant(ZoneOffset.UTC)
 
-  val transferExample =
+  val transferExample: TransferDto =
     TransferDto(
       "ES11 0182 1111 2222 3333 4444",
       "ES99 2038 9999 8888 7777 6666",
@@ -137,7 +145,7 @@ object TransferEndpoint extends TransferEndpoint {
       "Viaje a Tenerife"
     )
 
-  val transfer2Example =
+  val transfer2Example: TransferDto =
     TransferDto(
       "ES11 0182 1111 2222 3333 4444",
       "ES99 2095 3333 4444 2222 6666",
@@ -147,7 +155,7 @@ object TransferEndpoint extends TransferEndpoint {
       "Compra smartphone"
     )
 
-  val transferModelExample =
+  val transferModelExample: Model.Transfer =
     domain.Model.Transfer(
       "ES11 0182 1111 2222 3333 4444",
       "ES99 2038 9999 8888 7777 6666",
@@ -163,23 +171,23 @@ object TransferEndpoint extends TransferEndpoint {
     ACEntity(
       ComposedId(11111111L, 22222222L),
       Sids(
-        Source(1111L, "src-filter", Merge, ComOut),
+        Source(1111L, "src-filter", Merge, ComOut()),
         Some(
           State(
             2222L,
             "sta-filter",
             None,
-            ComOut,
+            ComOut(),
             ShaStrategy,
             Processors(Seq("in1", "in2"), Seq("ex1", "ex2"), Seq("t1", "t2", "t3"))
           )
         )
       ),
-      ComOut
+      ComOut()
     )
 
   val jsonStringExample = """{"id":1234}"""
-  val jsonExample =
+  val jsonExample: Json =
     io.circe.parser
       .parse(jsonStringExample)
       .fold(e => throw e.underlying, json => json)

@@ -8,23 +8,13 @@ import com.github.mlangc.slf4zio.api.LoggingSupport
 import org.json4s.JValue
 import org.json4s._
 import org.json4s.ext.EnumNameSerializer
-import org.json4s.native.JsonMethods
-import org.json4s.native.Serialization
 import sttp.model.StatusCode
-import sttp.tapir.Codec.JsonCodec
-import sttp.tapir.DecodeResult.Error
-import sttp.tapir.DecodeResult.Value
-import sttp.tapir.Schema.SName
-import sttp.tapir.SchemaType.SCoproduct
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.json4s._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
 import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
 
 trait Json4sApi extends LoggingSupport {
 
@@ -38,7 +28,7 @@ trait Json4sApi extends LoggingSupport {
       postEntityRoute
 
   // Json4s Codec for case class
-  lazy val getAircraftEndpoint: Endpoint[Unit, StatusCode, AircraftDto, Any] =
+  lazy val getAircraftEndpoint: PublicEndpoint[Unit, StatusCode, AircraftDto, Any] =
     endpoint.get
       .name("get-json4s-endpoint")
       .description("Retrieve aircraft json4s endpoint")
@@ -47,13 +37,14 @@ trait Json4sApi extends LoggingSupport {
       .errorOut(statusCode)
 
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        getAircraftEndpoint
-      )(_ => Future.successful(Right(AircraftEndpoint.apiAircraftMIGExample)))
+    AkkaHttpServerInterpreter().toRoute(
+      getAircraftEndpoint.serverLogicSuccess { _ =>
+        Future.successful(AircraftEndpoint.apiAircraftMIGExample)
+      }
+    )
 
   // Json4s Codec for JSON - get method
-  lazy val getJsonEndpoint: Endpoint[Unit, StatusCode, JValue, Any] =
+  lazy val getJsonEndpoint: PublicEndpoint[Unit, StatusCode, JValue, Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "jvalues")
       .name("get-jvalue-endpoint")
@@ -62,13 +53,14 @@ trait Json4sApi extends LoggingSupport {
       .errorOut(statusCode)
 
   lazy val getJsonRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        getJsonEndpoint
-      )(_ => Future.successful(Right(AircraftEndpoint.jValueAircraftExample)))
+    AkkaHttpServerInterpreter().toRoute(
+      getJsonEndpoint.serverLogicSuccess { _ =>
+        Future.successful(AircraftEndpoint.jValueAircraftExample)
+      }
+    )
 
   // any JSON document, no extracting case class
-  lazy val postJsonEndpoint: Endpoint[JValue, StatusCode, JValue, Any] = {
+  lazy val postJsonEndpoint: PublicEndpoint[JValue, StatusCode, JValue, Any] = {
     endpoint.post
       .name("post-jvalue-endpoint")
       .description("Create JValue aircraft json4s endpoint")
@@ -82,12 +74,13 @@ trait Json4sApi extends LoggingSupport {
   }
 
   lazy val postJsonRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        postJsonEndpoint
-      )(_ => Future.successful(Right(AircraftEndpoint.jValueAircraftExample)))
+    AkkaHttpServerInterpreter().toRoute(
+      postJsonEndpoint.serverLogicSuccess { _ =>
+        Future.successful(AircraftEndpoint.jValueAircraftExample)
+      }
+    )
 
-  lazy val postEntityEndpoint: Endpoint[AircraftDto, StatusCode, AircraftDto, Any] =
+  lazy val postEntityEndpoint: PublicEndpoint[AircraftDto, StatusCode, AircraftDto, Any] =
     endpoint.post
       .name("post-entity-endpoint")
       .description("Create entity aircraft json4s endpoint")
@@ -100,13 +93,12 @@ trait Json4sApi extends LoggingSupport {
       .errorOut(statusCode)
 
   lazy val postEntityRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        postEntityEndpoint
-      ) { entity =>
+    AkkaHttpServerInterpreter().toRoute(
+      postEntityEndpoint.serverLogicSuccess { entity =>
         // TODO refactor zio.Task & slf4zio: log.debug(s"postEntityRoute.request: $entity")
-        Future.successful(Right(AircraftEndpoint.apiAircraftNFZExample))
+        Future.successful(AircraftEndpoint.apiAircraftNFZExample)
       }
+    )
 
 }
 

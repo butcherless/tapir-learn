@@ -116,9 +116,9 @@ object Model {
 
   case class UnknownError(code: String, message: String) extends ErrorInfo
 
-  case object ComOut extends Output
+  case class ComOut() extends Output
 
-  case object ShaOut extends Output
+  case class ShaOut() extends Output
 
   case object Append extends ComStrategy
 

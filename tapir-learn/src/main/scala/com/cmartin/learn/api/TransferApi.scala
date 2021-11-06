@@ -21,21 +21,16 @@ trait TransferApi {
       getFilteredRoute ~
       getWithHeaderRoute ~
       postRoute ~
-      getComOutputRoute ~
-      getShaOutputRoute ~
       getACEntityRoute ~
       postJsonRoute
 
   // tapir endpoint description to akka routes via .toRoute function
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        TransferEndpoint.getTransferEndpoint
-      )(
-        // businessLogic _ andThen
-        //  handleErrors
+    AkkaHttpServerInterpreter().toRoute(
+      TransferEndpoint.getTransferEndpoint.serverLogic(
         doControllerLogic
       )
+    )
 
   // TODO refactor controller logic with ZIO
   val runtime = zio.Runtime.default
@@ -53,51 +48,46 @@ trait TransferApi {
   }
 
   lazy val getFilteredRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        TransferEndpoint.getFilteredTransferEndpoint
-      )(_ => Future.successful(Right(TransferEndpoint.transferListExample)))
+    AkkaHttpServerInterpreter().toRoute(
+      TransferEndpoint.getFilteredTransferEndpoint.serverLogicSuccess { _ =>
+        Future.successful(TransferEndpoint.transferListExample)
+      }
+    )
 
   //
   lazy val getWithHeaderRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        TransferEndpoint.getWithHeaderTransferEndpoint
-      )(_ => Future.successful(Right(())))
+    AkkaHttpServerInterpreter().toRoute(
+      TransferEndpoint.getWithHeaderTransferEndpoint.serverLogicSuccess { _ =>
+        Future.successful(())
+      }
+    )
 
   // dummy business process
   lazy val postRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        TransferEndpoint.postTransferEndpoint
-      ) { inDto =>
+    AkkaHttpServerInterpreter().toRoute(
+      TransferEndpoint.postTransferEndpoint.serverLogicSuccess { inDto =>
         val transfer: Transfer = inDto.toModel
         // simulated business process
         val outDto: TransferDto = transfer.toApi
-        Future.successful(Right(outDto))
+        Future.successful(outDto)
       }
+    )
 
   lazy val postJsonRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        TransferEndpoint.postJsonEndpoint
-      )(inDto => Future.successful(Right(inDto)))
+    AkkaHttpServerInterpreter().toRoute(
+      TransferEndpoint.postJsonEndpoint.serverLogicSuccess { inDto =>
+        Future.successful(inDto)
+      }
+    )
 
   lazy val getACEntityRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        TransferEndpoint.getACEntityEndpoint
-      )(_ => Future.successful(Right(TransferEndpoint.acEntityExample)))
+    AkkaHttpServerInterpreter().toRoute(
+      TransferEndpoint.getACEntityEndpoint.serverLogicSuccess { _ =>
+        Future.successful(TransferEndpoint.acEntityExample)
+      }
+    )
 
-  lazy val getComOutputRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(TransferEndpoint.getComOutputEndpoint)(_ => Future.successful(Right(Model.ComOut)))
 
-  lazy val getShaOutputRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        TransferEndpoint.getShaOutputEndpoint
-      )(_ => Future.successful(Right(Model.ShaOut)))
 
   // simulating business logic function
   def doBusinessLogic(transferId: TransferId): Task[Transfer] =

@@ -68,8 +68,8 @@ trait ApiCodecs {
     for {
       strategy <- c.get[Output]("output")
     } yield strategy match {
-      case o @ ComOut => o
-      case o @ ShaOut => o
+      case o @ ComOut() => o
+      case o @ ShaOut() => o
     }
 
   /*

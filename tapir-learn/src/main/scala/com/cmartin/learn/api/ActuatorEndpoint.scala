@@ -4,7 +4,7 @@ import com.cmartin.learn.api.Model.BuildInfoDto
 import com.cmartin.learn.domain.ApiConverters
 import io.circe.generic.auto._
 import sttp.model.StatusCode
-import sttp.tapir.Endpoint
+import sttp.tapir.PublicEndpoint
 import sttp.tapir._
 import sttp.tapir.endpoint
 import sttp.tapir.generic.auto._
@@ -14,7 +14,7 @@ trait ActuatorEndpoint extends ApiCodecs {
 
   type HealthInfo = BuildInfoDto
 
-  lazy val healthEndpoint: Endpoint[Unit, StatusCode, HealthInfo, Any] =
+  lazy val healthEndpoint: PublicEndpoint[Unit, StatusCode, HealthInfo, Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "health")
       .name("health-endpoint")

@@ -13,7 +13,7 @@ import java.time.LocalDate
 
 trait AirlineEndpoints {
 
-  lazy val getByIataCodeEndpoint: Endpoint[String, OutputError, AirlineView, Any] =
+  lazy val getByIataCodeEndpoint: PublicEndpoint[String, OutputError, AirlineView, Any] =
     baseEndpoint.get
       .name("airport-get-by-iata-code-endpoint")
       .description("Retrieves an Airport by its iata code")
@@ -29,7 +29,7 @@ trait AirlineEndpoints {
         )
       )
 
-  lazy val postEndpoint: Endpoint[AirlineView, OutputError, (String, AirlineView), Any] =
+  lazy val postEndpoint: PublicEndpoint[AirlineView, OutputError, (String, AirlineView), Any] =
     baseEndpoint.post
       .name("airport-post-endpoint")
       .description("Creates an Airport")
@@ -48,7 +48,7 @@ trait AirlineEndpoints {
         )
       )
 
-  lazy val deleteEndpoint: Endpoint[String, OutputError, Unit, Any] =
+  lazy val deleteEndpoint: PublicEndpoint[String, OutputError, Unit, Any] =
     baseEndpoint.delete
       .name("airport-delete-endpoint")
       .description("Deletes an Airport by its iata code")
@@ -69,6 +69,6 @@ trait AirlineEndpoints {
 }
 
 object AirlineEndpoints extends AirlineEndpoints {
-  val airlineViewExample =
+  val airlineViewExample: AirlineView =
     AirlineView("Iberia", "IB", LocalDate.of(1927, 6, 28), "es") // TODO date
 }

@@ -22,7 +22,7 @@ trait AircraftApi {
       postRoute ~
       getTypeRoute
 
-  lazy val getAircraftTypeEndpoint: Endpoint[Unit, StatusCode, Seq[AircraftType], Any] =
+  lazy val getAircraftTypeEndpoint: PublicEndpoint[Unit, StatusCode, Seq[AircraftType], Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "aircraft-types")
       .name("get-aircraft-type-endpoint")
@@ -31,12 +31,13 @@ trait AircraftApi {
       .errorOut(statusCode)
 
   lazy val getTypeRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        getAircraftTypeEndpoint
-      )(_ => Future.successful(Right(AircraftType.values.toSeq)))
+    AkkaHttpServerInterpreter().toRoute(
+      getAircraftTypeEndpoint.serverLogicSuccess { _ =>
+        Future.successful(AircraftType.values.toSeq)
+      }
+    )
 
-  lazy val getAircraftEndpoint: Endpoint[Option[Int], StatusCode, AircraftDto, Any] =
+  lazy val getAircraftEndpoint: PublicEndpoint[Option[Int], StatusCode, AircraftDto, Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "aircrafts")
       .in(limitQuery.example(Some(20)))
@@ -45,7 +46,7 @@ trait AircraftApi {
       .out(jsonBody[AircraftDto].example(apiAircraftMIGExample))
       .errorOut(statusCode)
 
-  lazy val getAircraftSeqEndpoint: Endpoint[Unit, StatusCode, Seq[AircraftDto], Any] =
+  lazy val getAircraftSeqEndpoint: PublicEndpoint[Unit, StatusCode, Seq[AircraftDto], Any] =
     endpoint.get
       .in(CommonEndpoint.baseEndpointInput / "aircraft-list")
       .name("get-aircraft-list-endpoint")
@@ -53,7 +54,7 @@ trait AircraftApi {
       .out(jsonBody[Seq[AircraftDto]].example(Seq(apiAircraftMIGExample, apiAircraftLVLExample, apiAircraftNFZExample)))
       .errorOut(statusCode)
 
-  lazy val postAircraftEndpoint: Endpoint[AircraftDto, StatusCode, AircraftDto, Any] =
+  lazy val postAircraftEndpoint: PublicEndpoint[AircraftDto, StatusCode, AircraftDto, Any] =
     endpoint.post
       .in(CommonEndpoint.baseEndpointInput / "aircrafts")
       .name("post-aircraft-endpoint")
@@ -66,28 +67,27 @@ trait AircraftApi {
       .errorOut(statusCode)
 
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        getAircraftEndpoint
-      )(_ => Future.successful(Right(apiAircraftMIGExample)))
+    AkkaHttpServerInterpreter().toRoute(
+      getAircraftEndpoint.serverLogicSuccess { _ =>
+        Future.successful(apiAircraftMIGExample)
+      }
+    )
 
   lazy val getSeqRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        getAircraftSeqEndpoint
-      )(_ =>
+    AkkaHttpServerInterpreter().toRoute(
+      getAircraftSeqEndpoint.serverLogicSuccess { _ =>
         Future.successful(
-          Right(
-            Seq(apiAircraftMIGExample.copy(id = Some(1234)), apiAircraftLVLExample.copy(id = Some(5678)))
-          )
+          Seq(apiAircraftMIGExample.copy(id = Some(1234)), apiAircraftLVLExample.copy(id = Some(5678)))
         )
-      )
+      }
+    )
 
   lazy val postRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(
-        postAircraftEndpoint
-      )(aircraft => Future.successful(Right(aircraft.copy(id = Some(1234L)))))
+    AkkaHttpServerInterpreter().toRoute(
+      postAircraftEndpoint.serverLogicSuccess { aircraft =>
+        Future.successful(aircraft.copy(id = Some(1234L)))
+      }
+    )
 
   val limitQuery: EndpointInput.Query[Option[Int]] =
     query[Option[Int]]("limit")
