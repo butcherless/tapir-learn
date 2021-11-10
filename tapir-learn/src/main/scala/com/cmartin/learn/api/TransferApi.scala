@@ -87,8 +87,6 @@ trait TransferApi {
       }
     )
 
-
-
   // simulating business logic function
   def doBusinessLogic(transferId: TransferId): Task[Transfer] =
     transferId match {
