@@ -1,10 +1,8 @@
 package com.cmartin.aviation.api
 
 import com.cmartin.aviation.domain.Model._
-import zio.prelude.Subtype
 
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 
 object Model {
 

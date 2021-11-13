@@ -1,16 +1,13 @@
 package com.cmartin.aviation.api
 
-import io.circe.Json
+import com.cmartin.aviation.api.Model._
 import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
-import sttp.tapir.json.circe._
 
 import scala.concurrent.Future
-
-import Model._
 
 trait BaseEndpoint {
 
@@ -27,17 +24,17 @@ trait BaseEndpoint {
       .name(apiVersionText)
       .description("Aviation REST API")
 
-  val badRequestMapping =
-    oneOfMappingFromMatchType(StatusCode.BadRequest, jsonBody[BadRequestError])
+  val badRequestMapping: EndpointOutput.OneOfVariant[BadRequestError] =
+    oneOfVariantFromMatchType(StatusCode.BadRequest, jsonBody[BadRequestError])
 
-  val notFoundMapping =
-    oneOfMappingFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
+  val notFoundMapping: EndpointOutput.OneOfVariant[NotFoundError] =
+    oneOfVariantFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
 
-  val internalErrorMapping: EndpointOutput.OneOfMapping[NotFoundError] =
-    oneOfMappingFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
+  val internalErrorMapping: EndpointOutput.OneOfVariant[NotFoundError] =
+    oneOfVariantFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
 
-  val defaultMapping =
-    oneOfDefaultMapping(jsonBody[UnknownError])
+  val defaultMapping: EndpointOutput.OneOfVariant[UnknownError] =
+    oneOfDefaultVariant(jsonBody[UnknownError])
 
   def buildContentLocation(resourcePath: String, resourceId: String): String = {
     s"/$baseApiPath/$resourcePath/$resourceId"

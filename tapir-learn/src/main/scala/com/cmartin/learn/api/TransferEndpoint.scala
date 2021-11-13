@@ -11,9 +11,7 @@ import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
 
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 trait TransferEndpoint extends ApiCodecs {
 
@@ -113,11 +111,11 @@ trait TransferEndpoint extends ApiCodecs {
     query[Option[Long]]("offset").and(query[Option[Int]]("limit"))
 
    */
-  val breMapping = oneOfMappingFromMatchType(StatusCode.BadRequest, jsonBody[BadRequestError])
-  val nfeMapping = oneOfMappingFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
-  val iseMapping = oneOfMappingFromMatchType(StatusCode.InternalServerError, jsonBody[ServerError])
-  val sueMapping = oneOfMappingFromMatchType(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
-  val deMapping = oneOfDefaultMapping(jsonBody[UnknownError])
+  val breMapping = oneOfVariantFromMatchType(StatusCode.BadRequest, jsonBody[BadRequestError])
+  val nfeMapping = oneOfVariantFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
+  val iseMapping = oneOfVariantFromMatchType(StatusCode.InternalServerError, jsonBody[ServerError])
+  val sueMapping = oneOfVariantFromMatchType(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
+  val deMapping = oneOfDefaultVariant(jsonBody[UnknownError])
 
 }
 
