@@ -1,0 +1,14 @@
+@startuml
+title Validation Effect Diagram
+
+start
+:InputData;
+:validate(InputData);
+if ( isValid ) then (failure  )
+  #tomato:** NonEmptyList[ValidationError] **;
+  stop
+else ( succeed)
+  #lightgreen:** OutputData **;
+  stop
+endif
+@enduml
