@@ -10,8 +10,8 @@ Un ejemplo muy común se da en las aplicaciones que disponen de una capa [*API R
 ## La validación como computación
 
 De forma general la ejecución de una computación puede terminar de dos formas:
-- **succeed** (con éxito)
-- **failure** (con fallo/s)
+- **succeed** :white_check_mark: (con éxito)
+- **failure** :x: (con fallo/s)
 
 En el caso de la validación de datos se tiene la descripción de una computación que recibe la información que se quiere validar y que termina de la forma descrita anteriormente.
 
