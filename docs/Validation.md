@@ -15,10 +15,10 @@ De forma general la ejecución de una computación puede terminar de dos formas:
 
 En el caso de la validación de datos se tiene la descripción de una computación que recibe la información que se quiere validar y que termina de la forma descrita anteriormente.
 
-###Caso succeed
+### Caso succeed
 Significa que se han cumplido todas las reglas de validación aplicadas al tipo de entrada. Se devuelve el tipo de salida.
 
-###Caso failure
+### Caso failure
 Significa que al menos una regla de validación no se ha cumplido. Se devuelve una lista de errores con al menos un elemento.
 
 Representación gráfica de la validación
