@@ -1,5 +1,7 @@
-import Dependencies._
+import Dependencies.*
 import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
+
+Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / scalaVersion := "2.13.7"
 ThisBuild / organization := "com.cmartin.learn"
@@ -115,7 +117,6 @@ cls := {
   println(s"$chars$brs ")
 }
 
-Global / onChangedBuildSource := ReloadOnSourceChanges
 
 addCommandAlias("xcoverage", "clean;coverage;test;coverageReport")
 addCommandAlias("xreload", "clean;reload")
