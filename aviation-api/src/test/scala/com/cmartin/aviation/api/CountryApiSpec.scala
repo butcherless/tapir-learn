@@ -27,7 +27,7 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
   val countryService: CountryService = mock[CountryService]
   val countryApi: CountryApi = CountryApi(countryService)
 
-  behavior of "CountryApiSpec"
+  behavior of "CountryApi"
 
   "Post" should "create a Country" in {
     // G I V E N
