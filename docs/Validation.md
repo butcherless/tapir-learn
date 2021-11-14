@@ -65,11 +65,11 @@ https://en.wikipedia.org/wiki/International_Bank_Account_Number
 
 Elementos de la cuenta bancaria:
 
+- k = Código de control IBAN
 - b = Código de la entidad bancaria
 - s = Código de oficina
-- x = Dígito de control
+- x = Código de control
 - c = Número de cuenta
-- k = Dígito de control IBAN
 
 Formato:
 

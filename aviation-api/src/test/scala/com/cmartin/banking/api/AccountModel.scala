@@ -39,14 +39,16 @@ object AccountModel {
   type BranchCode = BranchCode.Type
   object NumberControl extends Subtype[String]
   type NumberControl = NumberControl.Type
+  object AccountNumber extends Subtype[String]
+  type AccountNumber = AccountNumber.Type
 
   // API model
   case class BankAccountView(
       ibanControl: IbanControl,
       bank: BankCode,
       branch: BranchCode,
-      control: String,
-      number: String
+      control: NumberControl,
+      number: AccountNumber
   )
 
   // Domain model

@@ -66,7 +66,7 @@ object AccountValidator {
   /*
     A C C O U N T   N U M B E R   C O N T R O L
    */
-  private def validateControlCode(control: String): Validation[ValidationError, String] = {
+  private def validateControlCode(control: NumberControl): Validation[ValidationError, NumberControl] = {
     for {
       nec <- validateEmptyText(control, EmptyControlError())
       c <- validateNumberControlFormat(NumberControl(nec))
@@ -80,19 +80,19 @@ object AccountValidator {
   /*
     N U M B E R
    */
-  private def validateNumber(number: String): Validation[ValidationError, String] = {
+  private def validateNumber(number: AccountNumber): Validation[ValidationError, AccountNumber] = {
     for {
       nen <- validateEmptyText(number, EmptyNumberError())
-      n <- validateNumberFormat(nen)
+      n <- validateNumberFormat(AccountNumber(nen))
     } yield n
   }
-  private def validateNumberFormat(number: String): Validation[ValidationError, String] = {
-    Validation.validate(
-      Validation
-        .fromPredicateWith(InvalidAccountNumberLength(number))(number)(_.length == ACCOUNT_NUMBER_LENGTH),
-      Validation
-        .fromPredicateWith(InvalidAccountNumberFormat(number))(number)(ACCOUNT_NUMBER_REGEX.matches)
-    ).map(_ => number)
+  private def validateNumberFormat(number: AccountNumber): Validation[ValidationError, AccountNumber] = {
+    Validation
+      .fromPredicateWith(InvalidAccountNumberLength(number))(number)(_.length == ACCOUNT_NUMBER_LENGTH)
+      .zipParRight(
+        Validation
+          .fromPredicateWith(InvalidAccountNumberFormat(number))(number)(ACCOUNT_NUMBER_REGEX.matches)
+      )
   }
 
   // COMMON

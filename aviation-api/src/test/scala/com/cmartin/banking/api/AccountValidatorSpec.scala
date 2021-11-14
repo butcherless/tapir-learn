@@ -32,7 +32,8 @@ class AccountValidatorSpec
 
   "Empty account" should "fail to validate an account with empty elements" in {
     // GIVEN
-    val bankAccountView = BankAccountView(emptyIbanControl, emptyBank, emptyBranch, "", "")
+    val bankAccountView =
+      BankAccountView(emptyIbanControl, emptyBank, emptyBranch, emptyNumberControl, emtpyAccountNumber)
     // WHEN
     val result = AccountValidator.validate(bankAccountView).toEither
 
@@ -58,6 +59,7 @@ class AccountValidatorSpec
   }
 
   "Invalida data" should "fail to validate an account with invalid data" in {
+    // GIVEN
     val bankAccountView =
       BankAccountView(invalidIbanControl, invalidBank, invalidBranch, invalidNumberControl, invalidNumber)
     // WHEN
@@ -65,24 +67,38 @@ class AccountValidatorSpec
 
     result shouldBe invalidAccountErrors
   }
+
+  "Invalid number" should "fail to validate an account with invalid number length and format" in {
+    // GIVEN
+    val bankAccountView =
+      BankAccountView(validIbanControl, validBank, validBranch, validControl, invalidNumberLengthAndFormat)
+    // WHEN
+    val result = AccountValidator.validate(bankAccountView).toEither
+    // THEN
+    result shouldBe invalidNumberErrors
+  }
 }
 
 object AccountValidatorSpec {
   val validIbanControl: IbanControl = IbanControl("ES83")
   val emptyIbanControl: IbanControl = IbanControl("")
-  val invalidIbanControl = IbanControl("ES1")
-  val validBank = BankCode("2095")
-  val invalidBank = BankCode("20XY")
-  val invalidBankLength = BankCode("209")
-  val emptyBank = BankCode("")
-  val validBranch = BranchCode("0517")
-  val invalidBranch = BranchCode("X517")
-  val emptyBranch = BranchCode("")
-  val validControl = NumberControl("47")
-  val invalidNumberControl = NumberControl("4X")
-  //TODO AccountNumber type
-  val validNumber = "9400634176"
-  val invalidNumber = "940063417X"
+  val invalidIbanControl: IbanControl = IbanControl("ES1")
+  val validBank: BankCode = BankCode("2095")
+  val invalidBank: BankCode = BankCode("20XY")
+  val invalidBankLength: BankCode = BankCode("209")
+  val emptyBank: BankCode = BankCode("")
+  val validBranch: BranchCode = BranchCode("0517")
+  val invalidBranch: BranchCode = BranchCode("X517")
+  val emptyBranch: BranchCode = BranchCode("")
+
+  val validControl: NumberControl = NumberControl("47")
+  val emptyNumberControl: NumberControl = NumberControl("")
+  val invalidNumberControl: NumberControl = NumberControl("4X")
+
+  val validNumber: AccountNumber = AccountNumber("9400634176")
+  val invalidNumber: AccountNumber = AccountNumber("940063417X")
+  val emtpyAccountNumber: AccountNumber = AccountNumber("")
+  val invalidNumberLengthAndFormat: AccountNumber = AccountNumber("1234567890X")
 
   val bankAccount: BankAccount =
     BankAccount(validIbanControl, validBank, validBranch, validControl, validNumber)
@@ -101,7 +117,10 @@ object AccountValidatorSpec {
   val invalidNumberControlError: InvalidNumberControlFormat = InvalidNumberControlFormat(invalidNumberControl)
 
   val emptyNumberError: EmptyNumberError = EmptyNumberError(EMPTY_NUMBER_MSG)
+  val invalidNumberLengthError: InvalidAccountNumberLength = InvalidAccountNumberLength(invalidNumber)
   val invalidNumberError: InvalidAccountNumberFormat = InvalidAccountNumberFormat(invalidNumber)
+  val invalidNumberLength2Error: InvalidAccountNumberLength = InvalidAccountNumberLength(invalidNumberLengthAndFormat)
+  val invalidNumber2Error: InvalidAccountNumberFormat = InvalidAccountNumberFormat(invalidNumberLengthAndFormat)
 
   val emptyIbanControlErrors = Left(
     NonEmptyChunk(emptyIbanControlError)
@@ -114,6 +133,12 @@ object AccountValidatorSpec {
   )
   val invalidBankLengthErrors = Left(
     NonEmptyChunk(invalidBankLengthError)
+  )
+  val invalidNumberErrors = Left(
+    NonEmptyChunk(
+      invalidNumberLength2Error,
+      invalidNumber2Error
+    )
   )
 
   val emptyAccountErrors = Left(
