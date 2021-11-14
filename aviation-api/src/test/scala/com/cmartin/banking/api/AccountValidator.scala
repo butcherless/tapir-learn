@@ -6,11 +6,16 @@ import zio.prelude.Validation
 import scala.util.matching.Regex
 
 object AccountValidator {
-  val IBAN_PREFIX_REGEX: Regex = """^[A-Z]{2}[0-9]{2}$""".r
+  val IBAN_CONTROL_REGEX: Regex = """^[A-Z]{2}[0-9]{2}$""".r
+  val BANK_CODE_REGEX: Regex = """^[0-9]{4}$""".r
+  val BRANCH_CODE_REGEX: Regex = BANK_CODE_REGEX
+  val NUMBER_CONTROL_REGEX: Regex = """^[0-9]{2}$""".r
+  val ACCOUNT_NUMBER_REGEX: Regex = """^[0-9]+$""".r
+  val ACCOUNT_NUMBER_LENGTH = 10
 
   def validate(view: BankAccountView): Validation[ValidationError, BankAccount] = {
     Validation.validateWith(
-      validateIbanPrefix(view.prefix),
+      validateIbanControl(view.ibanControl),
       validateBankCode(view.bank),
       validateBranchCode(view.branch),
       validateControlCode(view.control),
@@ -18,40 +23,76 @@ object AccountValidator {
     )(BankAccount)
   }
 
-  private def validateIbanPrefix(prefix: String) = {
+  private def validateIbanControl(control: IbanControl): Validation[ValidationError, IbanControl] = {
     for {
-      nep <- validateEmptyText(prefix, EmptyIbanPrefixError())
-      p <- validatePrefixFormat(nep)
+      nep <- validateEmptyText(control, EmptyIbanControlError())
+      p <- validateIbanControlFormat(IbanControl(nep))
     } yield p
   }
 
-  private def validatePrefixFormat(prefix: String) = {
+  private def validateIbanControlFormat(control: IbanControl): Validation[ValidationError, IbanControl] = {
     Validation
-      .fromPredicateWith(InvalidIbanPrefixError(prefix))(prefix)(IBAN_PREFIX_REGEX.matches)
+      .fromPredicateWith(InvalidIbanControlError(control))(control)(IBAN_CONTROL_REGEX.matches)
   }
 
-  private def validateBankCode(bank: String) = {
+  /*
+    B A N K
+   */
+  private def validateBankCode(code: BankCode): Validation[ValidationError, BankCode] = {
     for {
-      b <- validateEmptyText(bank, EmptyBankError())
-    } yield b // TODO safe conversion?
+      neb <- validateEmptyText(code, EmptyBankError())
+      b <- validateBankFormat(BankCode(neb))
+    } yield b
+  }
+  private def validateBankFormat(code: BankCode): Validation[ValidationError, BankCode] = {
+    Validation
+      .fromPredicateWith(InvalidBankError(code))(code)(BANK_CODE_REGEX.matches)
   }
 
-  private def validateBranchCode(branch: String) = {
+  /*
+    B R A N C H
+   */
+  private def validateBranchCode(branch: BranchCode): Validation[ValidationError, BranchCode] = {
     for {
-      b <- validateEmptyText(branch, EmptyBranchError())
-    } yield b // TODO safe conversion?
+      neb <- validateEmptyText(branch, EmptyBranchError())
+      b <- validateBranchFormat(BranchCode(neb))
+    } yield b
+  }
+  private def validateBranchFormat(code: BranchCode): Validation[ValidationError, BranchCode] = {
+    Validation
+      .fromPredicateWith(InvalidBranchError(code))(code)(BRANCH_CODE_REGEX.matches)
   }
 
-  private def validateControlCode(control: String) = {
+  /*
+    A C C O U N T   N U M B E R   C O N T R O L
+   */
+  private def validateControlCode(control: String): Validation[ValidationError, String] = {
     for {
-      c <- validateEmptyText(control, EmptyControlError())
-    } yield c // TODO safe conversion?
+      nec <- validateEmptyText(control, EmptyControlError())
+      c <- validateNumberControlFormat(NumberControl(nec))
+    } yield c
+  }
+  private def validateNumberControlFormat(code: NumberControl): Validation[ValidationError, NumberControl] = {
+    Validation
+      .fromPredicateWith(InvalidNumberControlFormat(code))(code)(NUMBER_CONTROL_REGEX.matches)
   }
 
-  private def validateNumber(number: String) = {
+  /*
+    N U M B E R
+   */
+  private def validateNumber(number: String): Validation[ValidationError, String] = {
     for {
-      n <- validateEmptyText(number, EmptyNumberError())
-    } yield n // TODO safe conversion?
+      nen <- validateEmptyText(number, EmptyNumberError())
+      n <- validateNumberFormat(nen)
+    } yield n
+  }
+  private def validateNumberFormat(number: String): Validation[ValidationError, String] = {
+    Validation.validate(
+      Validation
+        .fromPredicateWith(InvalidAccountNumberLength(number))(number)(_.length == ACCOUNT_NUMBER_LENGTH),
+      Validation
+        .fromPredicateWith(InvalidAccountNumberFormat(number))(number)(ACCOUNT_NUMBER_REGEX.matches)
+    ).map(_ => number)
   }
 
   // COMMON
@@ -59,5 +100,4 @@ object AccountValidator {
     Validation
       .fromPredicateWith(error)(text)(_.nonEmpty)
   }
-
 }

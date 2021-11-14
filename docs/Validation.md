@@ -30,7 +30,7 @@ Representación gráfica de la validación
 Se define una función que recibe los datos de entrada y devuelve el resultado de la validación que tiene dos canales correspondientes a los casos posibles. O bien **failure** o bien **succeed**.
 
 `def validate(input: InputData): Validation[ValidationError,OutputData]`
- 
+
 En realidad `Validation[E,A]` es un alias para otro tipo en el que se ha omitido una lista no vacía y que es el siguiente:
 
 `NelValidation[NonEmptyList[E],A]`
@@ -56,10 +56,10 @@ En resumen, después de validar nuestro tipo de entrada, `InputData`, se obtiene
 - Smart constructor = new + predicate => MyDomainType
 - Dependencies. Las reglas de validación pueden tener dependencias unas de otras. Fail fast, parallel
 - https://www.bankcook.com/calcular-digitos-de-control-de-cuenta-corriente-bancaria/
-- 
+-
 ## Show me the code!
 
-Validación "*demo*" de los datos de una cuenta bancaria del sistema español basado en la siguiente standard encontrado en Wikipedia.
+Validación *"demo"* con fines didácticos de los datos de una cuenta bancaria del sistema español basado en la siguiente standard encontrado en Wikipedia.
 
 https://en.wikipedia.org/wiki/International_Bank_Account_Number
 
@@ -71,7 +71,9 @@ Elementos de la cuenta bancaria:
 - c = Número de cuenta
 - k = Dígito de control IBAN
 
-ESkk bbbb ssss xxcc cccc cccc
+Formato:
+
+`ESkk bbbb ssss xxcc cccc cccc`
 
 Ejemplo:
 
@@ -79,12 +81,12 @@ Ejemplo:
 
 Validaciones a implementar:
 
-|Validación  | eskk | bbbb | ssss |  xx  | cccc |
+|Validation  | eskk | bbbb | ssss |  xx  | cccc |
 |------------|------|------|------|------|------|
 |nonEmpty    | X    | X    | X    | X    | X    |
 |length      | X    | X    | X    | X    | X    |
 |numeric     | -    | X    | X    | X    | X    |
-|ab12        | X    | -    | -    | -    | -    |
+|AB12        | X    | -    | -    | -    | -    |
 |iban ctrl   | X    | -    | -    | -    | -    |
 |account ctrl| -    | -    | -    | X    | -    |
 
@@ -94,3 +96,5 @@ Validaciones a implementar:
 - value length
 - numeric value, regex
 - iban format, two letters + two digits, regex
+- iban control, algorithm
+- account control, algorithm
