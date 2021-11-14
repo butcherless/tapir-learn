@@ -2,9 +2,9 @@
 
 ## El caso de negocio
 
-Antes de realizar una operación se deberían validar los datos de entrada para evitar errores de ejecución, problemas de seguridad, comportamientos inesperados, comprobar el formato de fechas, asegurar conversiones de tipos, etc.
+Antes de realizar una operación se deberían validar los datos de entrada para evitar errores de ejecución, problemas de seguridad, comportamientos inesperados, comprobar el formato de fechas, ausencia de datos, asegurar conversiones de tipos, etc.
 
-Un ejemplo muy común se da en las aplicaciones que disponen de una capa [*API REST*](https://en.wikipedia.org/wiki/Representational_state_transfer). La información llega a la aplicación a través de la API en un formato, después se valida y se convierte a otro formato que la siguiente capa de aplicación pueda procesar.
+Un ejemplo muy común se da en las aplicaciones que disponen de una capa [*REST API*](https://en.wikipedia.org/wiki/Representational_state_transfer). La información llega a la aplicación a través de la API en un formato, después se valida y se convierte a otro formato que la siguiente capa de aplicación pueda procesar.
 
 
 ## La validación como computación
@@ -55,4 +55,42 @@ En resumen, después de validar nuestro tipo de entrada, `InputData`, se obtiene
 
 - Smart constructor = new + predicate => MyDomainType
 - Dependencies. Las reglas de validación pueden tener dependencias unas de otras. Fail fast, parallel
+- https://www.bankcook.com/calcular-digitos-de-control-de-cuenta-corriente-bancaria/
+- 
+## Show me the code!
 
+Validación "*demo*" de los datos de una cuenta bancaria del sistema español basado en la siguiente standard encontrado en Wikipedia.
+
+https://en.wikipedia.org/wiki/International_Bank_Account_Number
+
+Elementos de la cuenta bancaria:
+
+- b = Código de la entidad bancaria
+- s = Código de oficina
+- x = Dígito de control
+- c = Número de cuenta
+- k = Dígito de control IBAN
+
+ESkk bbbb ssss xxcc cccc cccc
+
+Ejemplo:
+
+`ES21 2095 0517 4794 0063 4176`
+
+Validaciones a implementar:
+
+|Validación  | eskk | bbbb | ssss |  xx  | cccc |
+|------------|------|------|------|------|------|
+|nonEmpty    | X    | X    | X    | X    | X    |
+|length      | X    | X    | X    | X    | X    |
+|numeric     | -    | X    | X    | X    | X    |
+|ab12        | X    | -    | -    | -    | -    |
+|iban ctrl   | X    | -    | -    | -    | -    |
+|account ctrl| -    | -    | -    | X    | -    |
+
+Validaciones a implementar:
+
+- non-empty value
+- value length
+- numeric value, regex
+- iban format, two letters + two digits, regex
