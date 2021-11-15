@@ -57,9 +57,11 @@ En resumen, después de validar nuestro tipo de entrada, `InputData`, se obtiene
 - Dependencies. Las reglas de validación pueden tener dependencias unas de otras. Fail fast, parallel
 - https://www.bankcook.com/calcular-digitos-de-control-de-cuenta-corriente-bancaria/
 -
+
+
 ## Show me the code!
 
-Validación *"demo"* con fines didácticos de los datos de una cuenta bancaria del sistema español basado en la siguiente standard encontrado en Wikipedia.
+Validación *"demo"* con fines didácticos de los datos de una cuenta bancaria del sistema español :es: basado en la siguiente standard encontrado en Wikipedia.
 
 https://en.wikipedia.org/wiki/International_Bank_Account_Number
 
@@ -92,9 +94,15 @@ Validaciones a implementar:
 
 Validaciones a implementar:
 
-- non-empty value
-- value length
-- numeric value, regex
-- iban format, two letters + two digits, regex
-- iban control, algorithm
-- account control, algorithm
+- non-empty value :white_check_mark:
+- value length :white_check_mark:
+- numeric value, regex :white_check_mark:
+- iban format, two letters + two digits, regex :white_check_mark:
+- iban control, algorithm :black_square_button:
+- account control, algorithm :black_square_button:
+
+La implementación consta de los siguientes componentes:
+
+- `Model`: https://github.com/butcherless/tapir-learn/blob/master/aviation-api/src/test/scala/com/cmartin/banking/api/AccountModel.scala
+- `Validator`: https://github.com/butcherless/tapir-learn/blob/master/aviation-api/src/test/scala/com/cmartin/banking/api/AccountValidator.scala
+- `Test`: https://github.com/butcherless/tapir-learn/blob/master/aviation-api/src/test/scala/com/cmartin/banking/api/AccountValidatorSpec.scala
