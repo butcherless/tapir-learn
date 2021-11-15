@@ -91,7 +91,7 @@ object AccountValidatorSpec {
   val invalidBranch: BranchCode = BranchCode("X517")
   val emptyBranch: BranchCode = BranchCode("")
 
-  val validControl: NumberControl = NumberControl("47")
+  val validControl: NumberControl = NumberControl("64")
   val emptyNumberControl: NumberControl = NumberControl("")
   val invalidNumberControl: NumberControl = NumberControl("4X")
 

@@ -25,6 +25,7 @@ object AccountModel {
   case class EmptyControlError(message: String = EMPTY_CONTROL_DIGIT_MSG) extends ValidationError
   case class EmptyNumberError(message: String = EMPTY_NUMBER_MSG) extends ValidationError
   case class InvalidNumberControlFormat(message: String) extends ValidationError
+  case class InvalidNumberControl(message: String) extends ValidationError
 
   case class InvalidAccountNumberLength(message: String) extends ValidationError
   case class InvalidAccountNumberFormat(message: String) extends ValidationError

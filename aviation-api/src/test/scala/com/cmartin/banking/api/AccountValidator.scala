@@ -69,12 +69,26 @@ object AccountValidator {
   private def validateControlCode(control: NumberControl): Validation[ValidationError, NumberControl] = {
     for {
       nec <- validateEmptyText(control, EmptyControlError())
-      c <- validateNumberControlFormat(NumberControl(nec))
-    } yield c
+      fc <- validateNumberControlFormat(NumberControl(nec))
+      // c <- validateControlValue(fc, number)
+    } yield fc
   }
+
   private def validateNumberControlFormat(code: NumberControl): Validation[ValidationError, NumberControl] = {
     Validation
       .fromPredicateWith(InvalidNumberControlFormat(code))(code)(NUMBER_CONTROL_REGEX.matches)
+  }
+
+  // TODO NumberControl depends on Number format validation
+  private def validateControlValue(
+      control: NumberControl,
+      number: AccountNumber
+  ): Validation[ValidationError, NumberControl] = {
+    val inf = number.map(_.toString.toInt).zipWithIndex.map { case (a, b) => a * b }.sum % 10
+    val sup = number.reverse.map(_.toString.toInt).zipWithIndex.map { case (a, b) => a * b }.sum % 10
+    val calculated = s"$sup$inf"
+    Validation
+      .fromPredicateWith(InvalidNumberControl(calculated))(control)(_ == calculated)
   }
 
   /*
