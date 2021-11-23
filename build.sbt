@@ -117,7 +117,6 @@ cls := {
   println(s"$chars$brs ")
 }
 
-
 addCommandAlias("xcoverage", "clean;coverage;test;coverageReport")
 addCommandAlias("xreload", "clean;reload")
 addCommandAlias("xstart", "clean;reStart")
