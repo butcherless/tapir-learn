@@ -13,14 +13,34 @@ object AccountValidator {
   val ACCOUNT_NUMBER_REGEX: Regex = """^[0-9]+$""".r
   val ACCOUNT_NUMBER_LENGTH = 10
 
+  /* Validation diagram
+     bank   :---------|
+     branch :---------|--|
+     number :---------|  |
+     numberControl       |--|
+     ibanControl            |--> [ValidationError,BankAccount]
+   */
   def validate(view: BankAccountView): Validation[ValidationError, BankAccount] = {
-    Validation.validateWith(
-      validateIbanControl(view.ibanControl),
-      validateBankCode(view.bank),
-      validateBranchCode(view.branch),
-      validateControlCode(view.control),
-      validateNumber(view.number)
-    )(BankAccount)
+    for {
+      bankBranchNumber <- Validation.validate(
+        validateBankCode(view.bank),
+        validateBranchCode(view.branch),
+        validateNumber(view.number)
+      )
+      numberControl <- validateNumberControl(view.control, view.number)
+      ibanControl <- validateIbanControl(view.ibanControl)
+    } yield BankAccount(ibanControl, bankBranchNumber._1, bankBranchNumber._2, numberControl, bankBranchNumber._3)
+  }
+
+  private def validateNumberControl(
+      control: NumberControl,
+      number: AccountNumber
+  ): Validation[ValidationError, NumberControl] = {
+    for {
+      nec <- validateEmptyText(control, EmptyControlError())
+      fnc <- validateNumberControlFormat(NumberControl(nec))
+      nc <- validateControlValue(fnc, number)
+    } yield nc
   }
 
   private def validateIbanControl(control: IbanControl): Validation[ValidationError, IbanControl] = {
@@ -66,29 +86,29 @@ object AccountValidator {
   /*
     A C C O U N T   N U M B E R   C O N T R O L
    */
-  private def validateControlCode(control: NumberControl): Validation[ValidationError, NumberControl] = {
-    for {
-      nec <- validateEmptyText(control, EmptyControlError())
-      fc <- validateNumberControlFormat(NumberControl(nec))
-      // c <- validateControlValue(fc, number)
-    } yield fc
-  }
-
   private def validateNumberControlFormat(code: NumberControl): Validation[ValidationError, NumberControl] = {
     Validation
       .fromPredicateWith(InvalidNumberControlFormat(code))(code)(NUMBER_CONTROL_REGEX.matches)
   }
 
-  // TODO NumberControl depends on Number format validation
   private def validateControlValue(
       control: NumberControl,
       number: AccountNumber
   ): Validation[ValidationError, NumberControl] = {
-    val inf = number.map(_.toString.toInt).zipWithIndex.map { case (a, b) => a * b }.sum % 10
-    val sup = number.reverse.map(_.toString.toInt).zipWithIndex.map { case (a, b) => a * b }.sum % 10
-    val calculated = s"$sup$inf"
-    Validation
-      .fromPredicateWith(InvalidNumberControl(calculated))(control)(_ == calculated)
+    for {
+      // common to number control and iban control
+      calculated <- Validation.succeed(calcControlDigit(number)) zipPar
+        Validation.succeed(calcControlDigit(number.reverse)) map {
+          case (inf, sup) => s"$sup$inf"
+        }
+      validated <- Validation
+        .fromPredicateWith(InvalidNumberControl(calculated))(control)(_ == calculated)
+    } yield validated
+  }
+
+  // dummy digit control
+  private def calcControlDigit(number: String): Int = {
+    number.map(_.toString.toInt).zipWithIndex.map { case (a, b) => a * b }.sum % 10
   }
 
   /*

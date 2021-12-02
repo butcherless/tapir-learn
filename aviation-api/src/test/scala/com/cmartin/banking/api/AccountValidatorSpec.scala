@@ -143,20 +143,16 @@ object AccountValidatorSpec {
 
   val emptyAccountErrors = Left(
     NonEmptyChunk(
-      emptyIbanControlError,
       emptyBankError,
       emptyBranchError,
-      emptyControlError,
       emptyNumberError
     )
   )
 
   val invalidAccountErrors = Left(
     NonEmptyChunk(
-      invalidIbanControlError,
       invalidBankError,
       invalidBranchError,
-      invalidNumberControlError,
       invalidNumberError
     )
   )
