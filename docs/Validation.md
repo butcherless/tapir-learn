@@ -56,7 +56,7 @@ En resumen, después de validar nuestro tipo de entrada, `InputData`, se obtiene
 - Smart constructor = new + predicate => MyDomainType
 - Dependencies. Las reglas de validación pueden tener dependencias unas de otras. Fail fast, parallel
 - https://www.bankcook.com/calcular-digitos-de-control-de-cuenta-corriente-bancaria/
--
+- https://www.slideshare.net/jv2301/be-smart-constrain-your-types-to-free-your-brain
 
 
 ## Show me the code!
