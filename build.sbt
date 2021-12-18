@@ -30,17 +30,17 @@ lazy val `aviation-root` = (project in file("."))
     `aviation-repository`,
     `aviation-service`,
     `aviation-api`,
-    `tapir-learn`
+    `tapir-webapp`
   )
 
-lazy val `tapir-learn` = (project in file("tapir-learn"))
+lazy val `tapir-webapp` = (project in file("tapir-webapp"))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= mainAndTest,
-    assemblyJarName := "tapir-learn-webapp.jar",
-    name := "tapir-learn"
+    assemblyJarName := "tapir-webapp.jar",
+    name := "tapir-webapp"
   )
   .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
   .settings(BuildInfoSettings.value)

@@ -55,10 +55,10 @@ object AccountModel {
   // Domain model
   // TODO use prelude.Subtype
   case class BankAccount(
-      ibanControl: String,
-      bank: String,
-      branch: String,
-      control: String,
-      number: String
+      ibanControl: IbanControl,
+      bank: BankCode,
+      branch: BranchCode,
+      control: NumberControl,
+      number: AccountNumber
   )
 }
