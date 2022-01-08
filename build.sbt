@@ -24,7 +24,8 @@ lazy val commonSettings = Seq(
   scalacOptions ++= basicScalacOptions
 )
 
-lazy val `aviation-root` = (project in file("."))
+lazy val `aviation-root` = project
+  .in(file("."))
   .aggregate(
     `aviation-core`,
     `aviation-repository`,
@@ -33,7 +34,8 @@ lazy val `aviation-root` = (project in file("."))
     `tapir-webapp`
   )
 
-lazy val `tapir-webapp` = (project in file("tapir-webapp"))
+lazy val `tapir-webapp` = project
+  .in(file("tapir-webapp"))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
@@ -55,7 +57,8 @@ lazy val `tapir-webapp` = (project in file("tapir-webapp"))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
-lazy val `aviation-core` = (project in file("aviation-core"))
+lazy val `aviation-core` = project
+  .in(file("aviation-core"))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
@@ -65,7 +68,8 @@ lazy val `aviation-core` = (project in file("aviation-core"))
   )
   .settings(coverageExcludedPackages := "<empty>;.*Configuration.*")
 
-lazy val `aviation-repository` = (project in file("aviation-repository"))
+lazy val `aviation-repository` = project
+  .in(file("aviation-repository"))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
@@ -76,7 +80,8 @@ lazy val `aviation-repository` = (project in file("aviation-repository"))
   )
   .dependsOn(`aviation-core`)
 
-lazy val `aviation-service` = (project in file("aviation-service"))
+lazy val `aviation-service` = project
+  .in(file("aviation-service"))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
@@ -89,7 +94,8 @@ lazy val `aviation-service` = (project in file("aviation-service"))
 //TODO repository interface / implementation modules
 //TODO .dependsOn(`aviation-core`, `aviation-repository` % "test->compile")
 
-lazy val `aviation-api` = (project in file("aviation-api"))
+lazy val `aviation-api` = project
+  .in(file("aviation-api"))
   .configs(IntegrationTest)
   .settings(
     Defaults.itSettings,
@@ -105,7 +111,8 @@ lazy val `aviation-api` = (project in file("aviation-api"))
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
-lazy val `aviation-test-utils` = (project in file("aviation-test-utils"))
+lazy val `aviation-test-utils` = project
+  .in(file("aviation-test-utils"))
   .settings(
 //    libraryDependencies ++= apiMain ++ apiTest,
     assemblyJarName := "aviation-test-utils.jar",
