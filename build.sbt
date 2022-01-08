@@ -40,7 +40,14 @@ lazy val `tapir-webapp` = (project in file("tapir-webapp"))
     commonSettings,
     libraryDependencies ++= mainAndTest,
     assemblyJarName := "tapir-webapp.jar",
-    name := "tapir-webapp"
+    name := "tapir-webapp",
+    assemblyMergeStrategy := {
+      // case PathList("io", "netty", "netty-all", xs @ _*) => MergeStrategy.first
+      case "META-INF/io.netty.versions.properties" => MergeStrategy.first
+      case x =>
+        val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+        oldStrategy(x)
+    }
   )
   .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
   .settings(BuildInfoSettings.value)
