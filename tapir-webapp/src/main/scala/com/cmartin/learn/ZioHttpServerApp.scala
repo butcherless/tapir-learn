@@ -6,7 +6,7 @@ import zhttp.http
 import zhttp.service.Server
 import zio._
 
-object ZioHttpServerApp
+class ZioHttpServerApp
     extends ZIOAppDefault {
 
   val routes =
