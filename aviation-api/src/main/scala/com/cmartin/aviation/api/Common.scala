@@ -16,6 +16,8 @@ object Common {
   val loggingEnv: ZLayer[Any, Nothing, Logging] =
     Slf4jLogger.make((_, message) => message)
 
+  /* leave the pure world to the real impure world
+  */  
   def run[A](program: ApiResponse[A]): RouteResponse[A] = {
     runtime.unsafeRunToFuture(
       program
@@ -25,6 +27,8 @@ object Common {
     )
   }
 
+  /* leave the pure world to the real impure world
+  */  
   def run2[A](program: Api2Response[A]): RouteResponse[A] = {
     runtime.unsafeRunToFuture(
       program
