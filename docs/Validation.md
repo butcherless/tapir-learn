@@ -51,7 +51,7 @@ En resumen, después de validar nuestro tipo de entrada, `InputData`, se obtiene
 - **succeed**:`OutputData`, el tipo de salida, o bien
 - **failure**: `NonEmptyList[ValidationError]`, la lista con al menos un error
 
-##TODOes
+## TODOes
 
 - Smart constructor = new + predicate => MyDomainType
   - https://wiki.haskell.org/Smart_constructors
