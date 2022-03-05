@@ -4,7 +4,7 @@ object Versions {
   val akka = "2.6.18"
   val h2 = "2.1.210"
   val json4s = "4.0.3"
-  val logback = "1.2.10"
+  val logback = "1.2.11"
   val slf4zio = "1.0.0"
   val slick = "3.3.3"
   val sttp = "3.3.16"
