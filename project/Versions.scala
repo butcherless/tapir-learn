@@ -11,7 +11,7 @@ object Versions {
   val tapir = "0.20.0-M7"
   val zio = "2.0.0-M5"
   val zioLogging = "0.5.14"
-  val zioPrelude = "1.0.0-RC8"
+  val zioPrelude = "1.0.0-RC11-2"
 
   // test
   val scalatest = "3.2.11"
