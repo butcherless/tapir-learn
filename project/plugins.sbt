@@ -1,5 +1,5 @@
 addDependencyTreePlugin
-addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.4.13-50-8332ee9c")
+addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.4.13-55-1fc97fae")
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "1.2.0")
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.11.0")
 addSbtPlugin("com.github.cb372" % "sbt-explicit-dependencies" % "0.2.16")
