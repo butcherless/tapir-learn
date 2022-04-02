@@ -21,7 +21,7 @@ trait ActuatorApi {
       )
 
   /* TODO add logger & metrics aspect ZIO v2
-  */
+   */
   private def doGetLogic(): Future[Model.BuildInfoView] =
     Commons.runtime.unsafeRunToFuture(UIO.succeed((BuildInfo.toView)))
 }
