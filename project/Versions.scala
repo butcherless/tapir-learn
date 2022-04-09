@@ -2,7 +2,7 @@ object Versions {
   // main
   val akkaHttp = "10.2.7"
   val akka = "2.6.18"
-  val h2 = "2.1.210"
+  val h2 = "2.1.212"
   val json4s = "4.0.4"
   val logback = "1.2.11"
   val slf4zio = "1.0.0"
