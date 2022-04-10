@@ -1,9 +1,9 @@
 addDependencyTreePlugin
-addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.4.13-48-a9b3ea59")
+addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.4.13-67-aab21b15")
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "1.2.0")
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.11.0")
 addSbtPlugin("com.github.cb372" % "sbt-explicit-dependencies" % "0.2.16")
-addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.2")
+addSbtPlugin("com.github.sbt" % "sbt-git" % "2.0.0")
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.9.1")
 addSbtPlugin("org.jmotor.sbt" % "sbt-dependency-updates" % "1.2.2")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
