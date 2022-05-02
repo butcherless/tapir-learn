@@ -22,7 +22,6 @@ object Tables extends JdbcProfile {
     val aircraftJourney = "AIRCRAFT_JOURNEY"
   }
 
-
   /* C O U N T R Y
    */
   class Countries(tag: Tag)

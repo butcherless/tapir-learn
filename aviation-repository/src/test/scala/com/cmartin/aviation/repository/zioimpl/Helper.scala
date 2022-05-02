@@ -36,7 +36,7 @@ object Helper {
   }
 
   object SlickSchemaManager {
-    val layer: RLayer[JdbcBackend#DatabaseDef,  SlickSchemaManager] =
+    val layer: RLayer[JdbcBackend#DatabaseDef, SlickSchemaManager] =
       ZLayer.fromFunction(db => SlickSchemaManager(db))
 
     def createSchema(): ZIO[SchemaManager, Throwable, Unit] =

@@ -11,7 +11,7 @@ import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio._
 import zio.logging._
 
-class CountryPocApi(    countryPersister: CountryPersister) {
+class CountryPocApi(countryPersister: CountryPersister) {
   lazy val routes: Route =
     getRoute
 
@@ -23,7 +23,7 @@ class CountryPocApi(    countryPersister: CountryPersister) {
     )
 
   def doGetLogic(request: String): Api2Response[CountryView] = {
- for {
+    for {
       _ <- ZIO.debug(s"doGetLogic - request: $request")
       _ <- countryPersister.findByCode(CountryCode(request))
     } yield CountryView(CountryCode("es"), "spain")
@@ -31,8 +31,8 @@ class CountryPocApi(    countryPersister: CountryPersister) {
 }
 
 object CountryPocApi {
-  def apply( countryPersister: CountryPersister): CountryPocApi =
-    new CountryPocApi( countryPersister)
+  def apply(countryPersister: CountryPersister): CountryPocApi =
+    new CountryPocApi(countryPersister)
 
   def doGetLogic(request: String): ZIO[CountryPocApi, domain.Model.ProgramError, CountryView] =
     ZIO.serviceWithZIO[CountryPocApi](_.doGetLogic("request"))
