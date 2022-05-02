@@ -1,20 +1,22 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.Common.testEnv
-import com.cmartin.aviation.repository.CountryRepository
+import com.cmartin.aviation.repository.{Common, CountryRepository}
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.TestData._
 import zio.Runtime.{default => runtime}
-import zio.Has
-import zio.TaskLayer
+import zio.ZLayer.Debug
+import zio.{TaskLayer, ZLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
 
-class CountryRepositorySpec
+class SlickCountryRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env: TaskLayer[Has[CountryRepository]] =
-    testEnv >>> CountryRepositoryLive.layer
+  val env: TaskLayer[CountryRepository] =
+    ZLayer.make[CountryRepository](
+      Common.dbLayer,
+      SlickCountryRepository.layer
+    )
 
   behavior of "CountryRepository"
 
@@ -98,7 +100,7 @@ class CountryRepositorySpec
 
   "Delete" should "delete a country from the database" in {
     val program = for {
-      id <- CountryRepository.insert(spainDbo)
+      _ <- CountryRepository.insert(spainDbo)
       count <- CountryRepository.delete(spainDbo.code)
     } yield count
 

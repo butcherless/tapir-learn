@@ -1,7 +1,6 @@
 package com.cmartin.aviation.api
 
 import akka.http.scaladsl.server.Route
-import com.cmartin.aviation.api.BaseEndpoint._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Info
 import sttp.tapir.openapi.circe.yaml._
@@ -14,7 +13,7 @@ trait SwaggerApi {
 
   lazy val route: Route =
     AkkaHttpServerInterpreter()
-      .toRoute(SwaggerUI[Future](docsAsYaml, List(apiText, apiVersionText, "docs")))
+      .toRoute(SwaggerUI[Future](docsAsYaml))
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =
@@ -24,7 +23,7 @@ trait SwaggerApi {
 
   private lazy val info = Info("Tapir Learning Service API", "1.0.0-SNAPSHOT", Some("Researching about Tapir library"))
 
-  private lazy val endpoints = List(
+  private lazy val endpoints = Seq(
     ActuatorEndpoint.healthEndpoint,
     CountryEndpoints.getByCodeEndpoint,
     CountryEndpoints.postEndpoint,

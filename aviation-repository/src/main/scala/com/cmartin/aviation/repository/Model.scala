@@ -101,15 +101,4 @@ object Model {
       extends RuntimeException(message)
   final case class MissingEntityException(message: String)
       extends RuntimeException(message)
-
-  object TableNames {
-    val airlines = "AIRLINES"
-    val airports = "AIRPORTS"
-    val countries = "COUNTRIES"
-    val fleet = "FLEET"
-    val flights = "FLIGHTS"
-    val journeys = "JOURNEYS"
-    val routes = "ROUTES"
-    val aircraftJourney = "AIRCRAFT_JOURNEY"
-  }
 }

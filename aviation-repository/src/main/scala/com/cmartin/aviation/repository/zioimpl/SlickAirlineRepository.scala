@@ -2,43 +2,40 @@ package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.AirlineRepository
 import com.cmartin.aviation.repository.Model.AirlineDbo
-import com.cmartin.aviation.repository.zioimpl.Abstractions.AbstractLongRepository
+import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.AbstractLongRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Airlines
-import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
-import slick.interop.zio.DatabaseProvider
-import slick.jdbc.JdbcProfile
-import zio.Has
-import zio.IO
-import zio.Task
-import zio.ZLayer
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+import zio.{RLayer, Task, ZLayer}
 
-class AirlineRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
-    extends AbstractLongRepository[AirlineDbo, Airlines](db, profile)
+case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
+    extends AbstractLongRepository[AirlineDbo, Airlines](db)
+    with JdbcProfile
     with AirlineRepository {
 
-  import profile.api._
+  import api._
+  import common.Implicits.Dbio2Zio
 
   override val entities = Tables.airlines
 
   override def deleteByIataCode(iataCode: String): Task[Int] = {
     val query = entities.filter(_.iataCode === iataCode)
     query.delete
-      .toZio
-      .provide(Has(db))
+      .toZio()
+      .provideService(db)
   }
 
   override def findByIataCode(code: String): Task[Option[AirlineDbo]] = {
     val query = entities.filter(_.iataCode === code)
     query.result.headOption
-      .toZio
-      .provide(Has(db))
+      .toZio()
+      .provideService(db)
   }
 
   override def findByIcaoCode(code: String): Task[Option[AirlineDbo]] = {
     val query = entities.filter(_.icaoCode === code)
     query.result.headOption
-      .toZio
-      .provide(Has(db))
+      .toZio()
+      .provideService(db)
   }
 
   override def findByCountryCode(code: String): Task[Seq[AirlineDbo]] = {
@@ -48,27 +45,20 @@ class AirlineRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
     } yield airline
 
     query.result
-      .toZio
-      .provide(Has(db))
+      .toZio()
+      .provideService(db)
   }
 
   override def findByName(name: String): Task[Seq[AirlineDbo]] = {
     val query = entities.filter(_.name like s"%$name%")
     query.result
-      .toZio
-      .provide(Has(db))
+      .toZio()
+      .provideService(db)
   }
 
 }
 
-object AirlineRepositoryLive {
-
-  val layer: ZLayer[Has[DatabaseProvider], Throwable, Has[AirlineRepository]] = {
-    ZLayer.fromServiceM { provider =>
-      provider.profile.map { profile =>
-        new AirlineRepositoryLive(provider, profile)
-      }
-    }
-  }
-
+object SlickAirlineRepository {
+  val layer: RLayer[JdbcBackend#DatabaseDef, AirlineRepository] =
+    ZLayer.fromFunction(SlickAirlineRepository(_))
 }

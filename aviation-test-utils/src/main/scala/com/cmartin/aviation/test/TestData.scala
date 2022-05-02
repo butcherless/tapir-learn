@@ -1,4 +1,4 @@
-package com.cmartin.aviation.repository
+package com.cmartin.aviation.test
 
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.repository.Model._

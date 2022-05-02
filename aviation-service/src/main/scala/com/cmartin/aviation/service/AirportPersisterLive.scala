@@ -2,16 +2,13 @@ package com.cmartin.aviation.service
 
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.AirportPersister
-import com.cmartin.aviation.repository.AirportRepository
-import com.cmartin.aviation.repository.CountryRepository
+import com.cmartin.aviation.repository.{AirportRepository, CountryRepository}
 import com.cmartin.aviation.repository.Model._
 import com.cmartin.aviation.repository.zioimpl.Mappers._
 import com.cmartin.aviation.repository.zioimpl.common._
 import zio._
-import zio.logging._
 
 case class AirportPersisterLive(
-    logging: Logging,
     countryRepository: CountryRepository,
     airportRepository: AirportRepository
 ) extends AirportPersister {
@@ -19,37 +16,34 @@ case class AirportPersisterLive(
   import AirportPersisterLive.buildDbo
   override def insert(airport: Airport): IO[ServiceError, Long] = {
     val program = for {
-      _ <- log.debug(s"insert: $airport")
+      _ <- ZIO.logDebug(s"insert: $airport")
       option <- countryRepository.findByCode(airport.country.code)
       country <- manageNotFound(option)(s"No country found for code: ${airport.country.code}")
       id <- airportRepository.insert(airport.toDbo(country.id.get)) // safe access by primary key
     } yield id
 
     program
-      .provide(logging)
       .mapError(manageError)
   }
 
   override def existsByCode(code: IataCode): IO[ServiceError, Boolean] = {
     val program = for {
-      _ <- log.debug(s"existsByCode: $code")
+      _ <- ZIO.logDebug(s"existsByCode: $code")
       dbo <- airportRepository.findByIataCode(code)
     } yield dbo.isDefined
 
     program
-      .provide(logging)
       .mapError(manageError)
   }
 
   override def findByCode(code: IataCode): IO[ServiceError, Option[Airport]] = {
     val program = for {
-      _ <- log.debug(s"findByCode: $code")
+      _ <- ZIO.logDebug(s"findByCode: $code")
       airportOpt <- airportRepository.findByIataCode(code)
       airportWithCountryOpt <- findCountryAndToDomain(airportOpt)
     } yield airportWithCountryOpt
 
     program
-      .provide(logging)
       .mapError(manageError)
   }
 
@@ -64,7 +58,7 @@ case class AirportPersisterLive(
 
   override def update(airport: Airport): IO[ServiceError, Int] = {
     val program = for {
-      _ <- log.debug(s"update: $airport")
+      _ <- ZIO.logDebug(s"update: $airport")
       countryOpt <- countryRepository.findByCode(airport.country.code)
       country <- manageNotFound(countryOpt)(s"No country found for code: ${airport.country.code}")
       airportOpt <- airportRepository.findByIataCode(airport.iataCode)
@@ -74,26 +68,29 @@ case class AirportPersisterLive(
     } yield count
 
     program
-      .provide(logging)
       .mapError(manageError)
   }
 
   override def delete(code: IataCode): IO[ServiceError, Int] = {
     val program = for {
-      _ <- log.debug(s"delete: $code")
+      _ <- ZIO.logDebug(s"delete: $code")
       dbo <- airportRepository.deleteByIataCode(code)
     } yield dbo
 
     program
-      .provide(logging)
       .mapError(manageError)
   }
 }
 
 object AirportPersisterLive {
 
-  val layer: URLayer[Has[Logging] with Has[CountryRepository] with Has[AirportRepository], Has[AirportPersister]] =
-    (AirportPersisterLive(_, _, _)).toLayer
+  val layer: URLayer[CountryRepository with AirportRepository, AirportPersister] =
+    ZLayer {
+      for {
+        c <- ZIO.service[CountryRepository]
+        a <- ZIO.service[AirportRepository]
+      } yield AirportPersisterLive(c, a)
+    }
 
   def buildDbo(airport: Airport, id: Option[Long], countryId: Option[Long]): UIO[AirportDbo] =
     IO.succeed(AirportDbo(

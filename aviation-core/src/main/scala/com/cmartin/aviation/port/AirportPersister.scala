@@ -1,9 +1,7 @@
 package com.cmartin.aviation.port
 
 import com.cmartin.aviation.domain.Model._
-import zio.Has
-import zio.IO
-import zio.ZIO
+import zio.{IO, ZIO}
 
 trait AirportPersister {
   def insert(airport: Airport): IO[ServiceError, Long]
@@ -14,19 +12,19 @@ trait AirportPersister {
 }
 
 object AirportPersister {
-  def insert(airport: Airport): ZIO[Has[AirportPersister], ServiceError, Long] =
-    ZIO.serviceWith[AirportPersister](_.insert(airport))
+  def insert(airport: Airport): ZIO[AirportPersister, ServiceError, Long] =
+    ZIO.serviceWithZIO[AirportPersister](_.insert(airport))
 
-  def existsByCode(code: IataCode): ZIO[Has[AirportPersister], ServiceError, Boolean] =
-    ZIO.serviceWith[AirportPersister](_.existsByCode(code))
+  def existsByCode(code: IataCode): ZIO[AirportPersister, ServiceError, Boolean] =
+    ZIO.serviceWithZIO[AirportPersister](_.existsByCode(code))
 
-  def findByCode(code: IataCode): ZIO[Has[AirportPersister], ServiceError, Option[Airport]] =
-    ZIO.serviceWith[AirportPersister](_.findByCode(code))
+  def findByCode(code: IataCode): ZIO[AirportPersister, ServiceError, Option[Airport]] =
+    ZIO.serviceWithZIO[AirportPersister](_.findByCode(code))
 
-  def update(airport: Airport): ZIO[Has[AirportPersister], ServiceError, Int] =
-    ZIO.serviceWith[AirportPersister](_.update(airport))
+  def update(airport: Airport): ZIO[AirportPersister, ServiceError, Int] =
+    ZIO.serviceWithZIO[AirportPersister](_.update(airport))
 
-  def delete(code: IataCode): ZIO[Has[AirportPersister], ServiceError, Int] =
-    ZIO.serviceWith[AirportPersister](_.delete(code))
+  def delete(code: IataCode): ZIO[AirportPersister, ServiceError, Int] =
+    ZIO.serviceWithZIO[AirportPersister](_.delete(code))
 
 }

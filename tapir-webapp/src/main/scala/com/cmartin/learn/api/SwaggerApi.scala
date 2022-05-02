@@ -14,7 +14,7 @@ trait SwaggerApi {
 
   lazy val route: Route =
     AkkaHttpServerInterpreter()
-      .toRoute(SwaggerUI[Future](docsAsYaml, List(API_TEXT, API_VERSION, "docs")))
+      .toRoute(SwaggerUI[Future](docsAsYaml))
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =
@@ -24,7 +24,7 @@ trait SwaggerApi {
 
   private lazy val info = Info("Tapir Learning Service API", "1.0.0-SNAPSHOT", Some("Researching about Tapir library"))
 
-  private lazy val endpoints = List(
+  private lazy val endpoints = Seq(
     ActuatorEndpoint.healthEndpoint,
     TransferEndpoint.getTransferEndpoint,
     TransferEndpoint.getFilteredTransferEndpoint,

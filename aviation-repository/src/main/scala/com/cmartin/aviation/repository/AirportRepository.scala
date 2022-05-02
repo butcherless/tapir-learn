@@ -1,7 +1,7 @@
 package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.AirportDbo
-import zio.Has
+import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.BaseRepository
 import zio.RIO
 import zio.Task
 import zio.ZIO
@@ -18,14 +18,14 @@ trait AirportRepository
 }
 
 object AirportRepository {
-  def insert(dbo: AirportDbo): RIO[Has[AirportRepository], Long] =
-    ZIO.accessM[Has[AirportRepository]](_.get.insert(dbo))
+  def insert(dbo: AirportDbo): RIO[AirportRepository, Long] =
+    ZIO.serviceWithZIO[AirportRepository](_.insert(dbo))
 
-  def insert(seq: Seq[AirportDbo]): RIO[Has[AirportRepository], Seq[Long]] =
-    ZIO.accessM[Has[AirportRepository]](_.get.insertSeq(seq))
+  def insert(seq: Seq[AirportDbo]): RIO[AirportRepository, Seq[Long]] =
+    ZIO.serviceWithZIO[AirportRepository](_.insertSeq(seq))
 
-  def update(dbo: AirportDbo): RIO[Has[AirportRepository], Int] =
-    ZIO.accessM[Has[AirportRepository]](_.get.update(dbo))
+  def update(dbo: AirportDbo): RIO[AirportRepository, Int] =
+    ZIO.serviceWithZIO[AirportRepository](_.update(dbo))
 
   /** Deletes an Aiport by its iata code
     * @param iataCode
@@ -33,22 +33,22 @@ object AirportRepository {
     * @return
     *   number of deleted rows
     */
-  def deleteByIataCode(iataCode: String): RIO[Has[AirportRepository], Int] =
-    ZIO.accessM[Has[AirportRepository]](_.get.deleteByIataCode(iataCode))
+  def deleteByIataCode(iataCode: String): RIO[AirportRepository, Int] =
+    ZIO.serviceWithZIO[AirportRepository](_.deleteByIataCode(iataCode))
 
-  def findByIataCode(code: String): RIO[Has[AirportRepository], Option[AirportDbo]] =
-    ZIO.accessM[Has[AirportRepository]](_.get.findByIataCode(code))
+  def findByIataCode(code: String): RIO[AirportRepository, Option[AirportDbo]] =
+    ZIO.serviceWithZIO[AirportRepository](_.findByIataCode(code))
 
-  def findByIcaoCode(code: String): RIO[Has[AirportRepository], Option[AirportDbo]] =
-    ZIO.accessM[Has[AirportRepository]](_.get.findByIcaoCode(code))
+  def findByIcaoCode(code: String): RIO[AirportRepository, Option[AirportDbo]] =
+    ZIO.serviceWithZIO[AirportRepository](_.findByIcaoCode(code))
 
-  def findByCountryCode(code: String): RIO[Has[AirportRepository], Seq[AirportDbo]] =
-    ZIO.accessM[Has[AirportRepository]](_.get.findByCountryCode(code))
+  def findByCountryCode(code: String): RIO[AirportRepository, Seq[AirportDbo]] =
+    ZIO.serviceWithZIO[AirportRepository](_.findByCountryCode(code))
 
-  def findByName(name: String): RIO[Has[AirportRepository], Seq[AirportDbo]] =
-    ZIO.accessM[Has[AirportRepository]](_.get.findByName(name))
+  def findByName(name: String): RIO[AirportRepository, Seq[AirportDbo]] =
+    ZIO.serviceWithZIO[AirportRepository](_.findByName(name))
 
-  def count(): RIO[Has[AirportRepository], Int] =
-    ZIO.accessM[Has[AirportRepository]](_.get.count())
+  def count(): RIO[AirportRepository, Int] =
+    ZIO.serviceWithZIO[AirportRepository](_.count())
 
 }

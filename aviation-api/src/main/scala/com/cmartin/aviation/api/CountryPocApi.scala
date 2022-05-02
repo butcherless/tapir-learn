@@ -6,14 +6,12 @@ import com.cmartin.aviation.api.Model.CountryView
 import com.cmartin.aviation.domain
 import com.cmartin.aviation.domain.Model.CountryCode
 import com.cmartin.aviation.port.CountryPersister
+import sttp.tapir._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio._
 import zio.logging._
 
-class CountryPocApi(
-    logging: Logging,
-    countryPersister: CountryPersister
-) {
+class CountryPocApi(    countryPersister: CountryPersister) {
   lazy val routes: Route =
     getRoute
 
@@ -25,24 +23,22 @@ class CountryPocApi(
     )
 
   def doGetLogic(request: String): Api2Response[CountryView] = {
-    val program = for {
-      _ <- log.debug(s"doGetLogic - request: $request")
+ for {
+      _ <- ZIO.debug(s"doGetLogic - request: $request")
       _ <- countryPersister.findByCode(CountryCode(request))
     } yield CountryView(CountryCode("es"), "spain")
-    program
-      .provide(logging)
   }
 }
 
 object CountryPocApi {
-  def apply(logging: Logging, countryPersister: CountryPersister): CountryPocApi =
-    new CountryPocApi(logging, countryPersister)
+  def apply( countryPersister: CountryPersister): CountryPocApi =
+    new CountryPocApi( countryPersister)
 
-  def doGetLogic(request: String): ZIO[Has[CountryPocApi], domain.Model.ProgramError, CountryView] =
-    ZIO.serviceWith[CountryPocApi](_.doGetLogic("request"))
+  def doGetLogic(request: String): ZIO[CountryPocApi, domain.Model.ProgramError, CountryView] =
+    ZIO.serviceWithZIO[CountryPocApi](_.doGetLogic("request"))
 
-  val layer: URLayer[Has[Logging] with Has[CountryPersister], Has[CountryPocApi]] =
-    (CountryPocApi(_, _)).toLayer
+  val layer: URLayer[CountryPersister, CountryPocApi] =
+    ZLayer.fromFunction(p => CountryPocApi(p))
 }
 
 object SimulatorSpec {

@@ -5,25 +5,20 @@ import com.cmartin.aviation.api.BaseEndpoint._
 import com.cmartin.aviation.api.Model._
 import com.cmartin.aviation.domain.Model._
 import zio.IO
-import zio.ZIO
-import zio.ZLayer
-import zio.logging._
-import zio.logging.slf4j.Slf4jLogger
 
 object Common {
 
-  type ApiResponse[A] = ZIO[Logging, ProgramError, A]
+  type ApiResponse[A] = IO[ProgramError, A]
   type Api2Response[A] = IO[ProgramError, A]
 
-  val loggingEnv: ZLayer[Any, Nothing, Logging] =
-    Slf4jLogger.make((_, message) => message)
+  // val loggingEnv: ZLayer[Any, Nothing, Logging] =    Slf4jLogger.make((_, message) => message)
 
   /* leave the pure world to the real impure world
    */
   def run[A](program: ApiResponse[A]): RouteResponse[A] = {
     runtime.unsafeRunToFuture(
       program
-        .provideLayer(loggingEnv)
+        // .provideLayer(loggingEnv)
         .mapError(handleError)
         .either
     )

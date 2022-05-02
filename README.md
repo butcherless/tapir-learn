@@ -73,11 +73,11 @@ Run the test suites
 
 Reload changes in _build.sbt_ config file
 
-`reload`
+    reload
 
 Clean `target` working directory
 
-`clean`
+    clean
 
 Check dependencies with command line and browser
 
@@ -85,7 +85,7 @@ Check dependencies with command line and browser
 
 Exit Sbt
 
-`CTRL + D`
+    CTRL + D
 
 
 ## Testing

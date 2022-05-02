@@ -2,23 +2,19 @@ package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model.RouteDbo
 import com.cmartin.aviation.repository.RouteRepository
+import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.AbstractLongRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Routes
-import com.cmartin.aviation.repository.zioimpl.common.Dbio2Zio
-import slick.interop.zio.DatabaseProvider
-import slick.interop.zio.syntax._
-import slick.jdbc.JdbcProfile
-import zio.Has
-import zio.IO
-import zio.ZIO
-import zio.ZLayer
+import com.cmartin.aviation.repository.zioimpl.common.SlickToZioSyntax.fromDBIO
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+import zio.{IO, RLayer, ZLayer}
 
-import Abstractions.AbstractLongRepository
-
-class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
-    extends AbstractLongRepository[RouteDbo, Routes](db, profile)
+case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
+    extends AbstractLongRepository[RouteDbo, Routes](db)
+    with JdbcProfile
     with RouteRepository {
 
-  import profile.api._
+  import api._
+  import common.Implicits.Dbio2Zio
 
   override val entities = Tables.routes
   private val airports = Tables.airports
@@ -30,8 +26,8 @@ class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
     } yield route
 
     query.result
-      .toZio
-      .provide(Has(db))
+      .toZio()
+      .provideService(db)
   }
   override def findByIataDestination(iataCode: String): IO[Throwable, Seq[RouteDbo]] = {
     val query = for {
@@ -40,8 +36,8 @@ class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
     } yield route
 
     query.result
-      .toZio
-      .provide(Has(db))
+      .toZio()
+      .provideService(db)
   }
 
   override def findByOriginAndDestination(
@@ -55,8 +51,8 @@ class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
     } yield route
 
     query.result.headOption
-      .toZio
-      .provide(Has(db))
+      .toZio()
+      .provideService(db)
   }
 
   override def deleteByOriginAndDestination(iataOrigin: String, iataDestination: String): IO[Throwable, Int] = {
@@ -66,25 +62,20 @@ class RouteRepositoryLive(db: DatabaseProvider, profile: JdbcProfile)
     } yield (origin, destination)
 
     val program = for {
-      (origin, destination) <- ZIO.fromDBIO(airportsQuery.result.head)
-      count <- ZIO.fromDBIO(
+      coords <- fromDBIO(airportsQuery.result.head)
+      (origin, destination) = coords
+      count <- fromDBIO(
         entities.filter(route => route.originId === origin.id && route.destinationId === destination.id).delete
       )
     } yield count
 
     program
-      .provide(Has(db))
+      .provideService(db)
   }
 
 }
 
-object RouteRepositoryLive {
-
-  val layer: ZLayer[Has[DatabaseProvider], Throwable, Has[RouteRepository]] =
-    ZLayer.fromServiceM { provider =>
-      provider.profile.map { profile =>
-        new RouteRepositoryLive(provider, profile)
-      }
-    }
-
+object SlickRouteRepository {
+  val layer: RLayer[JdbcBackend#DatabaseDef, RouteRepository] =
+    ZLayer.fromFunction(SlickRouteRepository(_))
 }

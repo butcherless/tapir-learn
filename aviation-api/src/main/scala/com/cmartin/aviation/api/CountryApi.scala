@@ -10,6 +10,7 @@ import com.cmartin.aviation.api.validator.CountryValidator._
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.CountryService
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import zio.ZIO
 import zio.logging._
 
 class CountryApi(countryService: CountryService) {
@@ -58,7 +59,7 @@ class CountryApi(countryService: CountryService) {
 
   private def doGetLogic(request: String): ApiResponse[CountryView] = {
     for {
-      _ <- log.debug(s"doGetLogic - request: $request")
+      _ <- ZIO.debug(s"doGetLogic - request: $request")
       criteria <- CountryValidator.validateCode(request).toIO
       country <- countryService.findByCode(criteria)
     } yield country.toView
@@ -66,7 +67,7 @@ class CountryApi(countryService: CountryService) {
 
   private def doPostLogic(request: CountryView): ApiResponse[(String, CountryView)] = {
     for {
-      _ <- log.debug(s"doPostLogic - request: $request")
+      _ <- ZIO.debug(s"doPostLogic - request: $request")
       country <- CountryValidator.validatePostRequest(request).toIO
       created <- countryService.create(country)
     } yield (
@@ -77,7 +78,7 @@ class CountryApi(countryService: CountryService) {
 
   private def doPutLogic(request: CountryView): ApiResponse[CountryView] = {
     for {
-      _ <- log.debug(s"doPutLogic - request: $request")
+      _ <- ZIO.debug(s"doPutLogic - request: $request")
       country <- CountryValidator.validatePutRequest(request).toIO
       updated <- countryService.update(country)
     } yield updated.toView
@@ -85,7 +86,7 @@ class CountryApi(countryService: CountryService) {
 
   private def doDeleteLogic(request: String): ApiResponse[Unit] = {
     for {
-      _ <- log.debug(s"doDeleteLogic - request: $request")
+      _ <- ZIO.debug(s"doDeleteLogic - request: $request")
       criteria <- CountryValidator.validateDeleteRequest(request).toIO
       _ <- countryService.deleteByCode(criteria)
     } yield ()

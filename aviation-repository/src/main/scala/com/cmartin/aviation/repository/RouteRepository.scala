@@ -1,9 +1,8 @@
 package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.RouteDbo
-import zio.Has
-import zio.IO
-import zio.ZIO
+import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.BaseRepository
+import zio.{IO, ZIO}
 
 trait RouteRepository
     extends BaseRepository[RouteDbo] {
@@ -15,31 +14,31 @@ trait RouteRepository
 }
 
 object RouteRepository {
-  def insert(dbo: RouteDbo): ZIO[Has[RouteRepository], Throwable, Long] =
-    ZIO.accessM[Has[RouteRepository]](_.get.insert(dbo))
+  def insert(dbo: RouteDbo): ZIO[RouteRepository, Throwable, Long] =
+    ZIO.serviceWithZIO[RouteRepository](_.insert(dbo))
 
-  def insert(seq: Seq[RouteDbo]): ZIO[Has[RouteRepository], Throwable, Seq[Long]] =
-    ZIO.accessM[Has[RouteRepository]](_.get.insertSeq(seq))
+  def insert(seq: Seq[RouteDbo]): ZIO[RouteRepository, Throwable, Seq[Long]] =
+    ZIO.serviceWithZIO[RouteRepository](_.insertSeq(seq))
 
-  def update(dbo: RouteDbo): ZIO[Has[RouteRepository], Throwable, Int] =
-    ZIO.accessM[Has[RouteRepository]](_.get.update(dbo))
+  def update(dbo: RouteDbo): ZIO[RouteRepository, Throwable, Int] =
+    ZIO.serviceWithZIO[RouteRepository](_.update(dbo))
 
   def findByOriginAndDestination(
       iataOrigin: String,
       iataDestination: String
-  ): ZIO[Has[RouteRepository], Throwable, Option[RouteDbo]] =
-    ZIO.accessM[Has[RouteRepository]](_.get.findByOriginAndDestination(iataOrigin, iataDestination))
+  ): ZIO[RouteRepository, Throwable, Option[RouteDbo]] =
+    ZIO.serviceWithZIO[RouteRepository](_.findByOriginAndDestination(iataOrigin, iataDestination))
 
   def deleteByOriginAndDestination(
       iataOrigin: String,
       iataDestination: String
-  ): ZIO[Has[RouteRepository], Throwable, Int] =
-    ZIO.accessM[Has[RouteRepository]](_.get.deleteByOriginAndDestination(iataOrigin, iataDestination))
+  ): ZIO[RouteRepository, Throwable, Int] =
+    ZIO.serviceWithZIO[RouteRepository](_.deleteByOriginAndDestination(iataOrigin, iataDestination))
 
-  def findByIataOrigin(iataCode: String): ZIO[Has[RouteRepository], Throwable, Seq[RouteDbo]] =
-    ZIO.accessM[Has[RouteRepository]](_.get.findByIataOrigin(iataCode))
+  def findByIataOrigin(iataCode: String): ZIO[RouteRepository, Throwable, Seq[RouteDbo]] =
+    ZIO.serviceWithZIO[RouteRepository](_.findByIataOrigin(iataCode))
 
-  def findByIataDestination(iataCode: String): ZIO[Has[RouteRepository], Throwable, Seq[RouteDbo]] =
-    ZIO.accessM[Has[RouteRepository]](_.get.findByIataDestination(iataCode))
+  def findByIataDestination(iataCode: String): ZIO[RouteRepository, Throwable, Seq[RouteDbo]] =
+    ZIO.serviceWithZIO[RouteRepository](_.findByIataDestination(iataCode))
 
 }

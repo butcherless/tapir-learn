@@ -1,11 +1,11 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.Common.testEnv
-import com.cmartin.aviation.repository.{AirlineRepository, CountryRepository}
 import com.cmartin.aviation.repository.Model.AirlineDbo
 import com.cmartin.aviation.repository.TestData._
+import com.cmartin.aviation.repository.{AirlineRepository, Common, CountryRepository}
 import zio.Runtime.{default => runtime}
-import zio.{Has, TaskLayer}
+import zio.ZLayer.Debug
+import zio.{TaskLayer, ZLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
 import java.time.LocalDate
@@ -13,9 +13,13 @@ import java.time.LocalDate
 class SlickAirlineRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env: TaskLayer[Has[CountryRepository] with Has[AirlineRepository]] =
-    (testEnv >>> CountryRepositoryLive.layer) ++
-      (testEnv >>> AirlineRepositoryLive.layer)
+  val env: TaskLayer[CountryRepository with AirlineRepository] =
+    ZLayer.make[CountryRepository with AirlineRepository](
+      Common.dbLayer,
+      SlickCountryRepository.layer,
+      SlickAirlineRepository.layer,
+      Debug.mermaid
+    )
 
   behavior of "SlickAirlineRepository"
 
@@ -132,7 +136,7 @@ class SlickAirlineRepositorySpec
   it should "return None for a missing Airline" in {
     val program = for {
       airline <- AirlineRepository.findByIataCode(ibeIataCode)
-    } yield (airline)
+    } yield airline
 
     val dboOpt = runtime.unsafeRun(
       program.provideLayer(env)

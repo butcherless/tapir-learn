@@ -28,7 +28,7 @@ trait CountryService {
 }
 
 object CountryService {
-  def create(country: Country): ZIO[Has[CountryService], ServiceError, Country] =
-    ZIO.serviceWith[CountryService](_.create(country))
+  def create(country: Country): ZIO[CountryService, ServiceError, Country] =
+    ZIO.serviceWithZIO[CountryService](_.create(country))
 
 }

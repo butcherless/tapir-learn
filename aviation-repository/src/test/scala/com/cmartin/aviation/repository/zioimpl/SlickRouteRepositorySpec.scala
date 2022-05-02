@@ -1,28 +1,33 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.Model.{AirportDbo, CountryDbo, RouteDbo}
 import com.cmartin.aviation.repository.TestData._
-import zio.Runtime.{default => runtime}
-import com.cmartin.aviation.repository.{AirportRepository, CountryRepository, RouteRepository}
+import com.cmartin.aviation.repository.{AirportRepository, Common, CountryRepository, RouteRepository}
 import org.scalatest.Inside._
-import zio.{Has, ZIO}
+import zio.Runtime.{default => runtime}
+import zio.ZLayer.Debug
+import zio.{ZIO, ZLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
 
 class SlickRouteRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env = testEnv >>>
-    CountryRepositoryLive.layer ++
-    AirportRepositoryLive.layer ++
-    RouteRepositoryLive.layer
+  val env =
+    ZLayer.make[CountryRepository with AirportRepository with RouteRepository](
+      Common.dbLayer,
+      SlickCountryRepository.layer,
+      SlickAirportRepository.layer,
+      SlickRouteRepository.layer,
+      Debug.mermaid
+    )
 
   behavior of "SlickRouteRepository"
 
   "Insert" should "insert a Route into the repository" in {
     val program = for {
-      (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      (originId, destinationId) = coords
       id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
     } yield id
 
@@ -36,7 +41,8 @@ class SlickRouteRepositorySpec
   it should "insert a sequence of Routes into the repository" in {
 
     val program = for {
-      (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      (originId, destinationId) = coords
       ids <- RouteRepository.insert(
         Seq(RouteDbo(madBcnDistance, originId, destinationId), RouteDbo(madBcnDistance, destinationId, originId))
       )
@@ -51,7 +57,8 @@ class SlickRouteRepositorySpec
 
   it should "fail to insert a duplicate Route into the repository" in {
     val program = for {
-      (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      (originId, destinationId) = coords
       _ <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
       _ <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
     } yield ()
@@ -94,7 +101,8 @@ class SlickRouteRepositorySpec
   "Update" should "update a Route retrieved from the repository" in {
     val updatedDistance = 1.23
     val program = for {
-      (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      (originId, destinationId) = coords
       id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
       dbo <- RouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
       count <- RouteRepository.update(dbo.get.copy(distance = updatedDistance))
@@ -112,7 +120,8 @@ class SlickRouteRepositorySpec
 
   "Delete" should "delete a Route from the repository" in {
     val program = for {
-      (originId, destinationId) <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      (originId, destinationId) = coords
       id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
       count <- RouteRepository.deleteByOriginAndDestination(madIataCode, bcnIataCode)
     } yield count
@@ -180,7 +189,7 @@ class SlickRouteRepositorySpec
       country: CountryDbo,
       origin: AirportDbo,
       destination: AirportDbo
-  ): ZIO[Has[CountryRepository] with Has[AirportRepository], Throwable, (Long, Long)] = {
+  ): ZIO[CountryRepository with AirportRepository, Throwable, (Long, Long)] = {
     for {
       countryId <- CountryRepository.insert(country)
       originId <- AirportRepository.insert(origin.copy(countryId = countryId))

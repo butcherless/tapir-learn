@@ -1,30 +1,31 @@
 package com.cmartin.aviation.service
 
-import com.cmartin.aviation.Commons
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.CountryPersister
-import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.CountryRepository
-import com.cmartin.aviation.repository.TestData._
-import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
+import com.cmartin.aviation.repository.zioimpl.SlickCountryRepository
+import com.cmartin.aviation.test.Common
+import com.cmartin.aviation.test.TestData._
 import zio.Runtime.{default => runtime}
-import zio.Has
-import zio.TaskLayer
-import zio.ZLayer
+import zio.{TaskLayer, ZLayer}
 
 class CountryPersisterLiveSpec
     extends SlickBasePersisterSpec {
 
-  val env: TaskLayer[Has[CountryPersister]] =
-    testEnv >>>
-      CountryRepositoryLive.layer ++
-      Commons.loggingEnv >>> CountryPersisterLive.layer
+  val env: TaskLayer[CountryPersister] =
+    ZLayer.make[CountryPersister](
+      Common.dbLayer,
+      SlickCountryRepository.layer,
+      CountryPersisterLive.layer
+    )
 
   // Simulator for database infrastructure exceptions
-  val countryRepoMock = mock[CountryRepository]
-  val mockEnv: TaskLayer[Has[CountryPersister]] =
-    ZLayer.succeed(countryRepoMock) ++
-      Commons.loggingEnv >>> CountryPersisterLive.layer
+  val countryRepoMock: CountryRepository = mock[CountryRepository]
+  val mockEnv: TaskLayer[CountryPersister] =
+    ZLayer.make[CountryPersister](
+      ZLayer.succeed(countryRepoMock),
+      CountryPersisterLive.layer
+    )
 
   behavior of "CountryPersisterLive"
 
@@ -95,7 +96,7 @@ class CountryPersisterLiveSpec
     either.left.value shouldBe a[UnexpectedServiceError]
   }
 
-  "Find" should "retrive a Country by its code" in {
+  "Find" should "retrieve a Country by its code" in {
     val program = for {
       _ <- CountryPersister.insert(spainCountry)
       countryOpt <- CountryPersister.findByCode(spainCode)
@@ -108,7 +109,7 @@ class CountryPersisterLiveSpec
     countryOpt shouldBe Some(spainCountry)
   }
 
-  it should "retrive None for a missing Country" in {
+  it should "retrieve None for a missing Country" in {
     val program = for {
       countryOpt <- CountryPersister.findByCode(spainCode)
     } yield countryOpt

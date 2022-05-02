@@ -1,24 +1,18 @@
 package com.cmartin.aviation.repository
 
+import com.cmartin.aviation.domain.Model._
+import com.cmartin.aviation.repository.zioimpl.Tables.TableNames
 import slick.basic.DatabaseConfig
 import slick.jdbc.JdbcProfile
-import slick.lifted.ForeignKeyQuery
-import slick.lifted.Index
-import slick.lifted.PrimaryKey
-import slick.lifted.ProvenShape
+import slick.lifted.{Index, ProvenShape}
+import zio.Task
 
 import java.time.LocalDate
 import scala.concurrent.Future
-import JdbcDefinitions.BaseDefinitions
-import com.cmartin.aviation.Commons.ServiceResponse
-import zio.{IO, Task, ZIO}
-import com.cmartin.aviation.domain.Model._
-import com.cmartin.aviation.port.CountryPersister
-import zio.logging._
 
 object JdbcRepositories {
-  import JdbcDefinitions._
   import AbstractRepositories._
+  import JdbcDefinitions._
 
   trait AviationRepositories extends BaseDefinitions {
     self: JdbcProfile =>
@@ -193,7 +187,6 @@ object JdbcRepositories {
     }
 
     object RepoImplicits {
-      import slick.jdbc.PostgresProfile
       implicit def runAction[A](action: DBIO[A]): Future[A] = ???
     }
 

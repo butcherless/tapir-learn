@@ -1,22 +1,24 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.Common.testEnv
 import com.cmartin.aviation.repository.Model.AirportDbo
 import com.cmartin.aviation.repository.TestData._
+import com.cmartin.aviation.repository.{AirportRepository, Common, CountryRepository}
 import zio.Runtime.{default => runtime}
-import zio.Has
-import zio.TaskLayer
-import com.cmartin.aviation.repository.{AirportRepository, CountryRepository}
+import zio.ZLayer.Debug
+import zio.{TaskLayer, ZLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
 
 class SlickAirportRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env: TaskLayer[Has[CountryRepository] with Has[AirportRepository]] =
-    testEnv >>>
-      CountryRepositoryLive.layer ++
-      AirportRepositoryLive.layer
+  val env: TaskLayer[CountryRepository with AirportRepository] =
+    ZLayer.make[CountryRepository with AirportRepository](
+      Common.dbLayer,
+      SlickCountryRepository.layer,
+      SlickAirportRepository.layer,
+      Debug.mermaid
+    )
 
   behavior of "SlickAirportRepository"
 

@@ -1,40 +1,36 @@
 package com.cmartin.aviation.service
 
-import com.cmartin.aviation.Commons
 import com.cmartin.aviation.domain.Model._
-import com.cmartin.aviation.port.AirportPersister
-import com.cmartin.aviation.port.CountryPersister
+import com.cmartin.aviation.port.{AirportPersister, CountryPersister}
 import com.cmartin.aviation.repository.AirportRepository
-import com.cmartin.aviation.repository.Common.testEnv
-import com.cmartin.aviation.repository.TestData._
-import com.cmartin.aviation.repository.zioimpl.AirportRepositoryLive
-import com.cmartin.aviation.repository.zioimpl.CountryRepositoryLive
+import com.cmartin.aviation.repository.zioimpl.{SlickAirportRepository, SlickCountryRepository}
+import com.cmartin.aviation.test.Common
+import com.cmartin.aviation.test.TestData._
 import zio.Runtime.{default => runtime}
-import zio.Has
-import zio.Task
-import zio.TaskLayer
-import zio.ZLayer
+import zio.{Task, ZLayer}
 
 class AirportPersisterLiveSpec
     extends SlickBasePersisterSpec {
 
-  val env: TaskLayer[Has[CountryPersister] with Has[AirportPersister]] =
-    testEnv >>>
-      CountryRepositoryLive.layer ++
-      AirportRepositoryLive.layer ++
-      Commons.loggingEnv >>>
-      CountryPersisterLive.layer ++
+  val env =
+    ZLayer.make[CountryPersister with AirportPersister](
+      Common.dbLayer,
+      SlickCountryRepository.layer,
+      SlickAirportRepository.layer,
+      CountryPersisterLive.layer,
       AirportPersisterLive.layer
+    )
 
   // Simulator for database infrastructure exceptions
   val airportRepoMock = mock[AirportRepository]
   val mockEnv =
-    testEnv >>>
-      CountryRepositoryLive.layer ++
-      ZLayer.succeed(airportRepoMock) ++
-      Commons.loggingEnv >>>
-      CountryPersisterLive.layer ++
+    ZLayer.make[CountryPersister with AirportPersister](
+      Common.dbLayer,
+      SlickCountryRepository.layer,
+      ZLayer.succeed(airportRepoMock),
+      CountryPersisterLive.layer,
       AirportPersisterLive.layer
+    )
 
   behavior of "AirportPersisterLive"
 

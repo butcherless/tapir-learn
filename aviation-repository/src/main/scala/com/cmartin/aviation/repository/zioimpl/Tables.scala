@@ -7,17 +7,26 @@ import slick.lifted.ProvenShape
 
 import java.time.LocalDate
 
-trait Tables { self: JdbcProfile =>
+object Tables extends JdbcProfile {
   import api._
+  import CommonAbstractions.Table.LongBasedTable
 
-  abstract class LongBasedTable[T <: LongDbo](tag: Tag, tableName: String) extends Table[T](tag, tableName) {
-    /* primary key column */
-    def id: Rep[Long] = column[Long]("ID", O.PrimaryKey, O.AutoInc)
+  object TableNames {
+    val airlines = "AIRLINES"
+    val airports = "AIRPORTS"
+    val countries = "COUNTRIES"
+    val fleet = "FLEET"
+    val flights = "FLIGHTS"
+    val journeys = "JOURNEYS"
+    val routes = "ROUTES"
+    val aircraftJourney = "AIRCRAFT_JOURNEY"
   }
+
 
   /* C O U N T R Y
    */
-  class Countries(tag: Tag) extends LongBasedTable[CountryDbo](tag, TableNames.countries) {
+  class Countries(tag: Tag)
+      extends LongBasedTable[CountryDbo](tag, TableNames.countries) {
     // property columns:
     def name: Rep[String] = column[String]("NAME")
     def code: Rep[String] = column[String]("CODE")
@@ -27,6 +36,8 @@ trait Tables { self: JdbcProfile =>
       (name, code, id.?).<>(CountryDbo.tupled, CountryDbo.unapply)
 
     // indexes
+    def nameIndex: Index =
+      index("name_idx", name, unique = true)
     def codeIndex: Index =
       index("code_idx", code, unique = true)
   }
@@ -35,7 +46,8 @@ trait Tables { self: JdbcProfile =>
 
   /* A I R P O R T
    */
-  final class Airports(tag: Tag) extends LongBasedTable[AirportDbo](tag, TableNames.airports) {
+  final class Airports(tag: Tag)
+      extends LongBasedTable[AirportDbo](tag, TableNames.airports) {
     // property columns:
     def name: Rep[String] = column[String]("NAME")
     def iataCode: Rep[String] = column[String]("IATA_CODE")
@@ -59,7 +71,8 @@ trait Tables { self: JdbcProfile =>
 
   /* A I R L I N E
    */
-  final class Airlines(tag: Tag) extends LongBasedTable[AirlineDbo](tag, TableNames.airlines) {
+  final class Airlines(tag: Tag)
+      extends LongBasedTable[AirlineDbo](tag, TableNames.airlines) {
     // property columns:
     def name = column[String]("NAME")
     def iataCode: Rep[String] = column[String]("IATA_CODE")
@@ -84,7 +97,8 @@ trait Tables { self: JdbcProfile =>
 
   /* R O U T E
    */
-  final class Routes(tag: Tag) extends LongBasedTable[RouteDbo](tag, TableNames.routes) {
+  final class Routes(tag: Tag)
+      extends LongBasedTable[RouteDbo](tag, TableNames.routes) {
     // property columns:
     def distance = column[Double]("DISTANCE")
 
@@ -115,5 +129,3 @@ trait Tables { self: JdbcProfile =>
 
   val routes = TableQuery[Routes]
 }
-
-object Tables extends Tables with JdbcProfile

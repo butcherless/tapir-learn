@@ -1,13 +1,13 @@
 package com.cmartin.aviation.service
 
-import com.cmartin.aviation.repository.Common.schemaHelperProgram
-import zio.Runtime.{default => runtime}
+import com.cmartin.aviation.test.Common.schemaHelperProgram
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.EitherValues
+import org.scalatest.{BeforeAndAfterEach, EitherValues}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import zio.Runtime.{default => runtime}
 
+//TODO replace repositories with inMemory (STM-TMap) implementations
 abstract class SlickBasePersisterSpec
     extends AnyFlatSpec
     with Matchers

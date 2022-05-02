@@ -1,7 +1,6 @@
 package com.cmartin.aviation.port
 
 import com.cmartin.aviation.domain.Model._
-import zio.Has
 import zio.IO
 import zio.ZIO
 
@@ -14,19 +13,19 @@ trait CountryPersister {
 }
 
 object CountryPersister {
-  def insert(country: Country): ZIO[Has[CountryPersister], ServiceError, Long] =
-    ZIO.serviceWith[CountryPersister](_.insert(country))
+  def insert(country: Country): ZIO[CountryPersister, ServiceError, Long] =
+    ZIO.serviceWithZIO[CountryPersister](_.insert(country))
 
-  def existsByCode(code: CountryCode): ZIO[Has[CountryPersister], ServiceError, Boolean] =
-    ZIO.serviceWith[CountryPersister](_.existsByCode(code))
+  def existsByCode(code: CountryCode): ZIO[CountryPersister, ServiceError, Boolean] =
+    ZIO.serviceWithZIO[CountryPersister](_.existsByCode(code))
 
-  def findByCode(code: CountryCode): ZIO[Has[CountryPersister], ServiceError, Option[Country]] =
-    ZIO.serviceWith[CountryPersister](_.findByCode(code))
+  def findByCode(code: CountryCode): ZIO[CountryPersister, ServiceError, Option[Country]] =
+    ZIO.serviceWithZIO[CountryPersister](_.findByCode(code))
 
-  def update(country: Country): ZIO[Has[CountryPersister], ServiceError, Int] =
-    ZIO.serviceWith[CountryPersister](_.update(country))
+  def update(country: Country): ZIO[CountryPersister, ServiceError, Int] =
+    ZIO.serviceWithZIO[CountryPersister](_.update(country))
 
-  def delete(code: CountryCode): ZIO[Has[CountryPersister], ServiceError, Int] =
-    ZIO.serviceWith[CountryPersister](_.delete(code))
+  def delete(code: CountryCode): ZIO[CountryPersister, ServiceError, Int] =
+    ZIO.serviceWithZIO[CountryPersister](_.delete(code))
 
 }

@@ -1,17 +1,13 @@
-package com.cmartin.aviation.repository
+package com.cmartin.aviation.test
 
 import com.cmartin.aviation.repository.JdbcRepositories.DataAccessObject
 import com.cmartin.aviation.repository.Model._
-import com.cmartin.aviation.repository.zioimpl.SlickSchemaHelper
-import com.typesafe.config.ConfigFactory
-import slick.interop.zio.DatabaseProvider
-import slick.jdbc.JdbcProfile
-import zio.Has
-import zio.TaskLayer
-import zio.ZLayer
+import com.cmartin.aviation.test.Helper.SlickSchemaManager
+import slick.basic.DatabaseConfig
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+import zio.{Task, TaskLayer, ZLayer}
 
 import scala.concurrent.Future
-import scala.jdk.CollectionConverters._
 
 object Common {
 
@@ -48,25 +44,16 @@ object Common {
 
   }
 
-  val config = ConfigFactory.parseMap(
-    Map(
-      "url" -> "jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1",
-      "driver" -> "org.h2.Driver",
-      "connectionPool" -> "disabled"
-    ).asJava
-  )
+  val dbLayer: TaskLayer[JdbcBackend#DatabaseDef] =
+    ZLayer.scoped(
+      Task.attempt(DatabaseConfig.forConfig[JdbcProfile]("h2_dc"))
+        .map(_.db)
+    )
 
-  val testEnv: TaskLayer[Has[DatabaseProvider]] =
-    (ZLayer.succeed(config) ++
-      ZLayer.succeed[JdbcProfile](slick.jdbc.H2Profile)) >>> DatabaseProvider.live
-
-  val schemaHelperLayer =
-    (ZLayer.succeed(config) ++
-      ZLayer.succeed[JdbcProfile](slick.jdbc.H2Profile)) >>> DatabaseProvider.live >>> SlickSchemaHelper.live
-
-  val schemaHelperProgram = (for {
-    _ <- SlickSchemaHelper.dropSchema()
-    _ <- SlickSchemaHelper.createSchema()
-  } yield ()).provideLayer(schemaHelperLayer)
+  val schemaHelperProgram: Task[Unit] =
+    (for {
+      _ <- SlickSchemaManager.dropSchema()
+      _ <- SlickSchemaManager.createSchema()
+    } yield ()).provide(SlickSchemaManager.layer, dbLayer)
 
 }

@@ -1,18 +1,18 @@
 package com.cmartin.learn.api
 
-import com.cmartin.learn.api.CommonEndpoint._
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.Info
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.server.ziohttp.ZioHttpInterpreter
 import sttp.tapir.swagger.SwaggerUI
+import zhttp.http.{Http, Request, Response}
 import zio.Task
 
 trait ZioSwaggerApi {
 
-  lazy val route =
+  lazy val route: Http[Any, Throwable, Request, Response] =
     ZioHttpInterpreter()
-      .toHttp(SwaggerUI[Task](docsAsYaml, List(API_TEXT, API_VERSION, "docs")))
+      .toHttp(SwaggerUI[Task](docsAsYaml))
 
   // add endpoints to the list for swagger documentation
   private lazy val docsAsYaml: String =
@@ -22,7 +22,7 @@ trait ZioSwaggerApi {
 
   private lazy val info = Info("Tapir Learning Service API", "1.0.0-SNAPSHOT", Some("Researching about Tapir library"))
 
-  private lazy val endpoints = List(
+  private lazy val endpoints = Seq(
     ActuatorEndpoint.healthEndpoint,
     TransferEndpoint.getTransferEndpoint,
     TransferEndpoint.getFilteredTransferEndpoint,
