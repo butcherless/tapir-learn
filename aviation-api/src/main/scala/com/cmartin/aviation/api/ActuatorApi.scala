@@ -7,6 +7,7 @@ import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio.Task
 import zio.UIO
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait ActuatorApi {

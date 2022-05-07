@@ -13,6 +13,8 @@ import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio.ZIO
 import zio.logging._
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class CountryApi(countryService: CountryService) {
   import CountryApi._
 
