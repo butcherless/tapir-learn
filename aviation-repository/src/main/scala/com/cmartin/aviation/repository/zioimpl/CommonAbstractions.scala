@@ -1,7 +1,8 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model.LongDbo
-import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.jdbc.JdbcBackend
+import slick.jdbc.JdbcProfile
 import zio.Task
 
 //TODO refactor: move to common module/project

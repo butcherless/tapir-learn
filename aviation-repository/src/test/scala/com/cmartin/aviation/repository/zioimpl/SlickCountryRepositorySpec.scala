@@ -1,24 +1,22 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.{Common, CountryRepository}
+import com.cmartin.aviation.repository.Common
+import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.TestData._
 import zio.Runtime.{default => runtime}
+import zio.TaskLayer
+import zio.ZLayer
 import zio.ZLayer.Debug
-import zio.{TaskLayer, ZLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
 
 class SlickCountryRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env: TaskLayer[CountryRepository] =
-    ZLayer.make[CountryRepository](
-      Common.dbLayer,
-      SlickCountryRepository.layer
-    )
+  import SlickCountryRepositorySpec._
 
-  behavior of "CountryRepository"
+  behavior of "SlickCountryRepository"
 
   "Insert" should "insert a Country into the database" in {
     val program = for {
@@ -124,5 +122,14 @@ class SlickCountryRepositorySpec
     cs shouldBe 0
     count shouldBe 0
   }
+
+}
+
+object SlickCountryRepositorySpec {
+  val env: TaskLayer[CountryRepository] =
+    ZLayer.make[CountryRepository](
+      Common.dbLayer,
+      SlickCountryRepository.layer
+    )
 
 }

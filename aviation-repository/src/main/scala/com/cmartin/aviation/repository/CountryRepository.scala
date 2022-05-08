@@ -2,7 +2,9 @@ package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.BaseRepository
-import zio.{RIO, Task, ZIO}
+import zio.RIO
+import zio.Task
+import zio.ZIO
 
 trait CountryRepository
     extends BaseRepository[CountryDbo] {
@@ -13,6 +15,9 @@ trait CountryRepository
 }
 
 object CountryRepository {
+  def find(id: Long): RIO[CountryRepository, Option[CountryDbo]] =
+    ZIO.serviceWithZIO[CountryRepository](_.find(id))
+
   def findByCode(code: String): RIO[CountryRepository, Option[CountryDbo]] =
     ZIO.serviceWithZIO[CountryRepository](_.findByCode(code))
 
