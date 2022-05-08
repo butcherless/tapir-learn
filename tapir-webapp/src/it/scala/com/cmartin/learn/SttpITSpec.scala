@@ -16,7 +16,6 @@ import sttp.client3.asynchttpclient.zio._
 import sttp.client3.basicRequest
 import sttp.client3.circe._
 import sttp.model.StatusCode
-import zio.App
 import zio.UIO
 import zio.ZIO
 import zio._
@@ -37,7 +36,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
       send(request)
 
     val layeredDoGet =
-      doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+      doGet.provide(AsyncHttpClientZioBackend.layer())
 
     val response =
       runtime.unsafeRun(layeredDoGet)
@@ -54,7 +53,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
 
     val doGet = send(request)
 
-    val layeredDoGet = doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+    val layeredDoGet = doGet.provide(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
 
@@ -70,7 +69,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
 
     val doGet = send(request)
 
-    val layeredDoGet = doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+    val layeredDoGet = doGet.provide(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
 
@@ -86,7 +85,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
 
     val doGet = send(request)
 
-    val layeredDoGet = doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+    val layeredDoGet = doGet.provide(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
 
@@ -100,7 +99,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
     val doPost = send(request)
-    val layeredDoGet = doPost.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+    val layeredDoGet = doPost.provide(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
 
@@ -114,7 +113,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
     val doPost = send(request)
-    val layeredDoGet = doPost.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+    val layeredDoGet = doPost.provide(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
 
@@ -130,7 +129,7 @@ class SttpITSpec extends AnyFlatSpec with Matchers {
 
     val doGet = send(request)
 
-    val layeredDoGet = doGet.provideCustomLayer(AsyncHttpClientZioBackend.layer())
+    val layeredDoGet = doGet.provide(AsyncHttpClientZioBackend.layer())
 
     val response = runtime.unsafeRun(layeredDoGet)
 
