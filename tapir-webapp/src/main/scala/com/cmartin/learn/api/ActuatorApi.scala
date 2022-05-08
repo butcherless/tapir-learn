@@ -4,6 +4,7 @@ import akka.http.scaladsl.server.Route
 import com.cmartin.learn.domain.ApiConverters
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait ActuatorApi {

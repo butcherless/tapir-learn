@@ -4,8 +4,11 @@ import com.cmartin.aviation.repository.AirportRepository
 import com.cmartin.aviation.repository.Model.AirportDbo
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.AbstractLongRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Airports
-import slick.jdbc.{JdbcBackend, JdbcProfile}
-import zio.{IO, RLayer, ZLayer}
+import slick.jdbc.JdbcBackend
+import slick.jdbc.JdbcProfile
+import zio.IO
+import zio.RLayer
+import zio.ZLayer
 
 case class SlickAirportRepository(db: JdbcBackend#DatabaseDef)
     extends AbstractLongRepository[AirportDbo, Airports](db)

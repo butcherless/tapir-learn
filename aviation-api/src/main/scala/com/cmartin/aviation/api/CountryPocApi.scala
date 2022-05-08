@@ -11,6 +11,8 @@ import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio._
 import zio.logging._
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class CountryPocApi(countryPersister: CountryPersister) {
   lazy val routes: Route =
     getRoute

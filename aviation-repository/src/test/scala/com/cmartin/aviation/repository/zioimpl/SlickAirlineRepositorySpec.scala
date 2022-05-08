@@ -78,7 +78,7 @@ class SlickAirlineRepositorySpec
       program.provideLayer(env)
     )
 
-    dboOpt shouldBe Some(ibeDbo.copy(countryId = cid, id = Some(aid)))
+    dboOpt shouldBe Some(ibeDbo.copy(countryId = cid, id = aid))
   }
 
   it should "retrieve an Airline by icao code" in {
@@ -90,7 +90,7 @@ class SlickAirlineRepositorySpec
     val layeredProgram = program.provideLayer(env)
     val (dboOpt, cid, aid) = runtime.unsafeRun(layeredProgram)
 
-    dboOpt shouldBe Some(ibeDbo.copy(countryId = cid, id = Some(aid)))
+    dboOpt shouldBe Some(ibeDbo.copy(countryId = cid, id = aid))
   }
 
   it should "retrieve a sequence of Airlines by country code" in {

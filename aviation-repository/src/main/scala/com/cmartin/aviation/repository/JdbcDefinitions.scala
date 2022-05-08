@@ -82,7 +82,8 @@ object JdbcDefinitions {
     }
      */
 
-    abstract class AbstractLongRepository[E <: LongDbo, T <: OldLongBasedTable[E]] extends AbstractRepository[DBIO, E] {
+    abstract class AbstractLongRepository[E <: LongDbo, T <: OldLongBasedTable[E]]
+        extends AbstractRepository[DBIO, E] {
       val entities: TableQuery[T]
 
       def findById(id: Option[Long]): DBIO[Option[E]] = {

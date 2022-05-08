@@ -2,8 +2,11 @@ package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.repository.Model._
-import slick.jdbc.{JdbcBackend, JdbcProfile}
-import zio.{RIO, Task, ZIO}
+import slick.jdbc.JdbcBackend
+import slick.jdbc.JdbcProfile
+import zio.RIO
+import zio.Task
+import zio.ZIO
 
 import java.sql.SQLIntegrityConstraintViolationException
 

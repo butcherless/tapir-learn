@@ -7,10 +7,52 @@ import zio.{RIO, Task, ZIO}
 trait AirlineRepository
     extends BaseRepository[AirlineDbo] {
 
+  /** Retrieves the sequence of airlines whose name matches the supplied
+    * parameter
+    *
+    * @param name
+    *   airline name
+    * @return
+    *   airline sequence
+    */
   def findByName(name: String): Task[Seq[AirlineDbo]]
+
+  /** Retrieves the airline option whose iata code matches the supplied
+    * parameter
+    *
+    * @param code
+    *   iata code
+    * @return
+    *   the airline option
+    */
   def findByIataCode(code: String): Task[Option[AirlineDbo]]
+
+  /** Retrieves the airline option whose icao code matches the supplied
+    * parameter
+    *
+    * @param code
+    *   icao code
+    * @return
+    *   airline option
+    */
   def findByIcaoCode(code: String): Task[Option[AirlineDbo]]
+
+  /** Retrieves the sequence of airlines whose country code matches the supplied
+    * parameter
+    *
+    * @param code
+    *   country code
+    * @return
+    *   airline sequence
+    */
   def findByCountryCode(code: String): Task[Seq[AirlineDbo]]
+
+  /** Deletes an Airline by its iata code
+    * @param code
+    *   airline iata code
+    * @return
+    *   number of deleted rows
+    */
   def deleteByIataCode(code: String): Task[Int]
 }
 
@@ -24,12 +66,6 @@ object AirlineRepository {
   def update(dbo: AirlineDbo): RIO[AirlineRepository, Int] =
     ZIO.serviceWithZIO[AirlineRepository](_.update(dbo))
 
-  /** Deletes an Airline by its iata code
-    * @param iataCode
-    *   airline code
-    * @return
-    *   number of deleted rows
-    */
   def deleteByIataCode(iataCode: String): RIO[AirlineRepository, Int] =
     ZIO.serviceWithZIO[AirlineRepository](_.deleteByIataCode(iataCode))
 

@@ -4,8 +4,11 @@ import com.cmartin.aviation.repository.AirlineRepository
 import com.cmartin.aviation.repository.Model.AirlineDbo
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.AbstractLongRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Airlines
-import slick.jdbc.{JdbcBackend, JdbcProfile}
-import zio.{RLayer, Task, ZLayer}
+import slick.jdbc.JdbcBackend
+import slick.jdbc.JdbcProfile
+import zio.RLayer
+import zio.Task
+import zio.ZLayer
 
 case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
     extends AbstractLongRepository[AirlineDbo, Airlines](db)

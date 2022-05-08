@@ -14,6 +14,7 @@ import sttp.tapir.generic.auto._
 import sttp.tapir.json.json4s._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait Json4sApi extends LoggingSupport {

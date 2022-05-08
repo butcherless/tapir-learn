@@ -74,6 +74,6 @@ object CountryPersisterLive {
     ZLayer.fromFunction(repo => CountryPersisterLive(repo))
   }
 
-  def buildDbo(country: Country, id: Option[Long]): UIO[CountryDbo] =
+  def buildDbo(country: Country, id: Long): UIO[CountryDbo] =
     IO.succeed(CountryDbo(country.name, country.code, id))
 }
