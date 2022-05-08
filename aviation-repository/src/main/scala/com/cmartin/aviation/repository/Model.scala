@@ -11,7 +11,7 @@ object Model {
 
   /** Identifier for a Long based Entity object
     */
-  trait LongDbo extends IdentifiedDbo[Option[Long]]
+  trait LongDbo extends IdentifiedDbo[Long]
 
   /** Identifier for a N <-> M relationship object
     */
@@ -29,7 +29,7 @@ object Model {
   final case class CountryDbo(
       name: String,
       code: String,
-      id: Option[Long] = None
+      id: Long = 0L
   ) extends LongDbo
 
   /** A complex of runways and buildings for the take-off, landing, and
@@ -51,7 +51,7 @@ object Model {
       iataCode: String,
       icaoCode: String,
       countryId: Long = 0L,
-      id: Option[Long] = None
+      id: Long = 0L
   ) extends LongDbo
 
   /** An organization providing a regular public service of air transport on one
@@ -76,7 +76,7 @@ object Model {
       icaoCode: String,
       foundationDate: LocalDate,
       countryId: Long = 0L,
-      id: Option[Long] = None
+      id: Long = 0L
   ) extends LongDbo
 
   /** A way or course taken in getting from a starting point to a destination.
@@ -94,7 +94,7 @@ object Model {
       distance: Double,
       originId: Long,
       destinationId: Long,
-      id: Option[Long] = None
+      id: Long = 0L
   ) extends LongDbo
 
   final case class RepositoryException(message: String)

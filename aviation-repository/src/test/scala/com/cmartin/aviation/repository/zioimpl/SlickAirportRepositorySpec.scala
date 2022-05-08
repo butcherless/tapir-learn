@@ -77,7 +77,7 @@ class SlickAirportRepositorySpec
       program.provideLayer(env)
     )
 
-    dboOpt shouldBe Some(madDbo.copy(countryId = cid, id = Some(aid)))
+    dboOpt shouldBe Some(madDbo.copy(countryId = cid, id = aid))
   }
 
   it should "retrieve an Airport by icao code" in {
@@ -91,7 +91,7 @@ class SlickAirportRepositorySpec
       program.provideLayer(env)
     )
 
-    dboOpt shouldBe Some(madDbo.copy(countryId = cid, id = Some(aid)))
+    dboOpt shouldBe Some(madDbo.copy(countryId = cid, id = aid))
   }
 
   it should "retrieve a sequence of Airports by country code" in {

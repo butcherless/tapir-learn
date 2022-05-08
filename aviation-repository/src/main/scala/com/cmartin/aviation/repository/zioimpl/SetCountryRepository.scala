@@ -20,7 +20,7 @@ final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
     STM.atomically {
       for {
         countries <- set.toSet
-        country <- STM.succeed(countries.find(_.id == Some(id)))
+        country <- STM.succeed(countries.find(_.id == id))
       } yield country
     }
 
@@ -28,7 +28,7 @@ final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
     STM.atomically {
       for {
         id <- seq.updateAndGet(s => s + 1)
-        _ <- set.put(e.copy(id = Some(id)))
+        _ <- set.put(e.copy(id = id))
       } yield id.toLong
     }
 

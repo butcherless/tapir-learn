@@ -19,7 +19,7 @@ case class AirportPersisterLive(
       _ <- ZIO.logDebug(s"insert: $airport")
       option <- countryRepository.findByCode(airport.country.code)
       country <- manageNotFound(option)(s"No country found for code: ${airport.country.code}")
-      id <- airportRepository.insert(airport.toDbo(country.id.get)) // safe access by primary key
+      id <- airportRepository.insert(airport.toDbo(country.id)) // safe access by primary key
     } yield id
 
     program
@@ -92,12 +92,12 @@ object AirportPersisterLive {
       } yield AirportPersisterLive(c, a)
     }
 
-  def buildDbo(airport: Airport, id: Option[Long], countryId: Option[Long]): UIO[AirportDbo] =
+  def buildDbo(airport: Airport, id: Long, countryId: Long): UIO[AirportDbo] =
     IO.succeed(AirportDbo(
       name = airport.name,
       iataCode = airport.iataCode,
       icaoCode = airport.icaoCode,
-      countryId = countryId.get, // safe access by foreign key
+      countryId = countryId, // safe access by foreign key
       id = id
     ))
 
