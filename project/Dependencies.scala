@@ -19,7 +19,7 @@ object Dependencies {
   val repoMain = Seq(
     "com.typesafe.slick" %% "slick" % Versions.slick exclude ("org.slf4j", "slf4j-api") exclude ("com.typesafe", "config"),
     "com.typesafe.slick" %% "slick-hikaricp" % Versions.slick exclude ("org.slf4j", "slf4j-api")
-    //"io.scalac" %% "zio-slick-interop" % "0.4"
+    // "io.scalac" %% "zio-slick-interop" % "0.4"
   )
 
   val h2Test = Seq(
