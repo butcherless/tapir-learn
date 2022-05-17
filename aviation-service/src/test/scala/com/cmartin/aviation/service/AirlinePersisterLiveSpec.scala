@@ -7,7 +7,7 @@ import com.cmartin.aviation.repository.zioimpl.{SlickAirlineRepository, SlickCou
 import com.cmartin.aviation.test.Common
 import com.cmartin.aviation.test.TestData._
 import zio.Runtime.{default => runtime}
-import zio.{Task, ZLayer}
+import zio.{Task, ZLayer, ZIO}
 
 class AirlinePersisterLiveSpec
     extends SlickBasePersisterSpec {
@@ -216,7 +216,7 @@ class AirlinePersisterLiveSpec
     // GIVEN
     (airlineRepoMock.insert _)
       .expects(ibeDbo.copy(countryId = 1L))
-      .returns(Task.succeed(1L))
+      .returns(ZIO.succeed(1L))
 
     (airlineRepoMock.findByIataCode _)
       .expects(ibeIataCode)

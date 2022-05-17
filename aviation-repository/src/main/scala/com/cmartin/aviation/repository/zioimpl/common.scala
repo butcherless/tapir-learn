@@ -34,8 +34,8 @@ object common {
 
   def manageNotFound[A](o: Option[A])(message: String): Task[A] = {
     o.fold[Task[A]](
-      Task.fail(MissingEntityException(message))
-    )(a => Task.succeed(a))
+      ZIO.fail(MissingEntityException(message))
+    )(a => ZIO.succeed(a))
   }
 
   def manageError(e: Throwable): ServiceError = e match {

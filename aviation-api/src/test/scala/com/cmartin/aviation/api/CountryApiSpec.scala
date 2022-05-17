@@ -11,7 +11,7 @@ import io.circe.parser.decode
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import zio.IO
+import zio.{ZIO, IO}
 
 import scala.concurrent.duration._
 
@@ -33,7 +33,7 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
     // G I V E N
     (countryService.create _)
       .expects(TestData.spainCountry)
-      .returns(IO.succeed(TestData.spainCountry))
+      .returns(ZIO.succeed(TestData.spainCountry))
       .once()
 
     // W H E N
@@ -70,7 +70,7 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
     val code = CountryCode("es")
     (countryService.findByCode _)
       .expects(code)
-      .returns(IO.succeed(TestData.spainCountry))
+      .returns(ZIO.succeed(TestData.spainCountry))
       .once()
 
     // W H E N
@@ -104,7 +104,7 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
     val code = CountryCode("xy")
     (countryService.findByCode _)
       .expects(code)
-      .returns(IO.fail(MissingEntityError(s"missing country for code: $code")))
+      .returns(ZIO.fail(MissingEntityError(s"missing country for code: $code")))
       .once()
 
     // W H E N
@@ -124,7 +124,7 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
     // G I V E N
     (countryService.update _)
       .expects(TestData.spainCountry)
-      .returns(IO.succeed(TestData.spainCountry))
+      .returns(ZIO.succeed(TestData.spainCountry))
       .once()
 
     // W H E N
@@ -145,7 +145,7 @@ class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with Sca
 
     (countryService.deleteByCode _)
       .expects(code)
-      .returns(IO.succeed(1))
+      .returns(ZIO.succeed(1))
       .once()
     // W H E N
     Delete(s"$baseApiPath/$countriesResource/${code}") ~>

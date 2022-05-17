@@ -3,6 +3,7 @@ package com.cmartin.aviation.api.validator
 import com.cmartin.aviation.api.Model._
 import com.cmartin.aviation.domain.Model._
 import zio.IO
+import zio.ZIO
 import zio.prelude.Validation
 
 object CountryValidator {
@@ -57,8 +58,8 @@ object CountryValidator {
   implicit class ValidationToIO[A](validated: Validation[ValidationError, A]) {
     def toIO: IO[ValidationError, A] =
       validated.fold(
-        nec => IO.fail(ValidationErrors(s"${nec.map(_.message).mkString("[", ",", "]")}")),
-        a => IO.succeed(a)
+        nec => ZIO.fail(ValidationErrors(s"${nec.map(_.message).mkString("[", ",", "]")}")),
+        a => ZIO.succeed(a)
       )
   }
 

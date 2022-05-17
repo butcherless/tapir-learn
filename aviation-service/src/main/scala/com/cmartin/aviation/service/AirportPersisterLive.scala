@@ -93,7 +93,7 @@ object AirportPersisterLive {
     }
 
   def buildDbo(airport: Airport, id: Long, countryId: Long): UIO[AirportDbo] =
-    IO.succeed(AirportDbo(
+    ZIO.succeed(AirportDbo(
       name = airport.name,
       iataCode = airport.iataCode,
       icaoCode = airport.icaoCode,

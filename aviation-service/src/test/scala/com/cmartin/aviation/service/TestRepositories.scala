@@ -1,6 +1,6 @@
 package com.cmartin.aviation.service
 
-import zio.IO
+import zio.ZIO
 
 import java.sql.SQLTimeoutException
 
@@ -8,6 +8,6 @@ import java.sql.SQLTimeoutException
 object TestRepositories {
 
   def failDefault() =
-    IO.fail(new SQLTimeoutException("statement timeout reached"))
+    ZIO.fail(new SQLTimeoutException("statement timeout reached"))
 
 }

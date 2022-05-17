@@ -5,7 +5,7 @@ import com.cmartin.aviation.Commons
 import com.cmartin.aviation.api.BaseEndpoint.RouteResponse
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio.Task
-import zio.UIO
+import zio.ZIO
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -24,7 +24,7 @@ trait ActuatorApi {
   /* TODO add logger & metrics aspect ZIO v2
    */
   private def doGetLogic(): Future[Model.BuildInfoView] =
-    Commons.runtime.unsafeRunToFuture(UIO.succeed((BuildInfo.toView)))
+    Commons.runtime.unsafeRunToFuture(ZIO.succeed((BuildInfo.toView)))
 }
 
 object ActuatorApi extends ActuatorApi {}

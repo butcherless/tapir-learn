@@ -75,5 +75,5 @@ object CountryPersisterLive {
   }
 
   def buildDbo(country: Country, id: Long): UIO[CountryDbo] =
-    IO.succeed(CountryDbo(country.name, country.code, id))
+    ZIO.succeed(CountryDbo(country.name, country.code, id))
 }
