@@ -7,7 +7,7 @@ import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.ApiConverters._
 import com.cmartin.learn.domain.Model.Transfer
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
-import zio.Task
+import zio.{Task, ZIO}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -91,25 +91,25 @@ trait TransferApi {
   def doBusinessLogic(transferId: TransferId): Task[Transfer] =
     transferId match {
       case StatusCodes.BadRequest.intValue =>
-        Task.fail(
+        ZIO.fail(
           BusinessException(StatusCodes.BadRequest.intValue, StatusCodes.BadRequest.defaultMessage)
         )
       case StatusCodes.NotFound.intValue =>
-        Task.fail(
+        ZIO.fail(
           BusinessException(StatusCodes.NotFound.intValue, StatusCodes.NotFound.defaultMessage)
         )
       case StatusCodes.InternalServerError.intValue =>
-        Task.fail(
+        ZIO.fail(
           BusinessException(StatusCodes.InternalServerError.intValue, StatusCodes.InternalServerError.defaultMessage)
         )
       case StatusCodes.ServiceUnavailable.intValue =>
-        Task.fail(
+        ZIO.fail(
           BusinessException(StatusCodes.ServiceUnavailable.intValue, StatusCodes.ServiceUnavailable.defaultMessage)
         )
 
-      case 666 => Task.fail(BusinessException(666, "Unknown error"))
+      case 666 => ZIO.fail(BusinessException(666, "Unknown error"))
 
-      case _ => Task.succeed(TransferEndpoint.transferModelExample)
+      case _ => ZIO.succeed(TransferEndpoint.transferModelExample)
     }
 
   // simulating business logic function
@@ -147,7 +147,7 @@ trait TransferApi {
     }
 
   def toDto(transfer: Transfer): Task[TransferDto] =
-    Task.succeed(
+    ZIO.succeed(
       TransferDto(
         transfer.sender,
         transfer.receiver,

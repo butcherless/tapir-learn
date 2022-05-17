@@ -71,8 +71,8 @@ object Dependencies {
     "dev.zio" %% "zio-test" % Versions.zio % "test",
     "dev.zio" %% "zio-test-sbt" % Versions.zio % "test",
     // S T T P
-    "com.softwaremill.sttp.client3" %% "core" % Versions.sttp % "it, test",
-    "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % Versions.sttp % "it, test",
+    "com.softwaremill.sttp.client3" %% "core" % Versions.sttp, // % "it, test",
+    "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % Versions.sttp, // % "it, test",
     "com.softwaremill.sttp.client3" %% "circe" % Versions.sttp % "it, test"
   )
 }

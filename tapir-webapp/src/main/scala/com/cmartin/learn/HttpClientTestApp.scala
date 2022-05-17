@@ -1,21 +1,12 @@
 package com.cmartin.learn
 
-import sttp.capabilities.WebSockets
-import sttp.capabilities.zio.ZioStreams
 import sttp.client3._
-import sttp.client3.asynchttpclient.zio.{AsyncHttpClientZioBackend, SttpClient}
-import sttp.model.StatusCode
+import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
 import zio.Console._
-import zio.Random._
-import zio.Runtime.{default => runtime}
 import zio._
 
-<<<<<<< HEAD
-object HttpClientTestApp extends ZIOAppDefault {
-=======
 object HttpClientTestApp
     extends ZIOAppDefault {
->>>>>>> d06e13a (* upgrade sttp client)
 
   val healthEndpoint = "http://localhost:8080/api/v1.0/health"
   val fiberCount = 20
@@ -51,7 +42,7 @@ object HttpClientTestApp
   val urls: Seq[String] = List.fill(fiberCount)(healthEndpoint)
   val program1 = for {
     number <- nextIntBetween(500, 2000)
-    delay <- ZIO.succeed(number)
+    delay <- UIO.succeed(number)
     _ <- ZIO.sleep(delay.milliseconds)
     _ <- ZIO.foreachPar(urls)(doGet).withParallelism(fiberCount)
       .repeat(Schedule.recurs(loopCount - 1))
@@ -61,9 +52,9 @@ object HttpClientTestApp
   def makeGet(uri: String) =
     for {
       number <- nextIntBetween(500, 2000)
-      delay <- ZIO.succeed(number)
+      delay <- UIO.succeed(number)
       _ <- ZIO.sleep(delay.milliseconds)
-      _ <- ZIO.succeed(println(s"sleep[$delay]: $uri"))
+      _ <- UIO.succeed(println(s"sleep[$delay]: $uri"))
     } yield ()
 
   def doGet(endpoint: String) =
@@ -95,13 +86,8 @@ object HttpClientTestApp
 
   // main function, needs exit = 0 [OK] or exit > 0 [ERROR]
   // Here the interpreter runs the program and performs side-effects
-<<<<<<< HEAD
-  def run = {
-    program
-=======
   override def run = {
     program.exitCode
->>>>>>> d06e13a (* upgrade sttp client)
       .catchAllCause(cause => printLine(s"${cause.prettyPrint}").exitCode)
   }
 }
