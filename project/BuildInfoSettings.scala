@@ -2,7 +2,7 @@ import com.github.sbt.git.GitPlugin.autoImport.git
 import sbt.Keys._
 import sbt.{Def, SettingKey}
 import sbtbuildinfo.BuildInfoKeys.buildInfoKeys
-import sbtbuildinfo.BuildInfoPlugin.autoImport.{BuildInfoKey, BuildInfoOption, buildInfoOptions, buildInfoPackage}
+import sbtbuildinfo.BuildInfoPlugin.autoImport.{buildInfoOptions, buildInfoPackage, BuildInfoKey, BuildInfoOption}
 import sbt.KeyRanks
 
 object BuildInfoSettings {

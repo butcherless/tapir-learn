@@ -11,7 +11,7 @@ import io.circe.parser.decode
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import zio.{ZIO, IO}
+import zio.{IO, ZIO}
 
 import scala.concurrent.duration._
 

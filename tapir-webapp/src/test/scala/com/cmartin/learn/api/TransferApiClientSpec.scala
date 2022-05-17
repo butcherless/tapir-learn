@@ -7,7 +7,7 @@ import org.scalatest.Ignore
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
-import sttp.client3.{Response, basicRequest, _}
+import sttp.client3.{basicRequest, Response, _}
 import sttp.client3.circe._
 import sttp.model.{Method, StatusCode}
 
