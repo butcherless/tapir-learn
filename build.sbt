@@ -46,6 +46,7 @@ lazy val `tapir-webapp` = project
     assemblyMergeStrategy := {
       // case PathList("io", "netty", "netty-all", xs @ _*) => MergeStrategy.first
       case "META-INF/io.netty.versions.properties" => MergeStrategy.first
+      case "module-info.class"                     => MergeStrategy.first
       case x =>
         val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
         oldStrategy(x)
