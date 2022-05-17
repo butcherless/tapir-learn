@@ -9,13 +9,8 @@ import sttp.client3.asynchttpclient.zio._
 import sttp.client3._
 import sttp.client3.circe._
 import sttp.model.StatusCode
-<<<<<<< HEAD
-import zio.UIO
-import zio.ZIO
 import zio._
-=======
 import zio.Runtime.{default => runtime}
->>>>>>> d06e13a (* upgrade sttp client)
 
 //TODO migrate to current sttp version
 class SttpITSpec extends AnyFlatSpec with Matchers {

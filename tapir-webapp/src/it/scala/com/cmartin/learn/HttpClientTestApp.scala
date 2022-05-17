@@ -10,12 +10,8 @@ import zio.Random._
 import zio.Runtime.{default => runtime}
 import zio._
 
-<<<<<<< HEAD
-object HttpClientTestApp extends ZIOAppDefault {
-=======
 object HttpClientTestApp
     extends ZIOAppDefault {
->>>>>>> d06e13a (* upgrade sttp client)
 
   val healthEndpoint = "http://localhost:8080/api/v1.0/health"
   val fiberCount = 20
@@ -95,13 +91,8 @@ object HttpClientTestApp
 
   // main function, needs exit = 0 [OK] or exit > 0 [ERROR]
   // Here the interpreter runs the program and performs side-effects
-<<<<<<< HEAD
   def run = {
-    program
-=======
-  override def run = {
     program.exitCode
->>>>>>> d06e13a (* upgrade sttp client)
       .catchAllCause(cause => printLine(s"${cause.prettyPrint}").exitCode)
   }
 }
