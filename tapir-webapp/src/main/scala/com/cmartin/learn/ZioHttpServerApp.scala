@@ -10,8 +10,8 @@ class ZioHttpServerApp
     extends ZIOAppDefault {
 
   val routes =
-    ActuatorApi.healthRoute <>
-      ZioSwaggerApi.route
+    ActuatorApi.healthRoute // <>
+  // ZioSwaggerApi.route
 
   def run =
     for {

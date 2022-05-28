@@ -2,13 +2,8 @@ package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model.CountryDbo
-import zio.RLayer
-import zio.Task
-import zio.ZLayer
-import zio.stm.STM
-import zio.stm.TRef
-import zio.stm.TSet
-import zio.stm.ZSTM
+import zio.{RLayer, Task, ZLayer}
+import zio.stm.{STM, TRef, TSet}
 
 import CommonAbstractions.Repository.BaseRepository
 

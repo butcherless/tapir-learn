@@ -13,6 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Failure
 import scala.util.Success
+import sttp.tapir.server.ziohttp.ZioHttpInterpreter
 
 trait TransferApi {
 
@@ -184,4 +185,5 @@ trait TransferApi {
       extends RuntimeException(message)
 }
 
-object TransferApi extends TransferApi
+object TransferApi
+    extends TransferApi

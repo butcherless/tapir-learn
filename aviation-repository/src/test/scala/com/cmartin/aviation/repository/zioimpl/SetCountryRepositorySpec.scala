@@ -8,12 +8,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import zio.Runtime.{default => runtime}
-import zio.TaskLayer
-import zio.ZIO
-import zio.ZLayer
-import zio.stm.STM
-import zio.stm.TRef
-import zio.stm.TSet
+import zio.{TaskLayer, ZIO, ZLayer}
+import zio.stm.{STM, TRef, TSet}
 
 class SetCountryRepositorySpec
     extends AnyFlatSpec

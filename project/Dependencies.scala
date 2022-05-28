@@ -35,8 +35,7 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % Versions.tapir,
-    "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % Versions.tapir,
-    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % Versions.tapir
+    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir
   )
 
   val apiTest = Seq(
@@ -51,8 +50,7 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % Versions.tapir,
-    "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % Versions.tapir,
-    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-json-json4s" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-zio-http-server" % Versions.tapir,
     "com.typesafe.akka" %% "akka-slf4j" % Versions.akka,
