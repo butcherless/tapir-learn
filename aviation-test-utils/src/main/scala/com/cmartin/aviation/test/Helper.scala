@@ -18,13 +18,14 @@ object Helper {
       with JdbcProfile {
     import api._
 
+    val dbLayer                                      = ZLayer.succeed(db)
     override def createSchema(): IO[Throwable, Unit] =
       SlickToZioSyntax.fromDBIO(
         (Tables.countries.schema ++
           Tables.airports.schema ++
           Tables.airlines.schema ++
           Tables.routes.schema).create
-      ).provideService(db)
+      ).provide(dbLayer)
 
     override def dropSchema(): IO[Throwable, Unit] =
       SlickToZioSyntax.fromDBIO(
@@ -33,7 +34,7 @@ object Helper {
           Tables.airlines.schema ++
           Tables.routes.schema)
           .dropIfExists
-      ).provideService(db)
+      ).provide(dbLayer)
 
   }
 

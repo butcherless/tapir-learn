@@ -17,10 +17,10 @@ final case class AirlinePersisterLive(
 
   override def insert(airline: Airline): IO[ServiceError, Long] = {
     val program = for {
-      _ <- ZIO.logDebug(s"insert: $airline")
-      option <- countryRepository.findByCode(airline.country.code)
+      _       <- ZIO.logDebug(s"insert: $airline")
+      option  <- countryRepository.findByCode(airline.country.code)
       country <- manageNotFound(option)(s"No country found for code: ${airline.country.code}")
-      id <- airlineRepository.insert(airline.toDbo(country.id)) // safe access by primary key
+      id      <- airlineRepository.insert(airline.toDbo(country.id)) // safe access by primary key
     } yield id
 
     program
@@ -29,7 +29,7 @@ final case class AirlinePersisterLive(
 
   override def existsByCode(code: IataCode): IO[ServiceError, Boolean] = {
     val program = for {
-      _ <- ZIO.logDebug(s"existsByCode: $code")
+      _   <- ZIO.logDebug(s"existsByCode: $code")
       dbo <- airlineRepository.findByIataCode(code)
     } yield dbo.isDefined
 
@@ -39,8 +39,8 @@ final case class AirlinePersisterLive(
 
   override def findByCode(code: IataCode): IO[ServiceError, Option[Airline]] = {
     val program = for {
-      _ <- ZIO.logDebug(s"findByCode: $code")
-      airlineOpt <- airlineRepository.findByIataCode(code)
+      _                     <- ZIO.logDebug(s"findByCode: $code")
+      airlineOpt            <- airlineRepository.findByIataCode(code)
       airlineWithCountryOpt <- findCountryAndToDomain(airlineOpt)
     } yield airlineWithCountryOpt
 
@@ -53,14 +53,14 @@ final case class AirlinePersisterLive(
       case Some(dbo) =>
         countryRepository.find(dbo.countryId)
           .map(opt => Some(dbo.toDomain(opt.get))) // safe access by foreign key
-      case None =>
-        Task.none
+      case None      =>
+        ZIO.none
     }
 
   override def findByCountry(code: CountryCode): IO[ServiceError, Seq[Airline]] = {
     val program = for {
-      _ <- ZIO.logDebug(s"findByCountry: $code")
-      dbos <- airlineRepository.findByCountryCode(code)
+      _          <- ZIO.logDebug(s"findByCountry: $code")
+      dbos       <- airlineRepository.findByCountryCode(code)
       countryOpt <- countryRepository.findByCode(code)
     } yield dbos.map(_.toDomain(countryOpt.get)) // safe access by foreign key
 
@@ -70,13 +70,13 @@ final case class AirlinePersisterLive(
 
   override def update(airline: Airline): IO[ServiceError, Int] = {
     val program = for {
-      _ <- ZIO.logDebug(s"update: $airline")
+      _          <- ZIO.logDebug(s"update: $airline")
       countryOpt <- countryRepository.findByCode(airline.country.code)
-      country <- manageNotFound(countryOpt)(s"No country found for code: ${airline.country.code}")
+      country    <- manageNotFound(countryOpt)(s"No country found for code: ${airline.country.code}")
       airlineOpt <- airlineRepository.findByIataCode(airline.iataCode)
-      found <- manageNotFound(airlineOpt)(s"No airline found for code: ${airline.iataCode}")
-      updated <- buildDbo(airline, found.id, country.id)
-      count <- airlineRepository.update(updated)
+      found      <- manageNotFound(airlineOpt)(s"No airline found for code: ${airline.iataCode}")
+      updated    <- buildDbo(airline, found.id, country.id)
+      count      <- airlineRepository.update(updated)
     } yield count
 
     program
@@ -85,7 +85,7 @@ final case class AirlinePersisterLive(
 
   override def delete(code: IataCode): IO[ServiceError, Int] = {
     val program = for {
-      _ <- ZIO.logDebug(s"delete: $code")
+      _   <- ZIO.logDebug(s"delete: $code")
       dbo <- airlineRepository.deleteByIataCode(code)
     } yield dbo
 

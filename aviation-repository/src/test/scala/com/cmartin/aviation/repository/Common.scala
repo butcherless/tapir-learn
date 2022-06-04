@@ -5,14 +5,14 @@ import com.cmartin.aviation.repository.Model._
 import com.cmartin.aviation.repository.zioimpl.Helper.SlickSchemaManager
 import slick.basic.DatabaseConfig
 import slick.jdbc.{JdbcBackend, JdbcProfile}
-import zio.{Task, TaskLayer, ZLayer}
+import zio.{Task, TaskLayer, ZIO, ZLayer}
 
 import scala.concurrent.Future
 
 object Common {
 
   val configPath = "h2_dc"
-  val dao = new TestDao(configPath)
+  val dao        = new TestDao(configPath)
 
   class TestDao(configPath: String)
       extends DataAccessObject(configPath) {
@@ -25,8 +25,8 @@ object Common {
         airlines.schema
 
     def createSchema(): Future[Unit] = schema.create
-    def dropSchema(): Future[Unit] = schema.dropIfExists
-    def printSchema(): String = schema.createStatements.mkString("\n")
+    def dropSchema(): Future[Unit]   = schema.dropIfExists
+    def printSchema(): String        = schema.createStatements.mkString("\n")
 
     /* H E L P E R S */
 
@@ -35,7 +35,7 @@ object Common {
     def insertAirport(countryDbo: CountryDbo)(airportDbo: AirportDbo): DBIO[Long] = {
       for {
         countryId <- dao.countryRepository.insert(countryDbo)
-        id <- dao.airportRepository.insert(updateCountryId(airportDbo)(countryId))
+        id        <- dao.airportRepository.insert(updateCountryId(airportDbo)(countryId))
       } yield id
     }
 
@@ -46,7 +46,7 @@ object Common {
 
   val dbLayer: TaskLayer[JdbcBackend#DatabaseDef] =
     ZLayer.scoped(
-      Task.attempt(DatabaseConfig.forConfig[JdbcProfile]("h2_dc"))
+      ZIO.attempt(DatabaseConfig.forConfig[JdbcProfile]("h2_dc"))
         .map(_.db)
     )
 

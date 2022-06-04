@@ -17,30 +17,30 @@ case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
     with RouteRepository {
 
   import api._
-  import common.Implicits.Dbio2Zio
+  import common.Implicits._
 
   override val entities = Tables.routes
-  private val airports = Tables.airports
+  private val airports  = Tables.airports
 
-  override def findByIataOrigin(iataCode: String): IO[Throwable, Seq[RouteDbo]] = {
+  override def findByIataOrigin(iataCode: String): IO[Throwable, Seq[RouteDbo]]      = {
     val query = for {
-      route <- entities
+      route   <- entities
       airport <- route.origin if airport.iataCode === iataCode
     } yield route
 
     query.result
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
   override def findByIataDestination(iataCode: String): IO[Throwable, Seq[RouteDbo]] = {
     val query = for {
-      route <- entities
+      route   <- entities
       airport <- route.destination if airport.iataCode === iataCode
     } yield route
 
     query.result
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
   override def findByOriginAndDestination(
@@ -48,32 +48,32 @@ case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
       iataDestination: String
   ): IO[Throwable, Option[RouteDbo]] = {
     val query = for {
-      route <- entities
-      origin <- route.origin if origin.iataCode === iataOrigin
+      route       <- entities
+      origin      <- route.origin if origin.iataCode === iataOrigin
       destination <- route.destination if destination.iataCode === iataDestination
     } yield route
 
     query.result.headOption
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
   override def deleteByOriginAndDestination(iataOrigin: String, iataDestination: String): IO[Throwable, Int] = {
     val airportsQuery = for {
-      origin <- airports if origin.iataCode === iataOrigin
+      origin      <- airports if origin.iataCode === iataOrigin
       destination <- airports if destination.iataCode === iataDestination
     } yield (origin, destination)
 
     val program = for {
-      coords <- fromDBIO(airportsQuery.result.head)
+      coords               <- fromDBIO(airportsQuery.result.head)
       (origin, destination) = coords
-      count <- fromDBIO(
-        entities.filter(route => route.originId === origin.id && route.destinationId === destination.id).delete
-      )
+      count                <- fromDBIO(
+                                entities.filter(route => route.originId === origin.id && route.destinationId === destination.id).delete
+                              )
     } yield count
 
     program
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
 }

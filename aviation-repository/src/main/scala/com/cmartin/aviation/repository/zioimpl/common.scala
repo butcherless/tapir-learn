@@ -7,6 +7,7 @@ import slick.jdbc.JdbcProfile
 import zio.RIO
 import zio.Task
 import zio.ZIO
+import zio.ZLayer
 
 import java.sql.SQLIntegrityConstraintViolationException
 
@@ -19,7 +20,7 @@ object common {
 
     def fromDBIO[R](dbio: => DBIO[R]): RIO[JdbcBackend#DatabaseDef, R] = for {
       db <- ZIO.service[JdbcBackend#DatabaseDef]
-      r <- ZIO.fromFuture(_ => db.run(dbio))
+      r  <- ZIO.fromFuture(_ => db.run(dbio))
     } yield r
   }
 
@@ -30,6 +31,12 @@ object common {
       def toZio(): RIO[JdbcBackend#DatabaseDef, R] =
         SlickToZioSyntax.fromDBIO(dbio)
     }
+
+    implicit class QueryToLayer[T](zio: RIO[JdbcBackend#DatabaseDef, T]) {
+      def provideDbLayer(db: JdbcBackend#DatabaseDef): Task[T] =
+        zio.provide(ZLayer.succeed(db))
+    }
+
   }
 
   def manageNotFound[A](o: Option[A])(message: String): Task[A] = {

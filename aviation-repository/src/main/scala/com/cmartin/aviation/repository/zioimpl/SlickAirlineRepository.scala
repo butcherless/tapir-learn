@@ -16,7 +16,7 @@ case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
     with AirlineRepository {
 
   import api._
-  import common.Implicits.Dbio2Zio
+  import common.Implicits._
 
   override val entities = Tables.airlines
 
@@ -24,21 +24,21 @@ case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
     val query = entities.filter(_.iataCode === iataCode)
     query.delete
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
   override def findByIataCode(code: String): Task[Option[AirlineDbo]] = {
     val query = entities.filter(_.iataCode === code)
     query.result.headOption
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
   override def findByIcaoCode(code: String): Task[Option[AirlineDbo]] = {
     val query = entities.filter(_.icaoCode === code)
     query.result.headOption
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
   override def findByCountryCode(code: String): Task[Seq[AirlineDbo]] = {
@@ -49,14 +49,14 @@ case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
 
     query.result
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
   override def findByName(name: String): Task[Seq[AirlineDbo]] = {
     val query = entities.filter(_.name like s"%$name%")
     query.result
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
 }

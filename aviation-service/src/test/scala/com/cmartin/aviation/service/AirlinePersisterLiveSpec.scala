@@ -23,7 +23,7 @@ class AirlinePersisterLiveSpec
 
   // Simulator for database infrastructure exceptions
   val airlineRepoMock = mock[AirlineRepository]
-  val mockEnv =
+  val mockEnv         =
     ZLayer.make[CountryPersister with AirlinePersister](
       Common.dbLayer,
       SlickCountryRepository.layer,
@@ -36,7 +36,7 @@ class AirlinePersisterLiveSpec
 
   "Insert" should "insert an Airline into the database" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
+      _  <- CountryPersister.insert(spainCountry)
       id <- AirlinePersister.insert(ibeAirline)
     } yield id
 
@@ -62,8 +62,8 @@ class AirlinePersisterLiveSpec
 
   "Exists" should "return true for an existing Airline" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      _ <- AirlinePersister.insert(ibeAirline)
+      _      <- CountryPersister.insert(spainCountry)
+      _      <- AirlinePersister.insert(ibeAirline)
       exists <- AirlinePersister.existsByCode(ibeIataCode)
     } yield exists
 
@@ -107,8 +107,8 @@ class AirlinePersisterLiveSpec
 
   "Find" should "retrive an Airline by its code" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      _ <- AirlinePersister.insert(ibeAirline)
+      _          <- CountryPersister.insert(spainCountry)
+      _          <- AirlinePersister.insert(ibeAirline)
       airlineOpt <- AirlinePersister.findByCode(ibeIataCode)
     } yield airlineOpt
 
@@ -151,9 +151,9 @@ class AirlinePersisterLiveSpec
 
   it should "retrieve a sequence of airlines that belong to a country" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      _ <- AirlinePersister.insert(ibeAirline)
-      _ <- AirlinePersister.insert(aeaAirline)
+      _        <- CountryPersister.insert(spainCountry)
+      _        <- AirlinePersister.insert(ibeAirline)
+      _        <- AirlinePersister.insert(aeaAirline)
       airlines <- AirlinePersister.findByCountry(spainCode)
     } yield airlines
 
@@ -198,9 +198,9 @@ class AirlinePersisterLiveSpec
     val updatedAirline = Airline(updatedIbeText, IataCode("ib"), IcaoCode("IBE"), ibeFoundationDate, spainCountry)
 
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      id <- AirlinePersister.insert(ibeAirline)
-      count <- AirlinePersister.update(updatedAirline)
+      _          <- CountryPersister.insert(spainCountry)
+      id         <- AirlinePersister.insert(ibeAirline)
+      count      <- AirlinePersister.update(updatedAirline)
       airlineOpt <- AirlinePersister.findByCode(ibeIataCode)
     } yield (airlineOpt, count)
 
@@ -220,7 +220,7 @@ class AirlinePersisterLiveSpec
 
     (airlineRepoMock.findByIataCode _)
       .expects(ibeIataCode)
-      .returns(Task.some(ibeDbo.copy(countryId = 1L)))
+      .returns(ZIO.some(ibeDbo.copy(countryId = 1L)))
 
     (airlineRepoMock.update _)
       .expects(*)
@@ -243,8 +243,8 @@ class AirlinePersisterLiveSpec
 
   "Delete" should "delete an Airline by its iata code" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      _ <- AirlinePersister.insert(ibeAirline)
+      _     <- CountryPersister.insert(spainCountry)
+      _     <- AirlinePersister.insert(ibeAirline)
       count <- AirlinePersister.delete(ibeIataCode)
     } yield count
 

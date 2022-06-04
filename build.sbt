@@ -58,6 +58,18 @@ lazy val `tapir-webapp` = project
   .enablePlugins(BuildInfoPlugin)
   .enablePlugins(GitVersioning)
 
+lazy val `aviation-web` = project
+  .in(file("aviation-web"))
+  .configs(IntegrationTest)
+  .settings(
+    Defaults.itSettings,
+    commonSettings,
+    libraryDependencies ++= webMain,
+    name := "aviation-web",
+    parallelExecution := false
+  )
+  .dependsOn(`aviation-api`)
+
 lazy val `aviation-core` = project
   .in(file("aviation-core"))
   .configs(IntegrationTest)

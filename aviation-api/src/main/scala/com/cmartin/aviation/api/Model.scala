@@ -6,7 +6,7 @@ import java.time.{LocalDate, LocalDateTime}
 
 object Model {
 
-  sealed trait ApiError extends ProgramError
+  sealed trait ApiError        extends ProgramError
   sealed trait ValidationError extends ApiError
 
   abstract class DescribedError extends ValidationError {
@@ -15,7 +15,7 @@ object Model {
 
   case class InvalidCountryCode(message: String) extends DescribedError
 
-  case class EmptyProperty(message: String) extends DescribedError
+  case class EmptyProperty(message: String)     extends DescribedError
   case class InvalidCodeLength(message: String) extends DescribedError
 
   case class InvalidNameCharacters(message: String) extends DescribedError

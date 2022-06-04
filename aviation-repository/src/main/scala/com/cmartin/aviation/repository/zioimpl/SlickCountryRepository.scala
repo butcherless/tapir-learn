@@ -16,7 +16,7 @@ case class SlickCountryRepository(db: JdbcBackend#DatabaseDef)
     with CountryRepository {
 
   import api._
-  import common.Implicits.Dbio2Zio
+  import common.Implicits._
 
   override val entities = Tables.countries
 
@@ -24,14 +24,14 @@ case class SlickCountryRepository(db: JdbcBackend#DatabaseDef)
     val query = entities.filter(_.code === code)
     query.result.headOption
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
   override def delete(code: String): Task[Int] = {
     val query = entities.filter(_.code === code)
     query.delete
       .toZio()
-      .provideService(db)
+      .provideDbLayer(db)
   }
 
 }

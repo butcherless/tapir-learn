@@ -23,7 +23,7 @@ class AirportPersisterLiveSpec
 
   // Simulator for database infrastructure exceptions
   val airportRepoMock = mock[AirportRepository]
-  val mockEnv =
+  val mockEnv         =
     ZLayer.make[CountryPersister with AirportPersister](
       Common.dbLayer,
       SlickCountryRepository.layer,
@@ -36,7 +36,7 @@ class AirportPersisterLiveSpec
 
   "Insert" should "insert an Airport into the database" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
+      _  <- CountryPersister.insert(spainCountry)
       id <- AirportPersister.insert(madAirport)
     } yield id
 
@@ -62,8 +62,8 @@ class AirportPersisterLiveSpec
 
   "Exists" should "return true for an existing Airport" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      _ <- AirportPersister.insert(madAirport)
+      _      <- CountryPersister.insert(spainCountry)
+      _      <- AirportPersister.insert(madAirport)
       exists <- AirportPersister.existsByCode(madIataCode)
     } yield exists
 
@@ -106,8 +106,8 @@ class AirportPersisterLiveSpec
 
   "Find" should "retrive an Airport by its code" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      _ <- AirportPersister.insert(madAirport)
+      _          <- CountryPersister.insert(spainCountry)
+      _          <- AirportPersister.insert(madAirport)
       airportOpt <- AirportPersister.findByCode(madIataCode)
     } yield airportOpt
 
@@ -152,9 +152,9 @@ class AirportPersisterLiveSpec
     val updatedAirport = Airport(updatedMadText, IataCode("MAD"), IcaoCode("lemd"), spainCountry)
 
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      id <- AirportPersister.insert(madAirport)
-      count <- AirportPersister.update(updatedAirport)
+      _          <- CountryPersister.insert(spainCountry)
+      id         <- AirportPersister.insert(madAirport)
+      count      <- AirportPersister.update(updatedAirport)
       airportOpt <- AirportPersister.findByCode(madIataCode)
     } yield (airportOpt, count)
 
@@ -174,7 +174,7 @@ class AirportPersisterLiveSpec
 
     (airportRepoMock.findByIataCode _)
       .expects(madIataCode)
-      .returns(Task.some(madDbo.copy(countryId = 1L)))
+      .returns(ZIO.some(madDbo.copy(countryId = 1L)))
 
     (airportRepoMock.update _)
       .expects(*)
@@ -197,8 +197,8 @@ class AirportPersisterLiveSpec
 
   "Delete" should "delete an Airport by its iata code" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      _ <- AirportPersister.insert(madAirport)
+      _     <- CountryPersister.insert(spainCountry)
+      _     <- AirportPersister.insert(madAirport)
       count <- AirportPersister.delete(madIataCode)
     } yield count
 
