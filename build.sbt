@@ -7,13 +7,13 @@ ThisBuild / scalaVersion := "2.13.8"
 ThisBuild / organization := "com.cmartin.learn"
 
 lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
-  "-deprecation", // Emit warning and location for usages of deprecated APIs.
+  "-deprecation",          // Emit warning and location for usages of deprecated APIs.
   "-encoding",
-  "utf-8", // Specify character encoding used by source files.
-  "-explaintypes", // Explain type errors in more detail.
-  "-explaintypes", // Explain type errors in more detail.
-  "-unchecked", // Enable additional warnings where generated code depends on assumptions.
-  "-feature", // Emit warning and location for usages of features that should be imported explicitly.
+  "utf-8",                 // Specify character encoding used by source files.
+  "-explaintypes",         // Explain type errors in more detail.
+  "-explaintypes",         // Explain type errors in more detail.
+  "-unchecked",            // Enable additional warnings where generated code depends on assumptions.
+  "-feature",              // Emit warning and location for usages of features that should be imported explicitly.
   "-language:higherKinds", // Allow higher-kinded types
   "-language:implicitConversions",
   "-language:postfixOps"
@@ -41,13 +41,13 @@ lazy val `tapir-webapp` = project
     Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= mainAndTest,
-    assemblyJarName := "tapir-webapp.jar",
-    name := "tapir-webapp",
+    assemblyJarName       := "tapir-webapp.jar",
+    name                  := "tapir-webapp",
     assemblyMergeStrategy := {
       // case PathList("io", "netty", "netty-all", xs @ _*) => MergeStrategy.first
       case "META-INF/io.netty.versions.properties" => MergeStrategy.first
       case "module-info.class"                     => MergeStrategy.first
-      case x =>
+      case x                                       =>
         val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
         oldStrategy(x)
     }
@@ -65,8 +65,9 @@ lazy val `aviation-web` = project
     Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= webMain,
-    name := "aviation-web",
-    parallelExecution := false
+    name                 := "aviation-web",
+    Compile / run / fork := true,
+    parallelExecution    := false
   )
   .dependsOn(`aviation-api`)
 
@@ -88,7 +89,7 @@ lazy val `aviation-repository` = project
     Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= repoMain ++ h2Test,
-    name := "aviation-repository",
+    name              := "aviation-repository",
     parallelExecution := false
   )
   .dependsOn(`aviation-core`)
@@ -100,7 +101,7 @@ lazy val `aviation-service` = project
     Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= serviceTest,
-    name := "aviation-service",
+    name              := "aviation-service",
     parallelExecution := false
   )
   .dependsOn(`aviation-core`, `aviation-repository`, `aviation-test-utils` % "test->compile")
@@ -115,7 +116,7 @@ lazy val `aviation-api` = project
     commonSettings,
     libraryDependencies ++= apiMain ++ apiTest,
     assemblyJarName := "aviation-webapp.jar",
-    name := "aviation-api"
+    name            := "aviation-api"
   )
   .dependsOn(`aviation-core`)
   .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
@@ -129,16 +130,16 @@ lazy val `aviation-test-utils` = project
   .settings(
 //    libraryDependencies ++= apiMain ++ apiTest,
     assemblyJarName := "aviation-test-utils.jar",
-    name := "aviation-test-utils"
+    name            := "aviation-test-utils"
   )
   .dependsOn(`aviation-core`, `aviation-repository`)
 
 // clear screen and banner
 lazy val cls = taskKey[Unit]("Prints a separator")
 cls := {
-  val brs = "\n".repeat(2)
+  val brs     = "\n".repeat(2)
   val message = "* B U I L D   B E G I N S   H E R E *"
-  val chars = "*".repeat(message.length())
+  val chars   = "*".repeat(message.length())
   println(s"$brs$chars")
   println("* B U I L D   B E G I N S   H E R E *")
   println(s"$chars$brs ")

@@ -11,7 +11,8 @@ import io.circe.parser.decode
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import zio.{IO, ZIO}
+import zio.IO
+import zio.ZIO
 
 import scala.concurrent.duration._
 
@@ -21,11 +22,15 @@ import CountryEndpoints.Implicits._
 import Model._
 import TestData._
 
-class CountryApiSpec extends AnyFlatSpec with Matchers with MockFactory with ScalatestRouteTest {
+class CountryApiSpec
+    extends AnyFlatSpec
+    with Matchers
+    with MockFactory
+    with ScalatestRouteTest {
 
-  implicit val timeout = RouteTestTimeout(5.seconds.dilated)
+  implicit val timeout               = RouteTestTimeout(5.seconds.dilated)
   val countryService: CountryService = mock[CountryService]
-  val countryApi: CountryApi = CountryApi(countryService)
+  val countryApi: CountryApi         = CountryApi(countryService)
 
   behavior of "CountryApi"
 

@@ -5,6 +5,8 @@ import sttp.model.HeaderNames
 import sttp.model.StatusCode
 import sttp.tapir.EndpointInput
 import sttp.tapir.PublicEndpoint
+import sttp.tapir.Schema
+import sttp.tapir.SchemaType
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.zio._
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
@@ -27,7 +29,15 @@ object WebApp {
     case class Unknown(code: Int, msg: String) extends ErrorInfo
     case object NoContent                      extends ErrorInfo
 
-    object CountryCode extends Subtype[String]
+    object CountryCode extends Subtype[String] {
+      implicit val encoder: JsonEncoder[CountryCode] =
+        JsonEncoder[String].contramap(CountryCode.unwrap)
+      implicit val decoder: JsonDecoder[CountryCode] =
+        JsonDecoder[String].map(CountryCode(_))
+      implicit val schema: Schema[CountryCode]       =
+        Schema(SchemaType.SString())
+
+    }
     type CountryCode = CountryCode.Type
 
     /* TODO add CountryCode Subtype
@@ -35,7 +45,7 @@ object WebApp {
          https://tapir.softwaremill.com/en/latest/endpoint/schemas.html?highlight=schema#manually-providing-schemas
      */
     case class CountryView(
-        code: String,
+        code: CountryCode,
         name: String
     )
     case class AirportView(
@@ -91,7 +101,7 @@ object WebApp {
 
     val countryGetEndpoint: PublicEndpoint[String, ErrorInfo, CountryView, Any] =
       endpoint.get
-        .name("country-get-by-code-endpoint")
+        .name("get-by-code-endpoint")
         .description("Retrieves a Country by its code")
         .in(countryPath)
         .in(codePath)
@@ -105,7 +115,7 @@ object WebApp {
 
     lazy val countryPostEndpoint: PublicEndpoint[CountryView, ErrorInfo, (String, CountryView), Any] =
       endpoint.post
-        .name("country-post-endpoint")
+        .name("post-endpoint")
         .description("Creates a Country")
         .in(countryPath)
         .in(jsonBody[CountryView].example(countryViewExample))
@@ -122,7 +132,7 @@ object WebApp {
 
     lazy val countryPutEndpoint: PublicEndpoint[CountryView, ErrorInfo, CountryView, Any] =
       endpoint.put
-        .name("country-put-endpoint")
+        .name("put-endpoint")
         .description("Updates a Country")
         .in(countryPath)
         .in(jsonBody[CountryView].example(countryViewExample))
@@ -139,7 +149,7 @@ object WebApp {
 
     lazy val countryDeleteEndpoint: PublicEndpoint[String, ErrorInfo, Unit, Any] =
       endpoint.delete
-        .name("country-delete-endpoint")
+        .name("delete-endpoint")
         .description("Deletes a Country by its code")
         .in(countryPath)
         .in(codePath)
@@ -161,7 +171,7 @@ object WebApp {
     def getCountryByCode(code: String): ZIO[Any, Nothing, CountryView] =
       for {
         // _       <- ZIO.logInfo(s"country code: $code)")
-        country <- ZIO.succeed(CountryView(code, "Dummy country name"))
+        country <- ZIO.succeed(CountryView(CountryCode(code), "Dummy country name"))
       } yield country
   }
 
@@ -169,9 +179,13 @@ object WebApp {
     import ApiModel._
     import Endpoints.commonMappings
 
+    lazy val airportsResource = "airports"
+    lazy val airportPath      = airportsResource
+    lazy val iataCodePath     = path[String]("iataCode")
+
     lazy val getByIataCodeEndpoint: PublicEndpoint[String, ErrorInfo, AirportView, Any] =
       endpoint.get
-        .name("airport-get-by-iata-code-endpoint")
+        .name("get-by-iata-code-endpoint")
         .description("Retrieves an Airport by its iata code")
         .in(airportPath)
         .in(iataCodePath)
@@ -185,7 +199,7 @@ object WebApp {
 
     lazy val postEndpoint: PublicEndpoint[AirportView, ErrorInfo, (String, AirportView), Any] =
       endpoint.post
-        .name("airport-post-endpoint")
+        .name("post-endpoint")
         .description("Creates an Airport")
         .in(airportPath)
         .in(jsonBody[AirportView].example(airportViewExample))
@@ -203,7 +217,7 @@ object WebApp {
 
     lazy val deleteEndpoint: PublicEndpoint[String, ErrorInfo, Unit, Any] =
       endpoint.delete
-        .name("airport-delete-endpoint")
+        .name("delete-endpoint")
         .description("Deletes an Airport by its iata code")
         .in(airportPath)
         .in(iataCodePath)
@@ -214,10 +228,6 @@ object WebApp {
             commonMappings: _*
           )
         )
-
-    lazy val airportsResource = "airports"
-    lazy val airportPath      = airportsResource
-    lazy val iataCodePath     = path[String]("iataCode")
 
     lazy val airportViewExample = AirportView("Madrid Barajas", "MAD", "LEMD", "es")
   }
