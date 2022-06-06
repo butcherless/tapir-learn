@@ -1,21 +1,14 @@
 package com.cmartin.aviation
 
 import sttp.apispec.openapi.Info
-import sttp.model.HeaderNames
-import sttp.model.StatusCode
-import sttp.tapir.EndpointInput
-import sttp.tapir.PublicEndpoint
-import sttp.tapir.Schema
-import sttp.tapir.SchemaType
+import sttp.model.{HeaderNames, StatusCode}
+import sttp.tapir.{EndpointInput, PublicEndpoint, Schema, SchemaType}
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.zio._
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import sttp.tapir.ztapir._
 import zio._
-import zio.json.DeriveJsonDecoder
-import zio.json.DeriveJsonEncoder
-import zio.json.JsonDecoder
-import zio.json.JsonEncoder
+import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 import zio.prelude.Subtype
 
 object WebApp {

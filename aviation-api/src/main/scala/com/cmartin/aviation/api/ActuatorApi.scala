@@ -2,9 +2,7 @@ package com.cmartin.aviation.api
 
 import akka.http.scaladsl.server.Route
 import com.cmartin.aviation.Commons
-import com.cmartin.aviation.api.BaseEndpoint.RouteResponse
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
-import zio.Task
 import zio.ZIO
 
 import scala.concurrent.ExecutionContext.Implicits.global

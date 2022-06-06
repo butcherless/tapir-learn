@@ -1,10 +1,9 @@
 package com.cmartin.aviation
 
+import com.cmartin.aviation.WebApp.ApiModel._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import zio.json._
-
-import WebApp.ApiModel._
 
 class ZioJsonSpec
     extends AnyFlatSpec

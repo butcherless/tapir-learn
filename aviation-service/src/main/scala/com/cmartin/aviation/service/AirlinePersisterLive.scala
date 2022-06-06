@@ -2,10 +2,10 @@ package com.cmartin.aviation.service
 
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.AirlinePersister
-import com.cmartin.aviation.repository.{AirlineRepository, CountryRepository}
 import com.cmartin.aviation.repository.Model._
 import com.cmartin.aviation.repository.zioimpl.Mappers._
 import com.cmartin.aviation.repository.zioimpl.common._
+import com.cmartin.aviation.repository.{AirlineRepository, CountryRepository}
 import zio._
 
 final case class AirlinePersisterLive(

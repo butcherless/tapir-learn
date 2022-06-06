@@ -2,8 +2,7 @@ package com.cmartin.aviation.api.validator
 
 import com.cmartin.aviation.api.Model._
 import com.cmartin.aviation.domain.Model._
-import zio.IO
-import zio.ZIO
+import zio.{IO, ZIO}
 import zio.prelude.Validation
 
 object CountryValidator {

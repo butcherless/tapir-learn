@@ -6,10 +6,8 @@ import com.cmartin.aviation.api.Model.CountryView
 import com.cmartin.aviation.domain
 import com.cmartin.aviation.domain.Model.CountryCode
 import com.cmartin.aviation.port.CountryPersister
-import sttp.tapir._
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import zio._
-import zio.logging._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

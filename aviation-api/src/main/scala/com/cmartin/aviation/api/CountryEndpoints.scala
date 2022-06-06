@@ -2,8 +2,7 @@ package com.cmartin.aviation.api
 
 import akka.http.scaladsl.model.headers.`Content-Location`
 import com.cmartin.aviation.domain.Model.CountryCode
-import io.circe.Decoder
-import io.circe.Encoder
+import io.circe.{Decoder, Encoder}
 import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir._
@@ -85,9 +84,9 @@ trait CountryEndpoints {
         )
       )
 
-  lazy val countriesResource = "countries"
+  lazy val countriesResource                = "countries"
   lazy val countryPath: EndpointInput[Unit] = countriesResource
-  lazy val codePath = path[String]("code")
+  lazy val codePath                         = path[String]("code")
 }
 
 object CountryEndpoints extends CountryEndpoints {
@@ -98,7 +97,7 @@ object CountryEndpoints extends CountryEndpoints {
       Encoder.encodeString.contramap[CountryCode](CountryCode.unwrap)
     implicit val decodeCountryCode: Decoder[CountryCode] =
       Decoder.decodeString.map(CountryCode(_))
-    implicit val countryCodeSchema: Schema[CountryCode] =
+    implicit val countryCodeSchema: Schema[CountryCode]  =
       Schema(SchemaType.SString())
   }
 }

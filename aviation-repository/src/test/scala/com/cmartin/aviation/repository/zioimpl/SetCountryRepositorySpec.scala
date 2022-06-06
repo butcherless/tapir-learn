@@ -1,6 +1,5 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.Common
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.TestData._
@@ -8,8 +7,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import zio.Runtime.{default => runtime}
-import zio.{TaskLayer, ZIO, ZLayer}
 import zio.stm.{STM, TRef, TSet}
+import zio.{TaskLayer, ZIO, ZLayer}
 
 class SetCountryRepositorySpec
     extends AnyFlatSpec

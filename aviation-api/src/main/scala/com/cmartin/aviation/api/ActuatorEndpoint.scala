@@ -4,14 +4,11 @@ import com.cmartin.aviation.api.BaseEndpoint.baseEndpoint
 import com.cmartin.aviation.api.Model.BuildInfoView
 import io.circe.generic.auto._
 import sttp.model.StatusCode
-import sttp.tapir.PublicEndpoint
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe.jsonBody
-import sttp.tapir.statusCode
+import sttp.tapir.{PublicEndpoint, statusCode}
 
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.{Instant, LocalDateTime, ZoneId}
 
 trait ActuatorEndpoint {
   import ActuatorEndpoint._

@@ -7,7 +7,7 @@ import com.cmartin.aviation.repository.zioimpl.{SlickAirlineRepository, SlickCou
 import com.cmartin.aviation.test.Common
 import com.cmartin.aviation.test.TestData._
 import zio.Runtime.{default => runtime}
-import zio.{Task, ZIO, ZLayer}
+import zio.{ZIO, ZLayer}
 
 class AirlinePersisterLiveSpec
     extends SlickBasePersisterSpec {

@@ -4,15 +4,12 @@ import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.zioimpl.SetCountryRepository
-import com.cmartin.aviation.test.Common
 import com.cmartin.aviation.test.TestData._
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import zio.Runtime.{default => runtime}
-import zio.{TaskLayer, ZIO, ZLayer}
 import zio.stm.{STM, TRef, TSet}
+import zio.{TaskLayer, ZIO, ZLayer}
 
 class CountryPersisterLiveWithSetRepoSpec
     extends AnyFlatSpec

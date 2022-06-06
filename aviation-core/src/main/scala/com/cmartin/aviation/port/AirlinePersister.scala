@@ -1,8 +1,7 @@
 package com.cmartin.aviation.port
 
 import com.cmartin.aviation.domain.Model._
-import zio.IO
-import zio.ZIO
+import zio.{IO, ZIO}
 
 trait AirlinePersister {
   def insert(airline: Airline): IO[ServiceError, Long]
