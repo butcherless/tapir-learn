@@ -33,7 +33,7 @@ object WebApp {
       implicit val encoder: JsonEncoder[CountryCode] =
         JsonEncoder[String].contramap(CountryCode.unwrap)
       implicit val decoder: JsonDecoder[CountryCode] =
-        JsonDecoder[String].map(CountryCode(_))
+        JsonDecoder[String].map(code => CountryCode(code))
       implicit val schema: Schema[CountryCode]       =
         Schema(SchemaType.SString())
 
@@ -99,7 +99,7 @@ object WebApp {
     lazy val countryPath: EndpointInput[Unit] = countriesResource
     lazy val codePath                         = path[String]("code")
 
-    val countryGetEndpoint: PublicEndpoint[String, ErrorInfo, CountryView, Any] =
+    val getEndpoint: PublicEndpoint[String, ErrorInfo, CountryView, Any] =
       endpoint.get
         .name("get-by-code-endpoint")
         .description("Retrieves a Country by its code")
@@ -113,7 +113,20 @@ object WebApp {
           )
         )
 
-    lazy val countryPostEndpoint: PublicEndpoint[CountryView, ErrorInfo, (String, CountryView), Any] =
+    val getAllEndpoint: PublicEndpoint[Unit, ErrorInfo, Seq[CountryView], Any] =
+      endpoint.get
+        .name("get-all-endpoint")
+        .description("Retrieves a finite Country sequence")
+        .in(countryPath)
+        .out(jsonBody[Seq[CountryView]].example(countryViewSeqExample))
+        .errorOut(
+          oneOf[ErrorInfo](
+            oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound].description("not found"))),
+            commonMappings: _*
+          )
+        )
+
+    lazy val postEndpoint: PublicEndpoint[CountryView, ErrorInfo, (String, CountryView), Any] =
       endpoint.post
         .name("post-endpoint")
         .description("Creates a Country")
@@ -130,7 +143,7 @@ object WebApp {
           )
         )
 
-    lazy val countryPutEndpoint: PublicEndpoint[CountryView, ErrorInfo, CountryView, Any] =
+    lazy val putEndpoint: PublicEndpoint[CountryView, ErrorInfo, CountryView, Any] =
       endpoint.put
         .name("put-endpoint")
         .description("Updates a Country")
@@ -147,7 +160,7 @@ object WebApp {
           )
         )
 
-    lazy val countryDeleteEndpoint: PublicEndpoint[String, ErrorInfo, Unit, Any] =
+    lazy val deleteEndpoint: PublicEndpoint[String, ErrorInfo, Unit, Any] =
       endpoint.delete
         .name("delete-endpoint")
         .description("Deletes a Country by its code")
@@ -161,11 +174,13 @@ object WebApp {
           )
         )
 
-    lazy val serverEndpoints = List(
-      countryGetEndpoint.zServerLogic(getCountryByCode)
+    lazy val serverEndpoints1 = List(
+      getEndpoint.zServerLogic(getCountryByCode)
     )
 
-    lazy val countryViewExample = CountryView(CountryCode("es"), "Spain")
+    lazy val countryViewExample    = CountryView(CountryCode("es"), "Spain")
+    lazy val ptCountryViewExample  = CountryView(CountryCode("pt"), "Portugal")
+    lazy val countryViewSeqExample = Seq(countryViewExample, ptCountryViewExample)
 
     // service layer
     def getCountryByCode(code: String): ZIO[Any, Nothing, CountryView] =
@@ -174,6 +189,8 @@ object WebApp {
         country <- ZIO.succeed(CountryView(CountryCode(code), "Dummy country name"))
       } yield country
   }
+
+  object Country
 
   object AirportEndpoints {
     import ApiModel._
@@ -215,6 +232,23 @@ object WebApp {
           )
         )
 
+    lazy val countryPutEndpoint: PublicEndpoint[AirportView, ErrorInfo, AirportView, Any] =
+      endpoint.put
+        .name("put-endpoint")
+        .description("Updates an Airport")
+        .in(airportPath)
+        .in(jsonBody[AirportView].example(airportViewExample))
+        .out(
+          statusCode(StatusCode.Ok)
+            .and(jsonBody[AirportView].example(airportViewExample))
+        )
+        .errorOut(
+          oneOf[ErrorInfo](
+            oneOfVariant(statusCode(StatusCode.NoContent).and(emptyOutputAs(NoContent))),
+            commonMappings: _*
+          )
+        )
+
     lazy val deleteEndpoint: PublicEndpoint[String, ErrorInfo, Unit, Any] =
       endpoint.delete
         .name("delete-endpoint")
@@ -234,15 +268,16 @@ object WebApp {
 
   object SwaggerDocs {
 
-    val info: Info = Info("Aviation API", "1.0")
+    val info: Info = Info("Martin Air API", "1.0")
 
     val swaggerEndpoints: List[ZServerEndpoint[Any, Any]] =
       SwaggerInterpreter().fromEndpoints[Task](
         List(
-          CountryEndpoints.countryGetEndpoint,
-          CountryEndpoints.countryPostEndpoint,
-          CountryEndpoints.countryPutEndpoint,
-          CountryEndpoints.countryDeleteEndpoint,
+          CountryEndpoints.getEndpoint,
+          CountryEndpoints.getAllEndpoint,
+          CountryEndpoints.postEndpoint,
+          CountryEndpoints.putEndpoint,
+          CountryEndpoints.deleteEndpoint,
           AirportEndpoints.getByIataCodeEndpoint,
           AirportEndpoints.postEndpoint,
           AirportEndpoints.deleteEndpoint

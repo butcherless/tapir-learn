@@ -33,7 +33,7 @@ trait TransferEndpoint extends ApiCodecs {
         oneOf[ErrorInfo](breMapping, nfeMapping, iseMapping, sueMapping, deMapping)
       )
 
-  lazy val getFilteredTransferEndpoint =
+  lazy val getFilteredTransferEndpoint: PublicEndpoint[Option[String], ErrorInfo, List[TransferDto], Any] =
     endpoint.get
       .name("get-filtered-transfer-endpoint")
       .description("Retrieve Transfer List Endpoint")
@@ -115,7 +115,7 @@ trait TransferEndpoint extends ApiCodecs {
   val nfeMapping = oneOfVariantFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
   val iseMapping = oneOfVariantFromMatchType(StatusCode.InternalServerError, jsonBody[ServerError])
   val sueMapping = oneOfVariantFromMatchType(StatusCode.ServiceUnavailable, jsonBody[ServiceUnavailableError])
-  val deMapping = oneOfDefaultVariant(jsonBody[UnknownError])
+  val deMapping  = oneOfDefaultVariant(jsonBody[UnknownError])
 
 }
 
