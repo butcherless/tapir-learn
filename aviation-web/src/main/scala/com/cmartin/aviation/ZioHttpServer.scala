@@ -20,10 +20,13 @@ object ZioHttpServer
 
     case Method.GET -> !! / "error" => Response.fromHttpError(HttpError.BadRequest())
   }
-  val routes   =
+
+  val routes =
     ZioHttpInterpreter().toHttp(
       swaggerEndpoints ++ WebApp.CountryEndpoints.serverEndpoints
     ) ++ docsHttp @@ Middleware.debug // @@ routeAspects
+
+  // val managedErrorRoutes = ??? // mapError or catchAll
 
   override def run =
     (

@@ -10,6 +10,7 @@ import sttp.tapir.ztapir._
 import zio._
 import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 import zio.prelude.Subtype
+import com.cmartin.aviation.domain.Model
 
 object WebApp {
 
@@ -80,7 +81,7 @@ object WebApp {
 
     val commonMappings = List(
       oneOfVariant(statusCode(StatusCode.Unauthorized).and(jsonBody[Unauthorized].description("unauthorized"))),
-      oneOfDefaultVariant(jsonBody[Unknown].description("unknown"))
+      oneOfDefaultVariant(jsonBody[Unknown].description("service error"))
     )
   }
 
@@ -90,7 +91,7 @@ object WebApp {
 
     lazy val countriesResource                = "countries"
     lazy val countryPath: EndpointInput[Unit] = countriesResource
-    lazy val codePath                         = path[String]("code")
+    lazy val codePath                         = path[String]("code").description("Country code")
 
     val getEndpoint: PublicEndpoint[String, ErrorInfo, CountryView, Any] =
       endpoint.get
@@ -101,7 +102,7 @@ object WebApp {
         .out(jsonBody[CountryView].example(countryViewExample))
         .errorOut(
           oneOf[ErrorInfo](
-            oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound].description("not found"))),
+            oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound].description("resource not found"))),
             commonMappings: _*
           )
         )
@@ -167,7 +168,7 @@ object WebApp {
           )
         )
 
-    lazy val serverEndpoints1 = List(
+    lazy val serverEndpoints = List(
       getEndpoint.zServerLogic(getCountryByCode)
     )
 
@@ -175,15 +176,34 @@ object WebApp {
     lazy val ptCountryViewExample  = CountryView(CountryCode("pt"), "Portugal")
     lazy val countryViewSeqExample = Seq(countryViewExample, ptCountryViewExample)
 
-    // service layer
-    def getCountryByCode(code: String): ZIO[Any, Nothing, CountryView] =
-      for {
-        // _       <- ZIO.logInfo(s"country code: $code)")
-        country <- ZIO.succeed(CountryView(CountryCode(code), "Dummy country name"))
-      } yield country
+    // helper function
+    private def getCountryByCode(code: String): IO[ErrorInfo, CountryView] =
+      (for {
+        _           <- ZIO.logInfo(s"country code: $code)")
+        country     <- CountryService.searchByCode(code)
+        countryView <- ZIO.succeed(CountryView(CountryCode(country.code), country.name))
+      } yield countryView)
+        .mapError(manageError)
+
+    // ServiceError => ApiError
+    private def manageError(serviceError: CountryService.ServiceError): ErrorInfo =
+      serviceError match {
+        case CountryService.CountryNotFound(code) => NotFound(code)
+        case _                                    => Unknown(500, "Service Error")
+      }
   }
 
-  object Country
+  object CountryService {
+    import Model.{Country, CountryCode}
+    trait ServiceError
+    case class CountryNotFound(code: String) extends ServiceError
+
+    def searchByCode(code: String): IO[ServiceError, Model.Country] =
+      ZIO.ifZIO(ZIO.succeed(code == "es"))(
+        ZIO.succeed(Country(CountryCode(code), "Spain")),
+        ZIO.fail(CountryService.CountryNotFound(code))
+      )
+  }
 
   object AirportEndpoints {
     import ApiModel._
