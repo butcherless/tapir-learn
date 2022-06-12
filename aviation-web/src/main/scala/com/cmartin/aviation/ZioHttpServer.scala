@@ -8,7 +8,7 @@ import zio._
 
 import java.io.IOException
 
-import WebApp.SwaggerDocs.swaggerEndpoints
+import ApiLayer.SwaggerDocs.swaggerEndpoints
 
 object ZioHttpServer
     extends ZIOAppDefault {
@@ -23,7 +23,7 @@ object ZioHttpServer
 
   val routes =
     ZioHttpInterpreter().toHttp(
-      swaggerEndpoints ++ WebApp.CountryEndpoints.serverEndpoints
+      swaggerEndpoints ++ ApiLayer.CountryEndpoints.serverEndpoints
     ) ++ docsHttp @@ Middleware.debug // @@ routeAspects
 
   // val managedErrorRoutes = ??? // mapError or catchAll

@@ -11,17 +11,19 @@ import zio._
 import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 import zio.prelude.Subtype
 import com.cmartin.aviation.domain.Model
+import ServiceLayer.CountryService
 
-object WebApp {
+object ApiLayer {
 
   object ApiModel {
 
     /* ERROR MODEL */
     sealed trait ErrorInfo
-    case class NotFound(what: String)          extends ErrorInfo
-    case class Unauthorized(realm: String)     extends ErrorInfo
-    case class Unknown(code: Int, msg: String) extends ErrorInfo
-    case object NoContent                      extends ErrorInfo
+    case class NotFound(text: String)     extends ErrorInfo
+    case class Conflict(text: String)     extends ErrorInfo
+    case class Unauthorized(text: String) extends ErrorInfo
+    case class Unknown(text: String)      extends ErrorInfo
+    case object NoContent                 extends ErrorInfo
 
     object CountryCode extends Subtype[String] {
       implicit val encoder: JsonEncoder[CountryCode] =
@@ -59,10 +61,16 @@ object WebApp {
       implicit val encoder: JsonEncoder[AirportView] = DeriveJsonEncoder.gen[AirportView]
     }
 
-    object NotFound     {
+    object NotFound {
       implicit val decoder: JsonDecoder[NotFound] = DeriveJsonDecoder.gen[NotFound]
       implicit val encoder: JsonEncoder[NotFound] = DeriveJsonEncoder.gen[NotFound]
     }
+
+    object Conflict {
+      implicit val decoder: JsonDecoder[Conflict] = DeriveJsonDecoder.gen[Conflict]
+      implicit val encoder: JsonEncoder[Conflict] = DeriveJsonEncoder.gen[Conflict]
+    }
+
     object Unauthorized {
       implicit val decoder: JsonDecoder[Unauthorized] = DeriveJsonDecoder.gen[Unauthorized]
       implicit val encoder: JsonEncoder[Unauthorized] = DeriveJsonEncoder.gen[Unauthorized]
@@ -88,6 +96,7 @@ object WebApp {
   object CountryEndpoints {
     import ApiModel._
     import Endpoints.commonMappings
+    import ServiceLayer.Domain.{CountryNotFound, DuplicateEntityError, ServiceError}
 
     lazy val countriesResource                = "countries"
     lazy val countryPath: EndpointInput[Unit] = countriesResource
@@ -120,7 +129,7 @@ object WebApp {
           )
         )
 
-    lazy val postEndpoint: PublicEndpoint[CountryView, ErrorInfo, (String, CountryView), Any] =
+    lazy val postEndpoint: PublicEndpoint[CountryView, ErrorInfo, String, Any] =
       endpoint.post
         .name("post-endpoint")
         .description("Creates a Country")
@@ -129,11 +138,13 @@ object WebApp {
         .out(
           statusCode(StatusCode.Created)
             .and(header[String](HeaderNames.ContentLocation))
-            .and(jsonBody[CountryView])
+          // .and(jsonBody[CountryView])
         ).errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NoContent).and(emptyOutputAs(NoContent))),
-            commonMappings: _*
+            (oneOfVariant(
+              statusCode(StatusCode.Conflict).and(jsonBody[Conflict].description("duplicated"))
+            ) +: commonMappings): _*
           )
         )
 
@@ -169,40 +180,38 @@ object WebApp {
         )
 
     lazy val serverEndpoints = List(
-      getEndpoint.zServerLogic(getCountryByCode)
+      getEndpoint.zServerLogic(getByCodeLogic),
+      postEndpoint.zServerLogic(postLogic)
     )
 
     lazy val countryViewExample    = CountryView(CountryCode("es"), "Spain")
     lazy val ptCountryViewExample  = CountryView(CountryCode("pt"), "Portugal")
     lazy val countryViewSeqExample = Seq(countryViewExample, ptCountryViewExample)
 
-    // helper function
-    private def getCountryByCode(code: String): IO[ErrorInfo, CountryView] =
+    // helper functions
+    private def getByCodeLogic(code: String): IO[ErrorInfo, CountryView] =
       (for {
-        _           <- ZIO.logInfo(s"country code: $code)")
+        _           <- ZIO.logInfo(s"getCountryByCode: $code)")
         country     <- CountryService.searchByCode(code)
         countryView <- ZIO.succeed(CountryView(CountryCode(country.code), country.name))
       } yield countryView)
-        .mapError(manageError)
+        .mapError(manageError) // TODO implicit conversion
+
+    private def postLogic(view: CountryView): IO[ErrorInfo, String] =
+      (for {
+        _      <- ZIO.logInfo(s"create: $view)")
+        country = Model.Country(Model.CountryCode(view.code), view.name)
+        _      <- CountryService.create(country)
+      } yield s"/todo/url/${country.code}")
+        .mapError(manageError) // TODO implicit conversion
 
     // ServiceError => ApiError
-    private def manageError(serviceError: CountryService.ServiceError): ErrorInfo =
+    private def manageError(serviceError: ServiceError): ErrorInfo =
       serviceError match {
-        case CountryService.CountryNotFound(code) => NotFound(code)
-        case _                                    => Unknown(500, "Service Error")
+        case CountryNotFound(code)        => NotFound(code)
+        case DuplicateEntityError(entity) => Conflict(entity)
+        case _                            => Unknown("Service Error")
       }
-  }
-
-  object CountryService {
-    import Model.{Country, CountryCode}
-    trait ServiceError
-    case class CountryNotFound(code: String) extends ServiceError
-
-    def searchByCode(code: String): IO[ServiceError, Model.Country] =
-      ZIO.ifZIO(ZIO.succeed(code == "es"))(
-        ZIO.succeed(Country(CountryCode(code), "Spain")),
-        ZIO.fail(CountryService.CountryNotFound(code))
-      )
   }
 
   object AirportEndpoints {

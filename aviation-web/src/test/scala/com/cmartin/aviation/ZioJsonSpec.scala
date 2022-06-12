@@ -1,6 +1,6 @@
 package com.cmartin.aviation
 
-import com.cmartin.aviation.WebApp.ApiModel._
+import com.cmartin.aviation.ApiLayer.ApiModel._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import zio.json._
