@@ -1,17 +1,17 @@
 package com.cmartin.aviation
 
+import com.cmartin.aviation.ServiceLayer.CountryService
+import com.cmartin.aviation.domain.Model
 import sttp.apispec.openapi.Info
 import sttp.model.{HeaderNames, StatusCode}
-import sttp.tapir.{EndpointInput, PublicEndpoint, Schema, SchemaType}
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.zio._
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import sttp.tapir.ztapir._
+import sttp.tapir.{EndpointInput, PublicEndpoint, Schema, SchemaType}
 import zio._
 import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 import zio.prelude.Subtype
-import com.cmartin.aviation.domain.Model
-import ServiceLayer.CountryService
 
 object ApiLayer {
 

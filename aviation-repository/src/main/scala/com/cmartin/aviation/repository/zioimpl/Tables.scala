@@ -2,14 +2,13 @@ package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model._
 import slick.jdbc.JdbcProfile
-import slick.lifted.Index
-import slick.lifted.ProvenShape
+import slick.lifted.{Index, ProvenShape}
 
 import java.time.LocalDate
 
 object Tables extends JdbcProfile {
-  import api._
   import CommonAbstractions.Table.LongBasedTable
+  import api._
 
   object TableNames {
     val airlines = "AIRLINES"

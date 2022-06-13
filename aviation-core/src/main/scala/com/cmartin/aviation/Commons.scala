@@ -1,13 +1,10 @@
 package com.cmartin.aviation
 
-import zio.Runtime
-import zio.ZEnv
-import zio._
-import zio.logging._
-import zio.stm.{STM, TMap, TRef, USTM, ZSTM}
+import zio.stm.{STM, TMap, USTM}
+import zio.{Runtime, _}
 //import zio.logging.slf4j.Slf4jLogger
 
-import domain.Model._
+import com.cmartin.aviation.domain.Model._
 
 object Commons {
 

@@ -5,11 +5,8 @@ import com.cmartin.aviation.repository.RouteRepository
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.AbstractLongRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Routes
 import com.cmartin.aviation.repository.zioimpl.common.SlickToZioSyntax.fromDBIO
-import slick.jdbc.JdbcBackend
-import slick.jdbc.JdbcProfile
-import zio.IO
-import zio.RLayer
-import zio.ZLayer
+import slick.jdbc.{JdbcBackend, JdbcProfile}
+import zio.{IO, RLayer, ZLayer}
 
 case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
     extends AbstractLongRepository[RouteDbo, Routes](db)

@@ -2,8 +2,7 @@ package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.RouteDbo
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.BaseRepository
-import zio.IO
-import zio.ZIO
+import zio.{IO, ZIO}
 
 trait RouteRepository
     extends BaseRepository[RouteDbo] {

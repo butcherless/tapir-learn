@@ -1,6 +1,6 @@
 package com.cmartin.aviation.repository
 
-import Model._
+import com.cmartin.aviation.repository.Model._
 
 object AbstractRepositories {
 

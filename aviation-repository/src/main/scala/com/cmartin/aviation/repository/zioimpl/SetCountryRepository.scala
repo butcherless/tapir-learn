@@ -2,10 +2,9 @@ package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model.CountryDbo
-import zio.{RLayer, Task, ZLayer}
+import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.BaseRepository
 import zio.stm.{STM, TRef, TSet}
-
-import CommonAbstractions.Repository.BaseRepository
+import zio.{Task, ZLayer}
 
 final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
     extends BaseRepository[CountryDbo]

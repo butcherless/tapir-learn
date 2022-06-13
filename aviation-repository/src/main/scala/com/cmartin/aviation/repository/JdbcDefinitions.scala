@@ -1,8 +1,7 @@
 package com.cmartin.aviation.repository
 
+import com.cmartin.aviation.repository.AbstractRepositories.AbstractRepository
 import slick.jdbc.JdbcProfile
-
-import AbstractRepositories.AbstractRepository
 
 object JdbcDefinitions {
 

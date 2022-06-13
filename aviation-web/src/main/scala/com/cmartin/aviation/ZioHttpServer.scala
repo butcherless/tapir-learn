@@ -1,14 +1,10 @@
 package com.cmartin.aviation
 
+import com.cmartin.aviation.ApiLayer.SwaggerDocs.swaggerEndpoints
 import sttp.tapir.server.ziohttp.ZioHttpInterpreter
 import zhttp.http._
-import zhttp.http.middleware.HttpMiddleware
 import zhttp.service.Server
 import zio._
-
-import java.io.IOException
-
-import ApiLayer.SwaggerDocs.swaggerEndpoints
 
 object ZioHttpServer
     extends ZIOAppDefault {

@@ -1,11 +1,8 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model.LongDbo
-import slick.jdbc.JdbcBackend
-import slick.jdbc.JdbcProfile
+import slick.jdbc.{JdbcBackend, JdbcProfile}
 import zio.Task
-import zio.ZLayer
-import zio.ZIO
 
 //TODO refactor: move to common module/project
 object CommonAbstractions extends JdbcProfile {
@@ -35,7 +32,6 @@ object CommonAbstractions extends JdbcProfile {
     abstract class AbstractLongRepository[E <: LongDbo, T <: LongBasedTable[E]](
         db: JdbcBackend#DatabaseDef
     ) extends BaseRepository[E] {
-      import zio.RIO
 
       val entities: TableQuery[T]
 

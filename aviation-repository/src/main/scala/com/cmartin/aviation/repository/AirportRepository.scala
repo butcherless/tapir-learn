@@ -2,9 +2,7 @@ package com.cmartin.aviation.repository
 
 import com.cmartin.aviation.repository.Model.AirportDbo
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.BaseRepository
-import zio.RIO
-import zio.Task
-import zio.ZIO
+import zio.{RIO, Task, ZIO}
 
 trait AirportRepository
     extends BaseRepository[AirportDbo] {
