@@ -5,6 +5,9 @@ import zio.{IO, ZIO}
 
 object ServiceLayer {
 
+  val esCountry = Country(CountryCode("es"), "Spain")
+  val ptCountry = Country(CountryCode("pt"), "Portugal")
+
   object Domain {
     trait ServiceError
     case class CountryNotFound(code: String)      extends ServiceError
@@ -17,9 +20,12 @@ object ServiceLayer {
 
     def searchByCode(code: String): IO[ServiceError, Country] =
       ZIO.ifZIO(ZIO.succeed(code == "es"))(
-        ZIO.succeed(Country(CountryCode(code), "Spain")),
+        ZIO.succeed(esCountry),
         ZIO.fail(CountryNotFound(code))
       )
+
+    def searchAll(): IO[ServiceError, Seq[Country]] =
+      ZIO.succeed(Seq(esCountry, ptCountry))
 
     def create(country: Country): IO[ServiceError, Unit] =
       country.code match {

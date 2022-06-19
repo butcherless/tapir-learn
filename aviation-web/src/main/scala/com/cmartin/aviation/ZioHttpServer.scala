@@ -1,6 +1,6 @@
 package com.cmartin.aviation
 
-import com.cmartin.aviation.ApiLayer.SwaggerDocs.swaggerEndpoints
+import com.cmartin.aviation.ApiLayer.{CountryEndpoints, SwaggerDocs}
 import sttp.tapir.server.ziohttp.ZioHttpInterpreter
 import zhttp.http._
 import zhttp.service.Server
@@ -11,16 +11,11 @@ object ZioHttpServer
 
   val routeAspects = Middleware.debug ++ Middleware.timeout(5.seconds) // ++ loggingAspect
 
-  val docsHttp = Http.collect[Request] {
-    case Method.GET -> !! / "swagger" => Response.redirect("/docs/index.html")
-
-    case Method.GET -> !! / "error" => Response.fromHttpError(HttpError.BadRequest())
-  }
-
   val routes =
     ZioHttpInterpreter().toHttp(
-      swaggerEndpoints ++ ApiLayer.CountryEndpoints.serverEndpoints
-    ) ++ docsHttp @@ Middleware.debug // @@ routeAspects
+      SwaggerDocs.swaggerEndpoints ++
+        CountryEndpoints.serverEndpoints
+    ) @@ Middleware.debug // @@ routeAspects
 
   // val managedErrorRoutes = ??? // mapError or catchAll
 
@@ -29,5 +24,8 @@ object ZioHttpServer
       Server
         .start(8080, routes)
         .exitCode
-    ).provide(zio.Console.live, zio.Clock.live)
+    ).provide(
+      zio.Console.live,
+      zio.Clock.live
+    )
 }

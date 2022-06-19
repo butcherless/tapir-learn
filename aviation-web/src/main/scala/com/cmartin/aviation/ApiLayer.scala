@@ -19,10 +19,10 @@ object ApiLayer {
 
     /* ERROR MODEL */
     sealed trait ErrorInfo
-    case class NotFound(text: String)     extends ErrorInfo
-    case class Conflict(text: String)     extends ErrorInfo
-    case class Unauthorized(text: String) extends ErrorInfo
-    case class Unknown(text: String)      extends ErrorInfo
+    case class NotFound(info: String)     extends ErrorInfo
+    case class Conflict(info: String)     extends ErrorInfo
+    case class Unauthorized(info: String) extends ErrorInfo
+    case class Unknown(info: String)      extends ErrorInfo
     case object NoContent                 extends ErrorInfo
 
     object CountryCode extends Subtype[String] {
@@ -81,21 +81,44 @@ object ApiLayer {
       implicit val encoder: JsonEncoder[Unknown] = DeriveJsonEncoder.gen[Unknown]
     }
 
+    implicit class ModelToView(model: Model.Country) {
+      def toView(): CountryView =
+        CountryView(CountryCode(model.code), model.name)
+    }
+
+    implicit class ModelSeqToView(models: Seq[Model.Country]) {
+      def toView(): Seq[CountryView] =
+        models.map(_.toView())
+
+    }
   }
 
   /**/
   object Endpoints {
-    import ApiModel.{Unauthorized, Unknown}
+    import ApiModel.{Conflict, ErrorInfo, NotFound, Unauthorized, Unknown}
+    import ServiceLayer.Domain.{CountryNotFound, DuplicateEntityError, ServiceError}
 
     val commonMappings = List(
       oneOfVariant(statusCode(StatusCode.Unauthorized).and(jsonBody[Unauthorized].description("unauthorized"))),
       oneOfDefaultVariant(jsonBody[Unknown].description("service error"))
     )
+
+    // ServiceError => ApiError
+    def manageError(serviceError: ServiceError): ErrorInfo =
+      serviceError match {
+        case CountryNotFound(code)        => NotFound(code)
+        case DuplicateEntityError(entity) => Conflict(entity)
+        case _                            => Unknown("Service Error")
+      }
+
+    implicit def handleError[A](program: IO[ServiceError, A]): IO[ErrorInfo, A] =
+      program.mapError(manageError)
+
   }
 
   object CountryEndpoints {
     import ApiModel._
-    import Endpoints.commonMappings
+    import Endpoints.{commonMappings, handleError}
     import ServiceLayer.Domain.{CountryNotFound, DuplicateEntityError, ServiceError}
 
     lazy val countriesResource                = "countries"
@@ -181,6 +204,7 @@ object ApiLayer {
 
     lazy val serverEndpoints = List(
       getEndpoint.zServerLogic(getByCodeLogic),
+      getAllEndpoint.zServerLogic(getAllLogic),
       postEndpoint.zServerLogic(postLogic)
     )
 
@@ -190,28 +214,26 @@ object ApiLayer {
 
     // helper functions
     private def getByCodeLogic(code: String): IO[ErrorInfo, CountryView] =
-      (for {
-        _           <- ZIO.logInfo(s"getCountryByCode: $code)")
+      for {
+        _           <- ZIO.logInfo(s"getByCodeLogic: $code)")
         country     <- CountryService.searchByCode(code)
-        countryView <- ZIO.succeed(CountryView(CountryCode(country.code), country.name))
-      } yield countryView)
-        .mapError(manageError) // TODO implicit conversion
+        countryView <- ZIO.succeed(country.toView())
+      } yield countryView
+
+    private def getAllLogic(x: Unit): IO[ErrorInfo, Seq[CountryView]] =
+      for {
+        _            <- ZIO.logInfo(s"getAllLogic")
+        countries    <- CountryService.searchAll()
+        countryViews <- ZIO.succeed(countries.toView())
+      } yield countryViews
 
     private def postLogic(view: CountryView): IO[ErrorInfo, String] =
-      (for {
-        _      <- ZIO.logInfo(s"create: $view)")
+      for {
+        _      <- ZIO.logInfo(s"postLogic: $view)")
         country = Model.Country(Model.CountryCode(view.code), view.name)
         _      <- CountryService.create(country)
-      } yield s"/todo/url/${country.code}")
-        .mapError(manageError) // TODO implicit conversion
+      } yield s"/todo/url/${country.code}"
 
-    // ServiceError => ApiError
-    private def manageError(serviceError: ServiceError): ErrorInfo =
-      serviceError match {
-        case CountryNotFound(code)        => NotFound(code)
-        case DuplicateEntityError(entity) => Conflict(entity)
-        case _                            => Unknown("Service Error")
-      }
   }
 
   object AirportEndpoints {
