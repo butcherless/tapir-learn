@@ -26,9 +26,9 @@ class SlickRouteRepositorySpec
 
   "Insert" should "insert a Route into the repository" in {
     val program = for {
-      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords                   <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
       (originId, destinationId) = coords
-      id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      id                       <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
     } yield id
 
     val id = runtime.unsafeRun(
@@ -41,11 +41,11 @@ class SlickRouteRepositorySpec
   it should "insert a sequence of Routes into the repository" in {
 
     val program = for {
-      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords                   <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
       (originId, destinationId) = coords
-      ids <- RouteRepository.insert(
-        Seq(RouteDbo(madBcnDistance, originId, destinationId), RouteDbo(madBcnDistance, destinationId, originId))
-      )
+      ids                      <- RouteRepository.insert(
+                                    Seq(RouteDbo(madBcnDistance, originId, destinationId), RouteDbo(madBcnDistance, destinationId, originId))
+                                  )
     } yield ids
 
     val ids = runtime.unsafeRun(
@@ -57,10 +57,10 @@ class SlickRouteRepositorySpec
 
   it should "fail to insert a duplicate Route into the repository" in {
     val program = for {
-      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords                   <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
       (originId, destinationId) = coords
-      _ <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
-      _ <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      _                        <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      _                        <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
     } yield ()
 
     val resultEither = runtime.unsafeRun(
@@ -72,9 +72,9 @@ class SlickRouteRepositorySpec
 
   it should "fail to insert a Route with missing origin airport into the repository" in {
     val program = for {
-      countryId <- CountryRepository.insert(spainDbo)
+      countryId     <- CountryRepository.insert(spainDbo)
       destinationId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
-      _ <- RouteRepository.insert(RouteDbo(madBcnDistance, 0L, destinationId))
+      _             <- RouteRepository.insert(RouteDbo(madBcnDistance, 0L, destinationId))
     } yield ()
 
     val resultEither = runtime.unsafeRun(
@@ -87,8 +87,8 @@ class SlickRouteRepositorySpec
   it should "fail to insert a Route with missing destination airport into the repository" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      originId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
-      _ <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, 0L))
+      originId  <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
+      _         <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, 0L))
     } yield ()
 
     val resultEither = runtime.unsafeRun(
@@ -100,13 +100,13 @@ class SlickRouteRepositorySpec
 
   "Update" should "update a Route retrieved from the repository" in {
     val updatedDistance = 1.23
-    val program = for {
-      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+    val program         = for {
+      coords                   <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
       (originId, destinationId) = coords
-      id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
-      dbo <- RouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
-      count <- RouteRepository.update(dbo.get.copy(distance = updatedDistance))
-      updated <- RouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
+      id                       <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      dbo                      <- RouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
+      count                    <- RouteRepository.update(dbo.get.copy(distance = updatedDistance))
+      updated                  <- RouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
     } yield (updated, count)
 
     val (updated, count) = runtime.unsafeRun(
@@ -120,10 +120,10 @@ class SlickRouteRepositorySpec
 
   "Delete" should "delete a Route from the repository" in {
     val program = for {
-      coords <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
+      coords                   <- insertOriginDestinationAirports(spainDbo, madDbo, bcnDbo)
       (originId, destinationId) = coords
-      id <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
-      count <- RouteRepository.deleteByOriginAndDestination(madIataCode, bcnIataCode)
+      id                       <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
+      count                    <- RouteRepository.deleteByOriginAndDestination(madIataCode, bcnIataCode)
     } yield count
 
     val count = runtime.unsafeRun(
@@ -136,13 +136,13 @@ class SlickRouteRepositorySpec
   "Find" should "retrieve a Route sequence by origin airport" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      madId <- AirportRepository.insert(madDbo.copy(countryId = countryId))
-      bcnId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
-      tfnId <- AirportRepository.insert(tfnDbo.copy(countryId = countryId))
-      _ <- insertRoundTripRoute(madBcnDistance, madId, bcnId)
-      _ <- insertRoundTripRoute(madTfnDistance, madId, tfnId)
-      _ <- insertRoundTripRoute(bcnTfnDistance, bcnId, tfnId)
-      routes <- RouteRepository.findByIataOrigin(madIataCode)
+      madId     <- AirportRepository.insert(madDbo.copy(countryId = countryId))
+      bcnId     <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
+      tfnId     <- AirportRepository.insert(tfnDbo.copy(countryId = countryId))
+      _         <- insertRoundTripRoute(madBcnDistance, madId, bcnId)
+      _         <- insertRoundTripRoute(madTfnDistance, madId, tfnId)
+      _         <- insertRoundTripRoute(bcnTfnDistance, bcnId, tfnId)
+      routes    <- RouteRepository.findByIataOrigin(madIataCode)
     } yield (routes, madId)
 
     val (routes, madId) = runtime.unsafeRun(
@@ -162,13 +162,13 @@ class SlickRouteRepositorySpec
   it should "retrieve a Route sequence by destination airport" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      madId <- AirportRepository.insert(madDbo.copy(countryId = countryId))
-      bcnId <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
-      tfnId <- AirportRepository.insert(tfnDbo.copy(countryId = countryId))
-      _ <- insertRoundTripRoute(madBcnDistance, madId, bcnId)
-      _ <- insertRoundTripRoute(madTfnDistance, madId, tfnId)
-      _ <- insertRoundTripRoute(bcnTfnDistance, bcnId, tfnId)
-      routes <- RouteRepository.findByIataDestination(bcnIataCode)
+      madId     <- AirportRepository.insert(madDbo.copy(countryId = countryId))
+      bcnId     <- AirportRepository.insert(bcnDbo.copy(countryId = countryId))
+      tfnId     <- AirportRepository.insert(tfnDbo.copy(countryId = countryId))
+      _         <- insertRoundTripRoute(madBcnDistance, madId, bcnId)
+      _         <- insertRoundTripRoute(madTfnDistance, madId, tfnId)
+      _         <- insertRoundTripRoute(bcnTfnDistance, bcnId, tfnId)
+      routes    <- RouteRepository.findByIataDestination(bcnIataCode)
     } yield (routes, bcnId)
 
     val (routes, bcnId) = runtime.unsafeRun(
@@ -191,8 +191,8 @@ class SlickRouteRepositorySpec
       destination: AirportDbo
   ): ZIO[CountryRepository with AirportRepository, Throwable, (Long, Long)] = {
     for {
-      countryId <- CountryRepository.insert(country)
-      originId <- AirportRepository.insert(origin.copy(countryId = countryId))
+      countryId     <- CountryRepository.insert(country)
+      originId      <- AirportRepository.insert(origin.copy(countryId = countryId))
       destinationId <- AirportRepository.insert(destination.copy(countryId = countryId))
     } yield (originId, destinationId)
   }

@@ -9,7 +9,7 @@ object Model {
 
   type TransferId = Long
 
-  val APP_NAME = "tapir learn web application"
+  val APP_NAME    = "tapir learn web application"
   val APP_VERSION = "1.0.0-SNAPSHOT"
 
   trait EnumHelper { e: Enumeration =>

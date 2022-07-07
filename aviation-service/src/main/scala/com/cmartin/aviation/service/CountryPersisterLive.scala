@@ -16,7 +16,7 @@ case class CountryPersisterLive(
 
   override def existsByCode(code: CountryCode): IO[ServiceError, Boolean] = {
     val program = for {
-      _ <- ZIO.logDebug(s"existsByCode: $code")
+      _   <- ZIO.logDebug(s"existsByCode: $code")
       dbo <- countryRepository.findByCode(code)
     } yield dbo.isDefined
 
@@ -26,7 +26,7 @@ case class CountryPersisterLive(
 
   override def insert(country: Country): IO[ServiceError, Long] = {
     val program = for {
-      _ <- ZIO.logDebug(s"insert: $country")
+      _  <- ZIO.logDebug(s"insert: $country")
       id <- countryRepository.insert(country.toDbo)
     } yield id
 
@@ -36,7 +36,7 @@ case class CountryPersisterLive(
 
   override def findByCode(code: CountryCode): IO[ServiceError, Option[Country]] = {
     val program = for {
-      _ <- ZIO.logDebug(s"findByCode: $code")
+      _   <- ZIO.logDebug(s"findByCode: $code")
       dbo <- countryRepository.findByCode(code)
     } yield dbo.toDomain
 
@@ -46,11 +46,11 @@ case class CountryPersisterLive(
 
   override def update(country: Country): IO[ServiceError, Int] = {
     val program = for {
-      _ <- ZIO.logDebug(s"update: $country")
+      _          <- ZIO.logDebug(s"update: $country")
       countryOpt <- countryRepository.findByCode(country.code)
-      found <- manageNotFound(countryOpt)(s"No country found for code: ${country.code}")
-      updated <- buildDbo(country, found.id)
-      count <- countryRepository.update(updated)
+      found      <- manageNotFound(countryOpt)(s"No country found for code: ${country.code}")
+      updated    <- buildDbo(country, found.id)
+      count      <- countryRepository.update(updated)
     } yield count
 
     program
@@ -59,7 +59,7 @@ case class CountryPersisterLive(
 
   override def delete(code: CountryCode): IO[ServiceError, Int] = {
     val program = for {
-      _ <- ZIO.logDebug(s"delete: $code")
+      _   <- ZIO.logDebug(s"delete: $code")
       dbo <- countryRepository.delete(code)
     } yield dbo
 

@@ -20,9 +20,9 @@ class ModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
 
   it should "convert api to model Aircraft" in {
     val registration = "EC-NBX"
-    val age = 2
-    val model = AircraftType.Boeing788
-    val apiAircraft = AircraftDto(registration, age, model, Some(1L))
+    val age          = 2
+    val model        = AircraftType.Boeing788
+    val apiAircraft  = AircraftDto(registration, age, model, Some(1L))
 
     val aircraft = apiToModel(apiAircraft)
 
@@ -42,9 +42,9 @@ class ModelSpec extends AnyFlatSpec with Matchers with ApiConverters {
 
   it should "convert model to api Aircrafts" in {
     val registration = "EC-NBX"
-    val age = 2
-    val model = Boeing788
-    val aircraft = Aircraft(registration, age, model, 1L)
+    val age          = 2
+    val model        = Boeing788
+    val aircraft     = Aircraft(registration, age, model, 1L)
 
     val apiAircraft = modelToApi(aircraft)
 

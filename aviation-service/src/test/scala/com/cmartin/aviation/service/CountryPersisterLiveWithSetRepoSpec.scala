@@ -41,16 +41,16 @@ class CountryPersisterLiveWithSetRepoSpec
 object CountryPersisterLiveWithSetRepoSpec {
   lazy val (seqTRef, dbTSet) = runtime.unsafeRun {
     for {
-      tuple <- STM.atomically {
-        for {
-          tRef <- TRef.make(0)
-          sequential <- tRef.get
-          tSet <- TSet.empty[CountryDbo]
-          size <- tSet.size
-        } yield (tRef, tSet, sequential, size)
-      }
+      tuple                         <- STM.atomically {
+                                         for {
+                                           tRef       <- TRef.make(0)
+                                           sequential <- tRef.get
+                                           tSet       <- TSet.empty[CountryDbo]
+                                           size       <- tSet.size
+                                         } yield (tRef, tSet, sequential, size)
+                                       }
       (tRef, tSet, sequential, size) = tuple
-      _ <- ZIO.log(s"initializing in memory Set Repository: (sequential,size)=($sequential,$size)")
+      _                             <- ZIO.log(s"initializing in memory Set Repository: (sequential,size)=($sequential,$size)")
     } yield (tRef, tSet)
   }
 
@@ -65,7 +65,7 @@ object CountryPersisterLiveWithSetRepoSpec {
     STM.atomically {
       for {
         countries <- dbTSet.toSet
-        _ <- dbTSet.deleteAll(countries)
+        _         <- dbTSet.deleteAll(countries)
       } yield ()
     }
 }

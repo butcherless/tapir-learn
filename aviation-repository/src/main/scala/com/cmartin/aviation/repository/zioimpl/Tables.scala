@@ -11,13 +11,13 @@ object Tables extends JdbcProfile {
   import api._
 
   object TableNames {
-    val airlines = "AIRLINES"
-    val airports = "AIRPORTS"
-    val countries = "COUNTRIES"
-    val fleet = "FLEET"
-    val flights = "FLIGHTS"
-    val journeys = "JOURNEYS"
-    val routes = "ROUTES"
+    val airlines        = "AIRLINES"
+    val airports        = "AIRPORTS"
+    val countries       = "COUNTRIES"
+    val fleet           = "FLEET"
+    val flights         = "FLIGHTS"
+    val journeys        = "JOURNEYS"
+    val routes          = "ROUTES"
     val aircraftJourney = "AIRCRAFT_JOURNEY"
   }
 
@@ -47,7 +47,7 @@ object Tables extends JdbcProfile {
   final class Airports(tag: Tag)
       extends LongBasedTable[AirportDbo](tag, TableNames.airports) {
     // property columns:
-    def name: Rep[String] = column[String]("NAME")
+    def name: Rep[String]     = column[String]("NAME")
     def iataCode: Rep[String] = column[String]("IATA_CODE")
     def icaoCode: Rep[String] = column[String]("ICAO_CODE")
 
@@ -72,10 +72,10 @@ object Tables extends JdbcProfile {
   final class Airlines(tag: Tag)
       extends LongBasedTable[AirlineDbo](tag, TableNames.airlines) {
     // property columns:
-    def name = column[String]("NAME")
+    def name                  = column[String]("NAME")
     def iataCode: Rep[String] = column[String]("IATA_CODE")
     def icaoCode: Rep[String] = column[String]("ICAO_CODE")
-    def foundationDate = column[LocalDate]("FOUNDATION_DATE")
+    def foundationDate        = column[LocalDate]("FOUNDATION_DATE")
 
     // foreign columns:
     def countryId = column[Long]("COUNTRY_ID")

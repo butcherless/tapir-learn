@@ -14,7 +14,7 @@ final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
     STM.atomically {
       for {
         countries <- set.toSet
-        country <- STM.succeed(countries.find(_.id == id))
+        country   <- STM.succeed(countries.find(_.id == id))
       } yield country
     }
 
@@ -22,7 +22,7 @@ final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
     STM.atomically {
       for {
         id <- seq.updateAndGet(s => s + 1)
-        _ <- set.put(e.copy(id = id))
+        _  <- set.put(e.copy(id = id))
       } yield id.toLong
     }
 
@@ -32,10 +32,10 @@ final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
     STM.atomically {
       for {
         countries <- set.toSet
-        opt <- STM.succeed(countries.find(_.code == e.code))
-        count <- opt.fold(
-          STM.succeed(0)
-        )(c => set.transform(old => e.copy(id = old.id)).map(_ => 1))
+        opt       <- STM.succeed(countries.find(_.code == e.code))
+        count     <- opt.fold(
+                       STM.succeed(0)
+                     )(c => set.transform(old => e.copy(id = old.id)).map(_ => 1))
       } yield count
     }
 
@@ -48,7 +48,7 @@ final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
     STM.atomically {
       for {
         countries <- set.toSet
-        a <- STM.succeed(countries.find(_.code == code))
+        a         <- STM.succeed(countries.find(_.code == code))
       } yield a
     }
 
@@ -56,10 +56,10 @@ final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
     STM.atomically {
       for {
         countries <- set.toSet
-        opt <- STM.succeed(countries.find(_.code == code))
-        count <- opt.fold(
-          STM.succeed(0)
-        )(c => set.delete(c).map(_ => 1))
+        opt       <- STM.succeed(countries.find(_.code == code))
+        count     <- opt.fold(
+                       STM.succeed(0)
+                     )(c => set.delete(c).map(_ => 1))
       } yield count
     }
 

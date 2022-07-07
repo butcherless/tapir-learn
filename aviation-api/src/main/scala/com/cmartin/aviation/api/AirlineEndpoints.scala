@@ -64,8 +64,8 @@ trait AirlineEndpoints {
       )
 
   lazy val airlinesResource = "airlines"
-  lazy val airlinePath = baseApiResource / airlinesResource
-  lazy val codePath = path[String]("code")
+  lazy val airlinePath      = baseApiResource / airlinesResource
+  lazy val codePath         = path[String]("code")
 }
 
 object AirlineEndpoints extends AirlineEndpoints {

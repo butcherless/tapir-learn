@@ -21,7 +21,7 @@ class SetCountryRepositorySpec
 
   "Insert" should "insert a Country into the database" in {
     val program = for {
-      id <- CountryRepository.insert(spainDbo)
+      id    <- CountryRepository.insert(spainDbo)
       count <- CountryRepository.count()
     } yield (id, count)
 
@@ -33,7 +33,7 @@ class SetCountryRepositorySpec
 
   "Find" should "retrieve a Country by code from the database" in {
     val program = for {
-      id <- CountryRepository.insert(spainDbo)
+      id  <- CountryRepository.insert(spainDbo)
       dbo <- CountryRepository.findByCode(spainCode)
     } yield dbo
 
@@ -56,9 +56,9 @@ class SetCountryRepositorySpec
 
   "Update" should "update a country retrieved from the database" in {
     val program = for {
-      id <- CountryRepository.insert(spainDbo)
-      dbo <- CountryRepository.find(id)
-      count <- CountryRepository.update(dbo.get.copy(name = updatedSpainText))
+      id      <- CountryRepository.insert(spainDbo)
+      dbo     <- CountryRepository.find(id)
+      count   <- CountryRepository.update(dbo.get.copy(name = updatedSpainText))
       updated <- CountryRepository.find(id)
     } yield (updated, count)
 
@@ -72,7 +72,7 @@ class SetCountryRepositorySpec
 
   "Delete" should "delete a country from the database" in {
     val program = for {
-      id <- CountryRepository.insert(spainDbo)
+      id    <- CountryRepository.insert(spainDbo)
       count <- CountryRepository.delete(spainCode)
     } yield count
 
@@ -99,16 +99,16 @@ object SetCountryRepositorySpec {
 
   lazy val (seqTRef, dbTSet) = runtime.unsafeRun {
     for {
-      tuple <- STM.atomically {
-        for {
-          tRef <- TRef.make(0)
-          sequential <- tRef.get
-          tSet <- TSet.empty[CountryDbo]
-          size <- tSet.size
-        } yield (tRef, tSet, sequential, size)
-      }
+      tuple                         <- STM.atomically {
+                                         for {
+                                           tRef       <- TRef.make(0)
+                                           sequential <- tRef.get
+                                           tSet       <- TSet.empty[CountryDbo]
+                                           size       <- tSet.size
+                                         } yield (tRef, tSet, sequential, size)
+                                       }
       (tRef, tSet, sequential, size) = tuple
-      _ <- ZIO.log(s"initializing in memory Set Repository: (sequential,size)=($sequential,$size)")
+      _                             <- ZIO.log(s"initializing in memory Set Repository: (sequential,size)=($sequential,$size)")
     } yield (tRef, tSet)
   }
 
@@ -123,7 +123,7 @@ object SetCountryRepositorySpec {
     STM.atomically {
       for {
         countries <- dbTSet.toSet
-        _ <- dbTSet.deleteAll(countries)
+        _         <- dbTSet.deleteAll(countries)
       } yield ()
     }
 }

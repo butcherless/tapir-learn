@@ -31,7 +31,7 @@ object JdbcDefinitions {
 
     abstract class RelationBasedTable[T <: RelationDbo](tag: Tag, tableName: String) extends Table[T](tag, tableName) {
       /* primary key columns */
-      def left: Rep[Long] = column[Long]("LEFT")
+      def left: Rep[Long]  = column[Long]("LEFT")
       def right: Rep[Long] = column[Long]("RIGHT")
     }
 
