@@ -20,7 +20,7 @@ import scala.concurrent.Future
 trait Json4sApi extends LoggingSupport {
 
   implicit val serialization: Serialization = org.json4s.native.Serialization
-  implicit val formats: Formats = DefaultFormats + new EnumNameSerializer(AircraftType)
+  implicit val formats: Formats             = DefaultFormats + new EnumNameSerializer(AircraftType)
 
   lazy val routes: Route =
     getRoute ~

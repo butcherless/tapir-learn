@@ -14,10 +14,10 @@ object HttpClientTestApp
     extends ZIOAppDefault {
 
   val healthEndpoint = "http://localhost:8080/api/v1.0/health"
-  val fiberCount = 20
-  val loopCount = 500
+  val fiberCount     = 20
+  val loopCount      = 500
 
-  val req1 = basicRequest
+  val req1          = basicRequest
     .body("Hello, world!")
     .post(uri"https://httpbin.org/post?hello=world")
   /*
@@ -81,12 +81,12 @@ object HttpClientTestApp
 
   val requestBase64 = basicRequest
     .get(uri"https://httpbin.org/base64/dGhpcyBpcyBhIHN0dHAgcmVxdWVzdA%3D%3D")
-  val program =
+  val program       =
     for {
       // b <- ZIO.service[AsyncHttpClientZioBackend]
       resp <- scopedBackend.flatMap(_.send(requestBase64))
       // resp <- b.send(requestBase64)
-      _ <- ZIO.logInfo(s"http status code: ${resp.code}")
+      _    <- ZIO.logInfo(s"http status code: ${resp.code}")
     } yield ()
 
   // main function, needs exit = 0 [OK] or exit > 0 [ERROR]

@@ -24,7 +24,7 @@ trait TransferZioApi {
       TransferEndpoint.getTransferEndpoint.zServerLogic { id =>
         for {
           transfer <- TransferApi.doBusinessLogic(id)
-          dto <- TransferApi.toDto(transfer)
+          dto      <- TransferApi.toDto(transfer)
         } yield dto
       }
     )

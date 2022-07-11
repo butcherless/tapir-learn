@@ -13,10 +13,10 @@ trait BaseEndpoint {
 
   type RouteResponse[T] = Future[Either[OutputError, T]]
 
-  lazy val apiText: String = "api"
-  lazy val apiVersionText: String = "v1.0"
+  lazy val apiText: String                      = "api"
+  lazy val apiVersionText: String               = "v1.0"
   lazy val baseApiResource: EndpointInput[Unit] = apiText / apiVersionText
-  lazy val baseApiPath: String = s"$apiText/$apiVersionText"
+  lazy val baseApiPath: String                  = s"$apiText/$apiVersionText"
 
   lazy val baseEndpoint: PublicEndpoint[Unit, Unit, Unit, Any] =
     endpoint

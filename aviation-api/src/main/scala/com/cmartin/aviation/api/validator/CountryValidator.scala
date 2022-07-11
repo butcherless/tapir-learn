@@ -6,7 +6,7 @@ import zio.{IO, ZIO}
 import zio.prelude.Validation
 
 object CountryValidator {
-  val COUNTRY_CODE_LENGTH = 2
+  val COUNTRY_CODE_LENGTH                                                  = 2
   /* steps:
      - empty code
      - length == COUNTRY_CODE_LENGTH

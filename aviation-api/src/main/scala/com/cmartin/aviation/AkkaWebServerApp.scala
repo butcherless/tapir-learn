@@ -12,7 +12,7 @@ import scala.util.Success
 
 object AkkaWebServerApp extends App with ApiConfiguration {
   // A K K A  A C T O R  S Y S T E M
-  implicit lazy val system: ActorSystem = ActorSystem("WebAppActorSystem")
+  implicit lazy val system: ActorSystem           = ActorSystem("WebAppActorSystem")
   implicit val executionContext: ExecutionContext = system.dispatcher
   system.log.info(s"Starting WebServer")
 

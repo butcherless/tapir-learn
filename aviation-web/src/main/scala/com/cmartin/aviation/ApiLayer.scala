@@ -161,7 +161,7 @@ object ApiLayer {
         .out(
           statusCode(StatusCode.Created)
             .and(header[String](HeaderNames.ContentLocation))
-          // .and(jsonBody[CountryView])
+            // .and(jsonBody[CountryView])
         ).errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NoContent).and(emptyOutputAs(NoContent))),

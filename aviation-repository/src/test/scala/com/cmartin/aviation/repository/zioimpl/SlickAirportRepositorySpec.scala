@@ -40,9 +40,9 @@ class SlickAirportRepositorySpec
 
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      ids <- AirportRepository.insert(
-        Seq(madDbo.copy(countryId = countryId), bcnDbo.copy(countryId = countryId))
-      )
+      ids       <- AirportRepository.insert(
+                     Seq(madDbo.copy(countryId = countryId), bcnDbo.copy(countryId = countryId))
+                   )
     } yield ids
 
     val ids = runtime.unsafeRun(
@@ -55,8 +55,8 @@ class SlickAirportRepositorySpec
   it should "fail to insert a duplicate Country into the database" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      _ <- AirportRepository.insert(madDbo.copy(countryId = countryId))
-      _ <- AirportRepository.insert(madDbo.copy(countryId = countryId))
+      _         <- AirportRepository.insert(madDbo.copy(countryId = countryId))
+      _         <- AirportRepository.insert(madDbo.copy(countryId = countryId))
     } yield ()
 
     val resultEither = runtime.unsafeRun(
@@ -69,8 +69,8 @@ class SlickAirportRepositorySpec
   "Find" should "retrieve an Airport by iata code" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      aid <- AirportRepository.insert(madDbo.copy(countryId = countryId))
-      airport <- AirportRepository.findByIataCode(madIataCode)
+      aid       <- AirportRepository.insert(madDbo.copy(countryId = countryId))
+      airport   <- AirportRepository.findByIataCode(madIataCode)
     } yield (airport, countryId, aid)
 
     val (dboOpt, cid, aid) = runtime.unsafeRun(
@@ -83,8 +83,8 @@ class SlickAirportRepositorySpec
   it should "retrieve an Airport by icao code" in {
     val program = for {
       countryId <- CountryRepository.insert(spainDbo)
-      aid <- AirportRepository.insert(madDbo.copy(countryId = countryId))
-      airport <- AirportRepository.findByIcaoCode(madIcaoCode)
+      aid       <- AirportRepository.insert(madDbo.copy(countryId = countryId))
+      airport   <- AirportRepository.findByIcaoCode(madIcaoCode)
     } yield (airport, countryId, aid)
 
     val (dboOpt, cid, aid) = runtime.unsafeRun(
@@ -96,13 +96,13 @@ class SlickAirportRepositorySpec
 
   it should "retrieve a sequence of Airports by country code" in {
     val program = for {
-      spainId <- CountryRepository.insert(spainDbo)
+      spainId    <- CountryRepository.insert(spainDbo)
       portugalId <- CountryRepository.insert(portugalDbo)
-      _ <- AirportRepository.insert(madDbo.copy(countryId = spainId))
-      _ <- AirportRepository.insert(bcnDbo.copy(countryId = spainId))
-      _ <- AirportRepository.insert(lisDbo.copy(countryId = portugalId))
-      airports <- AirportRepository.findByCountryCode(spainCode)
-      count <- AirportRepository.count()
+      _          <- AirportRepository.insert(madDbo.copy(countryId = spainId))
+      _          <- AirportRepository.insert(bcnDbo.copy(countryId = spainId))
+      _          <- AirportRepository.insert(lisDbo.copy(countryId = portugalId))
+      airports   <- AirportRepository.findByCountryCode(spainCode)
+      count      <- AirportRepository.count()
     } yield (airports, spainId, count)
 
     val (airports, spainId, count) = runtime.unsafeRun(
@@ -115,15 +115,15 @@ class SlickAirportRepositorySpec
   }
 
   it should "retrieve a sequence of airports with a similar name" in {
-    val airportOne = AirportDbo("Barajas", "md1", "lem1")
-    val airportTwo = AirportDbo("Madrid Barajas", "md2", "lem2")
+    val airportOne   = AirportDbo("Barajas", "md1", "lem1")
+    val airportTwo   = AirportDbo("Madrid Barajas", "md2", "lem2")
     val airportThree = AirportDbo("Adolfo Suárez Madrid Barajas", "md3", "lem3")
 
     val program = for {
-      id <- CountryRepository.insert(spainDbo)
-      _ <- AirportRepository.insert(airportOne.copy(countryId = id))
-      _ <- AirportRepository.insert(airportTwo.copy(countryId = id))
-      _ <- AirportRepository.insert(airportThree.copy(countryId = id))
+      id       <- CountryRepository.insert(spainDbo)
+      _        <- AirportRepository.insert(airportOne.copy(countryId = id))
+      _        <- AirportRepository.insert(airportTwo.copy(countryId = id))
+      _        <- AirportRepository.insert(airportThree.copy(countryId = id))
       airports <- AirportRepository.findByName("Barajas")
     } yield airports
 
@@ -148,10 +148,10 @@ class SlickAirportRepositorySpec
 
   "Update" should "update an Airport retrieved from the database" in {
     val program = for {
-      id <- CountryRepository.insert(spainDbo)
-      _ <- AirportRepository.insert(madDbo.copy(countryId = id))
-      dbo <- AirportRepository.findByIataCode(madIataCode)
-      count <- AirportRepository.update(dbo.get.copy(name = updatedMadText))
+      id      <- CountryRepository.insert(spainDbo)
+      _       <- AirportRepository.insert(madDbo.copy(countryId = id))
+      dbo     <- AirportRepository.findByIataCode(madIataCode)
+      count   <- AirportRepository.update(dbo.get.copy(name = updatedMadText))
       updated <- AirportRepository.findByIataCode(madIataCode)
     } yield (updated, count)
 
@@ -166,8 +166,8 @@ class SlickAirportRepositorySpec
 
   "Delete" should "delete an Airport from the database" in {
     val program = for {
-      id <- CountryRepository.insert(spainDbo)
-      _ <- AirportRepository.insert(madDbo.copy(countryId = id))
+      id    <- CountryRepository.insert(spainDbo)
+      _     <- AirportRepository.insert(madDbo.copy(countryId = id))
       count <- AirportRepository.deleteByIataCode(madIataCode)
     } yield count
 

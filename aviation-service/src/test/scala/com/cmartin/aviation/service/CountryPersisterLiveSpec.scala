@@ -20,7 +20,7 @@ class CountryPersisterLiveSpec
     )
 
   // Simulator for database infrastructure exceptions
-  val countryRepoMock: CountryRepository = mock[CountryRepository]
+  val countryRepoMock: CountryRepository   = mock[CountryRepository]
   val mockEnv: TaskLayer[CountryPersister] =
     ZLayer.make[CountryPersister](
       ZLayer.succeed(countryRepoMock),
@@ -55,7 +55,7 @@ class CountryPersisterLiveSpec
 
   "Exists" should "return true for an existing Country" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
+      _      <- CountryPersister.insert(spainCountry)
       exists <- CountryPersister.existsByCode(spainCode)
     } yield exists
 
@@ -98,7 +98,7 @@ class CountryPersisterLiveSpec
 
   "Find" should "retrieve a Country by its code" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
+      _          <- CountryPersister.insert(spainCountry)
       countryOpt <- CountryPersister.findByCode(spainCode)
     } yield countryOpt
 
@@ -141,9 +141,9 @@ class CountryPersisterLiveSpec
 
   "Update" should "update a Country" in {
     val updatedCountry = Country(spainCode, updatedSpainText)
-    val program = for {
-      _ <- CountryPersister.insert(spainCountry)
-      count <- CountryPersister.update(updatedCountry)
+    val program        = for {
+      _          <- CountryPersister.insert(spainCountry)
+      count      <- CountryPersister.update(updatedCountry)
       countryOpt <- CountryPersister.findByCode(spainCode)
     } yield (countryOpt, count)
 
@@ -157,7 +157,7 @@ class CountryPersisterLiveSpec
 
   it should "manage a database exception: update" in {
     val updatedCountry = Country(spainCode, updatedSpainText)
-    val program = for {
+    val program        = for {
       _ <- CountryPersister.update(updatedCountry)
     } yield ()
 
@@ -170,7 +170,7 @@ class CountryPersisterLiveSpec
 
   "Delete" should "delete a Country by its code" in {
     val program = for {
-      _ <- CountryPersister.insert(spainCountry)
+      _     <- CountryPersister.insert(spainCountry)
       count <- CountryPersister.delete(spainCode)
     } yield count
 

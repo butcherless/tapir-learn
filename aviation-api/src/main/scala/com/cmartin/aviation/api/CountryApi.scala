@@ -60,15 +60,15 @@ class CountryApi(countryService: CountryService) {
 
   private def doGetLogic(request: String): ApiResponse[CountryView] = {
     for {
-      _ <- ZIO.debug(s"doGetLogic - request: $request")
+      _        <- ZIO.debug(s"doGetLogic - request: $request")
       criteria <- CountryValidator.validateCode(request).toIO
-      country <- countryService.findByCode(criteria)
+      country  <- countryService.findByCode(criteria)
     } yield country.toView
   }
 
   private def doPostLogic(request: CountryView): ApiResponse[(String, CountryView)] = {
     for {
-      _ <- ZIO.debug(s"doPostLogic - request: $request")
+      _       <- ZIO.debug(s"doPostLogic - request: $request")
       country <- CountryValidator.validatePostRequest(request).toIO
       created <- countryService.create(country)
     } yield (
@@ -79,7 +79,7 @@ class CountryApi(countryService: CountryService) {
 
   private def doPutLogic(request: CountryView): ApiResponse[CountryView] = {
     for {
-      _ <- ZIO.debug(s"doPutLogic - request: $request")
+      _       <- ZIO.debug(s"doPutLogic - request: $request")
       country <- CountryValidator.validatePutRequest(request).toIO
       updated <- countryService.update(country)
     } yield updated.toView
@@ -87,9 +87,9 @@ class CountryApi(countryService: CountryService) {
 
   private def doDeleteLogic(request: String): ApiResponse[Unit] = {
     for {
-      _ <- ZIO.debug(s"doDeleteLogic - request: $request")
+      _        <- ZIO.debug(s"doDeleteLogic - request: $request")
       criteria <- CountryValidator.validateDeleteRequest(request).toIO
-      _ <- countryService.deleteByCode(criteria)
+      _        <- countryService.deleteByCode(criteria)
     } yield ()
   }
 }

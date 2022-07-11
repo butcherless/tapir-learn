@@ -11,10 +11,10 @@ object BuildInfoSettings {
     SettingKey[String]("gitCommit").withRank(KeyRanks.Invisible)
 
   val value: Seq[Def.Setting[_]] = Seq(
-    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, gitCommitString),
+    buildInfoKeys    := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, gitCommitString),
     buildInfoPackage := s"${organization.value}.api",
     buildInfoOptions ++= Seq(BuildInfoOption.ToJson, BuildInfoOption.BuildTime),
-    gitCommitString := git.gitHeadCommit.value.getOrElse("unavailable")
+    gitCommitString  := git.gitHeadCommit.value.getOrElse("unavailable")
   )
 
 }

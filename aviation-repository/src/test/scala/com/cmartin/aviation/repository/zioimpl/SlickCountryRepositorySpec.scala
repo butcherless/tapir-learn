@@ -54,7 +54,7 @@ class SlickCountryRepositorySpec
 
   "Find" should "retrieve a Country by code" in {
     val program = for {
-      _ <- CountryRepository.insert(spainDbo)
+      _   <- CountryRepository.insert(spainDbo)
       dbo <- CountryRepository.findByCode(spainCode)
     } yield dbo
 
@@ -79,9 +79,9 @@ class SlickCountryRepositorySpec
 
   "Update" should "update a country retrieved from the database" in {
     val program = for {
-      _ <- CountryRepository.insert(spainDbo)
-      dbo <- CountryRepository.findByCode(spainCode)
-      count <- CountryRepository.update(dbo.get.copy(name = updatedSpainText))
+      _       <- CountryRepository.insert(spainDbo)
+      dbo     <- CountryRepository.findByCode(spainCode)
+      count   <- CountryRepository.update(dbo.get.copy(name = updatedSpainText))
       updated <- CountryRepository.findByCode(spainCode)
     } yield (updated, count)
 
@@ -95,7 +95,7 @@ class SlickCountryRepositorySpec
 
   "Delete" should "delete a country from the database" in {
     val program = for {
-      _ <- CountryRepository.insert(spainDbo)
+      _     <- CountryRepository.insert(spainDbo)
       count <- CountryRepository.delete(spainDbo.code)
     } yield count
 
@@ -108,7 +108,7 @@ class SlickCountryRepositorySpec
 
   it should "return zero deleted items for a missing Country" in {
     val program = for {
-      cs <- CountryRepository.delete(spainDbo.code)
+      cs    <- CountryRepository.delete(spainDbo.code)
       count <- CountryRepository.count()
     } yield (cs, count)
 

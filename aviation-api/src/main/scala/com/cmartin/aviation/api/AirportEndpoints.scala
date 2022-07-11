@@ -62,8 +62,8 @@ trait AirportEndpoints {
       )
 
   lazy val airportsResource = "countries"
-  lazy val airportPath = baseApiResource / airportsResource
-  lazy val iataCodePath = path[String]("iataCode")
+  lazy val airportPath      = baseApiResource / airportsResource
+  lazy val iataCodePath     = path[String]("iataCode")
 }
 
 object AirportEndpoints extends AirportEndpoints {

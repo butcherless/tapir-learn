@@ -13,18 +13,18 @@ trait AirlinePersister {
 }
 
 object AirlinePersister {
-  def insert(airline: Airline): ZIO[AirlinePersister, ServiceError, Long] =
+  def insert(airline: Airline): ZIO[AirlinePersister, ServiceError, Long]              =
     ZIO.serviceWithZIO[AirlinePersister](_.insert(airline))
-  def existsByCode(code: IataCode): ZIO[AirlinePersister, ServiceError, Boolean] =
+  def existsByCode(code: IataCode): ZIO[AirlinePersister, ServiceError, Boolean]       =
     ZIO.serviceWithZIO[AirlinePersister](_.existsByCode(code))
   def findByCode(code: IataCode): ZIO[AirlinePersister, ServiceError, Option[Airline]] =
     ZIO.serviceWithZIO[AirlinePersister](_.findByCode(code))
 
   def findByCountry(code: CountryCode): ZIO[AirlinePersister, ServiceError, Seq[Airline]] =
     ZIO.serviceWithZIO[AirlinePersister](_.findByCountry(code))
-  def update(airline: Airline): ZIO[AirlinePersister, ServiceError, Int] =
+  def update(airline: Airline): ZIO[AirlinePersister, ServiceError, Int]                  =
     ZIO.serviceWithZIO[AirlinePersister](_.update(airline))
-  def delete(code: IataCode): ZIO[AirlinePersister, ServiceError, Int] =
+  def delete(code: IataCode): ZIO[AirlinePersister, ServiceError, Int]                    =
     ZIO.serviceWithZIO[AirlinePersister](_.delete(code))
 
 }

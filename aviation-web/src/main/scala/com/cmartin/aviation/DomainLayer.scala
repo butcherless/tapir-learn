@@ -1,5 +1,3 @@
 package com.cmartin.aviation
 
-object DomainLayer {
-  
-}
+object DomainLayer {}

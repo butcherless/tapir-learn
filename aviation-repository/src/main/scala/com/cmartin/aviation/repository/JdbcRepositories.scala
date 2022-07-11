@@ -20,9 +20,9 @@ object JdbcRepositories {
     import api._
 
     lazy val countries = TableQuery[CountryTable]
-    lazy val airports = TableQuery[AirportTable]
-    lazy val routes = TableQuery[RouteTable]
-    lazy val airlines = TableQuery[AirlineTable]
+    lazy val airports  = TableQuery[AirportTable]
+    lazy val routes    = TableQuery[RouteTable]
+    lazy val airlines  = TableQuery[AirlineTable]
 
     /* C O U N T R Y
      */
@@ -68,10 +68,10 @@ object JdbcRepositories {
      */
     final class AirlineTable(tag: Tag) extends OldLongBasedTable[AirlineDbo](tag, TableNames.airlines) {
       // property columns:
-      def name = column[String]("NAME")
+      def name                  = column[String]("NAME")
       def iataCode: Rep[String] = column[String]("IATA_CODE")
       def icaoCode: Rep[String] = column[String]("ICAO_CODE")
-      def foundationDate = column[LocalDate]("FOUNDATION_DATE")
+      def foundationDate        = column[LocalDate]("FOUNDATION_DATE")
 
       // foreign columns:
       def countryId = column[Long]("COUNTRY_ID")
@@ -169,7 +169,7 @@ object JdbcRepositories {
 
       override def findByIataOrigin(iataCode: String): DBIO[Seq[RouteDbo]] = {
         val query = for {
-          route <- entities
+          route   <- entities
           airport <- route.origin if airport.iataCode === iataCode
         } yield route
 
@@ -178,7 +178,7 @@ object JdbcRepositories {
 
       override def findByIataDestination(iataCode: String): DBIO[Seq[RouteDbo]] = {
         val query = for {
-          route <- entities
+          route   <- entities
           airport <- route.destination if airport.iataCode === iataCode
         } yield route
 
@@ -207,7 +207,7 @@ object JdbcRepositories {
     val countryRepository = new CountrySlickRepository
     val airportRepository = new AirportSlickRepository
     val airlineRepository = new AirlineSlickRepository
-    val routeRepository = new RouteSlickRepository
+    val routeRepository   = new RouteSlickRepository
 
     def insertCountry(country: Country): Task[Long] = ???
   }

@@ -12,10 +12,10 @@ object Model {
   }
 
   sealed trait ServiceError extends ProgramError
-  trait RepositoryError extends ProgramError
+  trait RepositoryError     extends ProgramError
 
-  case class MissingEntityError(message: String) extends ServiceError
-  case class DuplicateEntityError(message: String) extends ServiceError
+  case class MissingEntityError(message: String)     extends ServiceError
+  case class DuplicateEntityError(message: String)   extends ServiceError
   case class UnexpectedServiceError(message: String) extends ServiceError
 
   object CountryCode extends Subtype[String]

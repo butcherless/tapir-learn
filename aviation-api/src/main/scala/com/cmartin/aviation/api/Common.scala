@@ -8,7 +8,7 @@ import zio.IO
 
 object Common {
 
-  type ApiResponse[A] = IO[ProgramError, A]
+  type ApiResponse[A]  = IO[ProgramError, A]
   type Api2Response[A] = IO[ProgramError, A]
 
   // val loggingEnv: ZLayer[Any, Nothing, Logging] =    Slf4jLogger.make((_, message) => message)
