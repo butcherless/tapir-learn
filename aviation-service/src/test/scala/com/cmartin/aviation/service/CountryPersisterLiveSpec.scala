@@ -6,11 +6,12 @@ import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.zioimpl.SlickCountryRepository
 import com.cmartin.aviation.test.Common
 import com.cmartin.aviation.test.TestData._
-import zio.Runtime.{default => runtime}
 import zio.{TaskLayer, ZLayer}
 
 class CountryPersisterLiveSpec
     extends SlickBasePersisterSpec {
+
+  import TestRepositories._
 
   val env: TaskLayer[CountryPersister] =
     ZLayer.make[CountryPersister](
@@ -34,9 +35,7 @@ class CountryPersisterLiveSpec
       id <- CountryPersister.insert(spainCountry)
     } yield id
 
-    val id = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val id = unsafeRun(program.provideLayer(env))
 
     id should be > 0L
   }
@@ -47,9 +46,7 @@ class CountryPersisterLiveSpec
       _ <- CountryPersister.insert(spainCountry)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(env).either
-    )
+    val either = unsafeRun(program.provideLayer(env).either)
     either.left.value shouldBe a[DuplicateEntityError]
   }
 
@@ -59,9 +56,7 @@ class CountryPersisterLiveSpec
       exists <- CountryPersister.existsByCode(spainCode)
     } yield exists
 
-    val exists = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val exists = unsafeRun(program.provideLayer(env))
 
     exists shouldBe true
   }
@@ -71,9 +66,7 @@ class CountryPersisterLiveSpec
       exists <- CountryPersister.existsByCode(spainCode)
     } yield exists
 
-    val exists = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val exists = unsafeRun(program.provideLayer(env))
 
     exists shouldBe false
   }
@@ -89,9 +82,7 @@ class CountryPersisterLiveSpec
       _ <- CountryPersister.existsByCode(spainCode)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(mockEnv).either
-    )
+    val either = unsafeRun(program.provideLayer(mockEnv).either)
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }
@@ -102,9 +93,7 @@ class CountryPersisterLiveSpec
       countryOpt <- CountryPersister.findByCode(spainCode)
     } yield countryOpt
 
-    val countryOpt = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val countryOpt = unsafeRun(program.provideLayer(env))
 
     countryOpt shouldBe Some(spainCountry)
   }
@@ -114,9 +103,7 @@ class CountryPersisterLiveSpec
       countryOpt <- CountryPersister.findByCode(spainCode)
     } yield countryOpt
 
-    val countryOpt = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val countryOpt = unsafeRun(program.provideLayer(env))
 
     countryOpt shouldBe None
   }
@@ -132,9 +119,7 @@ class CountryPersisterLiveSpec
       _ <- CountryPersister.findByCode(spainCode)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(mockEnv).either
-    )
+    val either = unsafeRun(program.provideLayer(mockEnv).either)
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }
@@ -147,9 +132,7 @@ class CountryPersisterLiveSpec
       countryOpt <- CountryPersister.findByCode(spainCode)
     } yield (countryOpt, count)
 
-    val (countryOpt, count) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val (countryOpt, count) = unsafeRun(program.provideLayer(env))
 
     count shouldBe 1
     countryOpt shouldBe Some(updatedCountry)
@@ -161,9 +144,7 @@ class CountryPersisterLiveSpec
       _ <- CountryPersister.update(updatedCountry)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(env).either
-    )
+    val either = unsafeRun(program.provideLayer(env).either)
 
     either.left.value shouldBe a[MissingEntityError]
   }
@@ -174,9 +155,7 @@ class CountryPersisterLiveSpec
       count <- CountryPersister.delete(spainCode)
     } yield count
 
-    val count = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val count = unsafeRun(program.provideLayer(env))
 
     count shouldBe 1
   }
@@ -192,9 +171,7 @@ class CountryPersisterLiveSpec
       _ <- CountryPersister.delete(spainCode)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(mockEnv).either
-    )
+    val either = unsafeRun(program.provideLayer(mockEnv).either)
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }

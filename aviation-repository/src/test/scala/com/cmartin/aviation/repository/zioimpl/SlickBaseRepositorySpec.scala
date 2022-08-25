@@ -1,10 +1,9 @@
 package com.cmartin.aviation.repository.zioimpl
 
-import com.cmartin.aviation.repository.Common.schemaHelperProgram
+import com.cmartin.aviation.repository.Common._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfterEach, EitherValues}
-import zio.Runtime.{default => runtime}
 
 abstract class SlickBaseRepositorySpec
     extends AnyFlatSpec
@@ -13,6 +12,6 @@ abstract class SlickBaseRepositorySpec
     with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    runtime.unsafeRun(schemaHelperProgram)
+    unsafeRun(schemaHelperProgram)
   }
 }

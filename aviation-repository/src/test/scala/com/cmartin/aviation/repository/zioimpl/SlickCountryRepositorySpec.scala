@@ -1,9 +1,9 @@
 package com.cmartin.aviation.repository.zioimpl
 
+import com.cmartin.aviation.repository.Common._
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.{Common, CountryRepository}
-import zio.Runtime.{default => runtime}
 import zio.{TaskLayer, ZLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
@@ -20,7 +20,7 @@ class SlickCountryRepositorySpec
       id <- CountryRepository.insert(spainDbo)
     } yield id
 
-    val id = runtime.unsafeRun(
+    val id = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -32,7 +32,7 @@ class SlickCountryRepositorySpec
       ids <- CountryRepository.insert(Seq(spainDbo, portugalDbo))
     } yield ids
 
-    val ids = runtime.unsafeRun(
+    val ids = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -45,7 +45,7 @@ class SlickCountryRepositorySpec
       _ <- CountryRepository.insert(spainDbo)
     } yield ()
 
-    val resultEither = runtime.unsafeRun(
+    val resultEither = unsafeRun(
       program.provideLayer(env).either
     )
 
@@ -58,7 +58,7 @@ class SlickCountryRepositorySpec
       dbo <- CountryRepository.findByCode(spainCode)
     } yield dbo
 
-    val dboOpt = runtime.unsafeRun(
+    val dboOpt = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -70,7 +70,7 @@ class SlickCountryRepositorySpec
       dbo <- CountryRepository.findByCode(spainCode)
     } yield dbo
 
-    val dboOpt = runtime.unsafeRun(
+    val dboOpt = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -85,7 +85,7 @@ class SlickCountryRepositorySpec
       updated <- CountryRepository.findByCode(spainCode)
     } yield (updated, count)
 
-    val (dboOpt, count) = runtime.unsafeRun(
+    val (dboOpt, count) = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -99,7 +99,7 @@ class SlickCountryRepositorySpec
       count <- CountryRepository.delete(spainDbo.code)
     } yield count
 
-    val count = runtime.unsafeRun(
+    val count = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -112,7 +112,7 @@ class SlickCountryRepositorySpec
       count <- CountryRepository.count()
     } yield (cs, count)
 
-    val (cs, count) = runtime.unsafeRun(
+    val (cs, count) = unsafeRun(
       program.provideLayer(env)
     )
 

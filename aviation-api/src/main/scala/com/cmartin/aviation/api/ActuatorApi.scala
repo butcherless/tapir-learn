@@ -1,9 +1,9 @@
 package com.cmartin.aviation.api
 
 import akka.http.scaladsl.server.Route
-import com.cmartin.aviation.Commons
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
-import zio.ZIO
+import zio.Runtime.{default => runtime}
+import zio.{Unsafe, ZIO}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -22,7 +22,10 @@ trait ActuatorApi {
   /* TODO add logger & metrics aspect ZIO v2
    */
   private def doGetLogic(): Future[Model.BuildInfoView] =
-    Commons.runtime.unsafeRunToFuture(ZIO.succeed((BuildInfo.toView)))
+    Unsafe.unsafe { implicit u =>
+      runtime.unsafe.runToFuture(ZIO.succeed((BuildInfo.toView)))
+    }
+
 }
 
 object ActuatorApi extends ActuatorApi {}

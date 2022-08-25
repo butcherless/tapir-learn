@@ -1,10 +1,10 @@
 package com.cmartin.aviation.repository.zioimpl
 
+import com.cmartin.aviation.repository.Common._
 import com.cmartin.aviation.repository.Model.{AirportDbo, CountryDbo, RouteDbo}
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.{AirportRepository, Common, CountryRepository, RouteRepository}
 import org.scalatest.Inside._
-import zio.Runtime.{default => runtime}
 import zio.ZLayer.Debug
 import zio.{ZIO, ZLayer}
 
@@ -31,7 +31,7 @@ class SlickRouteRepositorySpec
       id                       <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
     } yield id
 
-    val id = runtime.unsafeRun(
+    val id = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -48,7 +48,7 @@ class SlickRouteRepositorySpec
                                   )
     } yield ids
 
-    val ids = runtime.unsafeRun(
+    val ids = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -63,7 +63,7 @@ class SlickRouteRepositorySpec
       _                        <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, destinationId))
     } yield ()
 
-    val resultEither = runtime.unsafeRun(
+    val resultEither = unsafeRun(
       program.provideLayer(env).either
     )
 
@@ -77,7 +77,7 @@ class SlickRouteRepositorySpec
       _             <- RouteRepository.insert(RouteDbo(madBcnDistance, 0L, destinationId))
     } yield ()
 
-    val resultEither = runtime.unsafeRun(
+    val resultEither = unsafeRun(
       program.provideLayer(env).either
     )
 
@@ -91,7 +91,7 @@ class SlickRouteRepositorySpec
       _         <- RouteRepository.insert(RouteDbo(madBcnDistance, originId, 0L))
     } yield ()
 
-    val resultEither = runtime.unsafeRun(
+    val resultEither = unsafeRun(
       program.provideLayer(env).either
     )
 
@@ -109,7 +109,7 @@ class SlickRouteRepositorySpec
       updated                  <- RouteRepository.findByOriginAndDestination(madIataCode, bcnIataCode)
     } yield (updated, count)
 
-    val (updated, count) = runtime.unsafeRun(
+    val (updated, count) = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -126,7 +126,7 @@ class SlickRouteRepositorySpec
       count                    <- RouteRepository.deleteByOriginAndDestination(madIataCode, bcnIataCode)
     } yield count
 
-    val count = runtime.unsafeRun(
+    val count = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -145,7 +145,7 @@ class SlickRouteRepositorySpec
       routes    <- RouteRepository.findByIataOrigin(madIataCode)
     } yield (routes, madId)
 
-    val (routes, madId) = runtime.unsafeRun(
+    val (routes, madId) = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -171,7 +171,7 @@ class SlickRouteRepositorySpec
       routes    <- RouteRepository.findByIataDestination(bcnIataCode)
     } yield (routes, bcnId)
 
-    val (routes, bcnId) = runtime.unsafeRun(
+    val (routes, bcnId) = unsafeRun(
       program.provideLayer(env)
     )
 

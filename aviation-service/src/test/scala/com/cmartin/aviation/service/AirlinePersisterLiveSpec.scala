@@ -6,11 +6,12 @@ import com.cmartin.aviation.repository.AirlineRepository
 import com.cmartin.aviation.repository.zioimpl.{SlickAirlineRepository, SlickCountryRepository}
 import com.cmartin.aviation.test.Common
 import com.cmartin.aviation.test.TestData._
-import zio.Runtime.{default => runtime}
 import zio.{ZIO, ZLayer}
 
 class AirlinePersisterLiveSpec
     extends SlickBasePersisterSpec {
+
+  import TestRepositories._
 
   val env =
     ZLayer.make[CountryPersister with AirlinePersister](
@@ -40,9 +41,7 @@ class AirlinePersisterLiveSpec
       id <- AirlinePersister.insert(ibeAirline)
     } yield id
 
-    val id = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val id = unsafeRun(program.provideLayer(env))
 
     id should be > 0L
   }
@@ -54,9 +53,7 @@ class AirlinePersisterLiveSpec
       _ <- AirlinePersister.insert(ibeAirline)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(env).either
-    )
+    val either = unsafeRun(program.provideLayer(env).either)
     either.left.value shouldBe a[DuplicateEntityError]
   }
 
@@ -67,9 +64,7 @@ class AirlinePersisterLiveSpec
       exists <- AirlinePersister.existsByCode(ibeIataCode)
     } yield exists
 
-    val exists = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val exists = unsafeRun(program.provideLayer(env))
 
     exists shouldBe true
   }
@@ -79,9 +74,7 @@ class AirlinePersisterLiveSpec
       exists <- AirlinePersister.existsByCode(ibeIataCode)
     } yield exists
 
-    val exists = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val exists = unsafeRun(program.provideLayer(env))
 
     exists shouldBe false
   }
@@ -98,9 +91,7 @@ class AirlinePersisterLiveSpec
       _ <- AirlinePersister.existsByCode(ibeIataCode)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(mockEnv).either
-    )
+    val either = unsafeRun(program.provideLayer(mockEnv).either)
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }
@@ -112,9 +103,7 @@ class AirlinePersisterLiveSpec
       airlineOpt <- AirlinePersister.findByCode(ibeIataCode)
     } yield airlineOpt
 
-    val airlineOpt = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val airlineOpt = unsafeRun(program.provideLayer(env))
 
     airlineOpt shouldBe Some(ibeAirline)
   }
@@ -124,9 +113,7 @@ class AirlinePersisterLiveSpec
       airlineOpt <- AirlinePersister.findByCode(ibeIataCode)
     } yield airlineOpt
 
-    val airlineOpt = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val airlineOpt = unsafeRun(program.provideLayer(env))
 
     airlineOpt shouldBe None
   }
@@ -142,9 +129,7 @@ class AirlinePersisterLiveSpec
       _ <- AirlinePersister.findByCode(ibeIataCode)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(mockEnv).either
-    )
+    val either = unsafeRun(program.provideLayer(mockEnv).either)
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }
@@ -157,9 +142,7 @@ class AirlinePersisterLiveSpec
       airlines <- AirlinePersister.findByCountry(spainCode)
     } yield airlines
 
-    val airlines = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val airlines = unsafeRun(program.provideLayer(env))
 
     airlines shouldBe Seq(ibeAirline, aeaAirline)
   }
@@ -169,9 +152,7 @@ class AirlinePersisterLiveSpec
       airlines <- AirlinePersister.findByCountry(spainCode)
     } yield airlines
 
-    val airlines = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val airlines = unsafeRun(program.provideLayer(env))
 
     airlines shouldBe empty
   }
@@ -187,9 +168,7 @@ class AirlinePersisterLiveSpec
       _ <- AirlinePersister.findByCountry(spainCode)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(mockEnv).either
-    )
+    val either = unsafeRun(program.provideLayer(mockEnv).either)
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }
@@ -204,9 +183,7 @@ class AirlinePersisterLiveSpec
       airlineOpt <- AirlinePersister.findByCode(ibeIataCode)
     } yield (airlineOpt, count)
 
-    val (airlineOpt, count) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val (airlineOpt, count) = unsafeRun(program.provideLayer(env))
 
     count shouldBe 1
     airlineOpt shouldBe Some(updatedAirline)
@@ -234,9 +211,7 @@ class AirlinePersisterLiveSpec
       _ <- AirlinePersister.update(updatedAirline)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(mockEnv).either
-    )
+    val either = unsafeRun(program.provideLayer(mockEnv).either)
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }
@@ -248,9 +223,7 @@ class AirlinePersisterLiveSpec
       count <- AirlinePersister.delete(ibeIataCode)
     } yield count
 
-    val count = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val count = unsafeRun(program.provideLayer(env))
 
     count shouldBe 1
   }
@@ -266,9 +239,7 @@ class AirlinePersisterLiveSpec
       _ <- AirlinePersister.delete(ibeIataCode)
     } yield ()
 
-    val either = runtime.unsafeRun(
-      program.provideLayer(mockEnv).either
-    )
+    val either = unsafeRun(program.provideLayer(mockEnv).either)
 
     either.left.value shouldBe a[UnexpectedServiceError]
   }

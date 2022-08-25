@@ -7,12 +7,16 @@ import org.scalatest.Ignore
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
-import sttp.client3.{basicRequest, Response, _}
 import sttp.client3.circe._
+import sttp.client3.{Response, basicRequest, _}
 import sttp.model.{Method, StatusCode}
+import zio.Runtime.{default => runtime}
+import zio.{Unsafe, ZIO}
 
 @Ignore
-class TransferApiClientSpec extends AnyFlatSpec with Matchers {
+class TransferApiClientSpec
+    extends AnyFlatSpec
+    with Matchers {
 
   import TransferApiClientSpec._
 
@@ -32,11 +36,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/health")
         .response(asJson[BuildInfoDto])
 
-    val response =
-      runtime
-        .unsafeRun(
-          backend.send(request)
-        )
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.Ok
     response.body shouldBe dtoResponse
@@ -48,7 +48,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/transfers/1")
         .response(asJson[TransferDto])
 
-    val response = runtime.unsafeRun(backend.send(request))
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.Ok
     response.body shouldBe TransferEndpoint.transferExample
@@ -60,7 +60,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/transfers/400")
         .response(asJson[TransferDto])
 
-    val response = runtime.unsafeRun(backend.send(request))
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.BadRequest
     response.body.isLeft shouldBe true
@@ -72,7 +72,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/transfers/404")
         .response(asJson[TransferDto])
 
-    val response = runtime.unsafeRun(backend.send(request))
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.NotFound
     response.body.isLeft shouldBe true
@@ -84,7 +84,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .get(uri"http://localhost:8080/api/v1.0/transfers/500")
         .response(asJson[TransferDto])
 
-    val response = runtime.unsafeRun(backend.send(request))
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.InternalServerError
     response.body.isLeft shouldBe true
@@ -96,7 +96,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .body(TransferEndpoint.transferExample)
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
-    val response = runtime.unsafeRun(backend.send(request))
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.Created
     response.body shouldBe TransferEndpoint.transferExample
@@ -108,7 +108,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .body(""" { "transfer" : "invalid" }""")
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
-    val response = runtime.unsafeRun(backend.send(request))
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.BadRequest
     response.body.isLeft shouldBe true
@@ -120,7 +120,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .body(""" { "transfer" : "duplicate" }""")
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
-    val response = runtime.unsafeRun(backend.send(request))
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.Conflict
     response.body.isLeft shouldBe true
@@ -132,7 +132,7 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
         .body(""" { "transfer" : "server-error" }""")
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
 
-    val response = runtime.unsafeRun(backend.send(request))
+    val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.InternalServerError
     response.body.isLeft shouldBe true
@@ -141,7 +141,12 @@ class TransferApiClientSpec extends AnyFlatSpec with Matchers {
 }
 
 object TransferApiClientSpec {
-  val runtime = zio.Runtime.default
+
+  def unsafeRun[E, A](program: ZIO[Any, E, A]): A =
+    Unsafe.unsafe { implicit u =>
+      runtime.unsafe.run(program)
+        .getOrThrowFiberFailure()
+    }
 
   val backend = AsyncHttpClientZioBackend.stub
     .whenRequestMatches { req =>

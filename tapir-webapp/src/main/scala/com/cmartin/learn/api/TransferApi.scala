@@ -7,7 +7,7 @@ import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.ApiConverters._
 import com.cmartin.learn.domain.Model.Transfer
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
-import zio.{Task, ZIO}
+import zio.{Task, Unsafe, ZIO}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,7 +43,9 @@ trait TransferApi {
     } yield transferDto
     val x1      = program.mapError(handle2Error)
 
-    runtime.unsafeRunToFuture(x1.either)
+    Unsafe.unsafe { implicit u =>
+      runtime.unsafe.runToFuture(x1.either)
+    }
   }
 
   lazy val getFilteredRoute: Route =

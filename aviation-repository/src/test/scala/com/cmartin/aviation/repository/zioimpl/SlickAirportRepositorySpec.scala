@@ -1,9 +1,9 @@
 package com.cmartin.aviation.repository.zioimpl
 
+import com.cmartin.aviation.repository.Common._
 import com.cmartin.aviation.repository.Model.AirportDbo
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.{AirportRepository, Common, CountryRepository}
-import zio.Runtime.{default => runtime}
 import zio.ZLayer.Debug
 import zio.{TaskLayer, ZLayer}
 
@@ -29,9 +29,7 @@ class SlickAirportRepositorySpec
       airportId <- AirportRepository.insert(madDbo.copy(countryId = countryId))
     } yield airportId
 
-    val id = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val id = unsafeRun(program.provideLayer(env))
 
     id should be > 0L
   }
@@ -45,9 +43,7 @@ class SlickAirportRepositorySpec
                    )
     } yield ids
 
-    val ids = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val ids = unsafeRun(program.provideLayer(env))
 
     assert(ids.forall(_ > 0L), "non positive entity identifier")
   }
@@ -59,9 +55,7 @@ class SlickAirportRepositorySpec
       _         <- AirportRepository.insert(madDbo.copy(countryId = countryId))
     } yield ()
 
-    val resultEither = runtime.unsafeRun(
-      program.provideLayer(env).either
-    )
+    val resultEither = unsafeRun(program.provideLayer(env).either)
 
     resultEither.left.value shouldBe a[SQLIntegrityConstraintViolationException]
   }
@@ -73,9 +67,7 @@ class SlickAirportRepositorySpec
       airport   <- AirportRepository.findByIataCode(madIataCode)
     } yield (airport, countryId, aid)
 
-    val (dboOpt, cid, aid) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val (dboOpt, cid, aid) = unsafeRun(program.provideLayer(env))
 
     dboOpt shouldBe Some(madDbo.copy(countryId = cid, id = aid))
   }
@@ -87,9 +79,7 @@ class SlickAirportRepositorySpec
       airport   <- AirportRepository.findByIcaoCode(madIcaoCode)
     } yield (airport, countryId, aid)
 
-    val (dboOpt, cid, aid) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val (dboOpt, cid, aid) = unsafeRun(program.provideLayer(env))
 
     dboOpt shouldBe Some(madDbo.copy(countryId = cid, id = aid))
   }
@@ -105,9 +95,7 @@ class SlickAirportRepositorySpec
       count      <- AirportRepository.count()
     } yield (airports, spainId, count)
 
-    val (airports, spainId, count) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val (airports, spainId, count) = unsafeRun(program.provideLayer(env))
 
     airports should have size 2
     airports.forall(_.countryId == spainId) shouldBe true
@@ -127,9 +115,7 @@ class SlickAirportRepositorySpec
       airports <- AirportRepository.findByName("Barajas")
     } yield airports
 
-    val airports = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val airports = unsafeRun(program.provideLayer(env))
 
     airports should have size 3
   }
@@ -139,9 +125,7 @@ class SlickAirportRepositorySpec
       airport <- AirportRepository.findByIataCode(madIataCode)
     } yield airport
 
-    val dboOpt = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val dboOpt = unsafeRun(program.provideLayer(env))
 
     dboOpt shouldBe None
   }
@@ -155,9 +139,7 @@ class SlickAirportRepositorySpec
       updated <- AirportRepository.findByIataCode(madIataCode)
     } yield (updated, count)
 
-    val (updated, count) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val (updated, count) = unsafeRun(program.provideLayer(env))
 
     count shouldBe 1
     updated.isDefined shouldBe true
@@ -171,9 +153,7 @@ class SlickAirportRepositorySpec
       count <- AirportRepository.deleteByIataCode(madIataCode)
     } yield count
 
-    val count = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val count = unsafeRun(program.provideLayer(env))
 
     count shouldBe 1
   }

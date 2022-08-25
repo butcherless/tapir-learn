@@ -5,7 +5,8 @@ import com.cmartin.aviation.repository.Model._
 import com.cmartin.aviation.repository.zioimpl.Helper.SlickSchemaManager
 import slick.basic.DatabaseConfig
 import slick.jdbc.{JdbcBackend, JdbcProfile}
-import zio.{Task, TaskLayer, ZIO, ZLayer}
+import zio.Runtime.{default => runtime}
+import zio.{Task, TaskLayer, Unsafe, ZIO, ZLayer}
 
 import scala.concurrent.Future
 
@@ -13,6 +14,12 @@ object Common {
 
   val configPath = "h2_dc"
   val dao        = new TestDao(configPath)
+
+  def unsafeRun[E, A](program: ZIO[Any, E, A]): A =
+    Unsafe.unsafe { implicit u =>
+      runtime.unsafe.run(program)
+        .getOrThrowFiberFailure()
+    }
 
   class TestDao(configPath: String)
       extends DataAccessObject(configPath) {

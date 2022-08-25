@@ -1,12 +1,12 @@
 package com.cmartin.aviation.repository.zioimpl
 
+import com.cmartin.aviation.repository.Common._
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.TestData._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import zio.Runtime.{default => runtime}
 import zio.stm.{STM, TRef, TSet}
 import zio.{TaskLayer, ZIO, ZLayer}
 
@@ -25,7 +25,7 @@ class SetCountryRepositorySpec
       count <- CountryRepository.count()
     } yield (id, count)
 
-    val (id, count) = runtime.unsafeRun(program.provideLayer(env))
+    val (id, count) = unsafeRun(program.provideLayer(env))
 
     id should be > 0L
     count shouldBe 1
@@ -37,7 +37,7 @@ class SetCountryRepositorySpec
       dbo <- CountryRepository.findByCode(spainCode)
     } yield dbo
 
-    val dboOpt = runtime.unsafeRun(program.provideLayer(env))
+    val dboOpt = unsafeRun(program.provideLayer(env))
 
     dboOpt shouldBe Some(spainDbo.copy(id = dboOpt.get.id))
   }
@@ -47,9 +47,7 @@ class SetCountryRepositorySpec
       dbo <- CountryRepository.findByCode(spainCode)
     } yield dbo
 
-    val dboOpt = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val dboOpt = unsafeRun(program.provideLayer(env))
 
     dboOpt shouldBe None
   }
@@ -62,9 +60,7 @@ class SetCountryRepositorySpec
       updated <- CountryRepository.find(id)
     } yield (updated, count)
 
-    val (dboOpt, count) = runtime.unsafeRun(
-      program.provideLayer(env)
-    )
+    val (dboOpt, count) = unsafeRun(program.provideLayer(env))
 
     dboOpt shouldBe Some(CountryDbo(updatedSpainText, spainCode, dboOpt.get.id))
     count shouldBe 1
@@ -76,7 +72,7 @@ class SetCountryRepositorySpec
       count <- CountryRepository.delete(spainCode)
     } yield count
 
-    val count = runtime.unsafeRun(program.provideLayer(env))
+    val count = unsafeRun(program.provideLayer(env))
 
     count shouldBe 1
   }
@@ -86,18 +82,18 @@ class SetCountryRepositorySpec
       count <- CountryRepository.delete(spainCode)
     } yield count
 
-    val count = runtime.unsafeRun(program.provideLayer(env))
+    val count = unsafeRun(program.provideLayer(env))
 
     count shouldBe 0
   }
   override def beforeEach(): Unit = {
-    runtime.unsafeRun(deleteDbSet())
+    unsafeRun(deleteDbSet())
   }
 }
 
 object SetCountryRepositorySpec {
 
-  lazy val (seqTRef, dbTSet) = runtime.unsafeRun {
+  lazy val (seqTRef, dbTSet) = unsafeRun {
     for {
       tuple                         <- STM.atomically {
                                          for {

@@ -1,10 +1,10 @@
 package com.cmartin.aviation.api
 
-import com.cmartin.aviation.Commons._
 import com.cmartin.aviation.api.BaseEndpoint._
 import com.cmartin.aviation.api.Model._
 import com.cmartin.aviation.domain.Model._
-import zio.IO
+import zio.Runtime.{default => runtime}
+import zio.{IO, Unsafe}
 
 object Common {
 
@@ -16,22 +16,26 @@ object Common {
   /* leave the pure world to the real impure world
    */
   def run[A](program: ApiResponse[A]): RouteResponse[A] = {
-    runtime.unsafeRunToFuture(
-      program
-        // .provideLayer(loggingEnv)
-        .mapError(handleError)
-        .either
-    )
+    Unsafe.unsafe { implicit u =>
+      runtime.unsafe.runToFuture(
+        program
+          // .provideLayer(loggingEnv)
+          .mapError(handleError)
+          .either
+      )
+    }
   }
 
   /* leave the pure world to the real impure world
    */
   def run2[A](program: Api2Response[A]): RouteResponse[A] = {
-    runtime.unsafeRunToFuture(
-      program
-        .mapError(handleError)
-        .either
-    )
+    Unsafe.unsafe { implicit u =>
+      runtime.unsafe.runToFuture(
+        program
+          .mapError(handleError)
+          .either
+      )
+    }
   }
 
   // map ServiceError to ApiError, default case

@@ -4,10 +4,10 @@ import com.cmartin.aviation.port.CountryPersister
 import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.zioimpl.SetCountryRepository
+import com.cmartin.aviation.service.TestRepositories._
 import com.cmartin.aviation.test.TestData._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import zio.Runtime.{default => runtime}
 import zio.stm.{STM, TRef, TSet}
 import zio.{TaskLayer, ZIO, ZLayer}
 
@@ -29,7 +29,7 @@ class CountryPersisterLiveWithSetRepoSpec
       id <- CountryPersister.insert(spainCountry)
     } yield id
 
-    val id = runtime.unsafeRun(
+    val id = unsafeRun(
       program.provideLayer(env)
     )
 
@@ -39,7 +39,7 @@ class CountryPersisterLiveWithSetRepoSpec
 }
 
 object CountryPersisterLiveWithSetRepoSpec {
-  lazy val (seqTRef, dbTSet) = runtime.unsafeRun {
+  lazy val (seqTRef, dbTSet) = unsafeRun {
     for {
       tuple                         <- STM.atomically {
                                          for {

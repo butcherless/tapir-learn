@@ -6,7 +6,7 @@ import io.circe.generic.auto._
 import sttp.model.StatusCode
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe.jsonBody
-import sttp.tapir.{statusCode, PublicEndpoint}
+import sttp.tapir.{PublicEndpoint, statusCode}
 
 import java.time.{Instant, LocalDateTime, ZoneId}
 
