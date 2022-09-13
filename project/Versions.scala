@@ -5,7 +5,7 @@ object Versions {
   val h2         = "2.1.214"
   val json4s     = "4.0.5"
   val logback    = "1.2.11"
-  val slf4zio    = "1.0.0"
+  val slf4zio    = "2.0.0"
   val slick      = "3.4.0"
   val sttp       = "3.6.2"
   val tapir      = "1.1.0"
