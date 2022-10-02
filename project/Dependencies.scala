@@ -61,7 +61,6 @@ object Dependencies {
     "com.softwaremill.sttp.tapir"   %% "tapir-zio-http-server"         % Versions.tapir,
     "com.typesafe.akka"             %% "akka-slf4j"                    % Versions.akka,
     "ch.qos.logback"                 % "logback-classic"               % Versions.logback,
-    "com.github.mlangc"             %% "slf4zio"                       % Versions.slf4zio,
     "dev.zio"                       %% "zio-prelude"                   % Versions.zioPrelude,
     "org.json4s"                    %% "json4s-ext"                    % Versions.json4s,
     "org.json4s"                    %% "json4s-native"                 % Versions.json4s,

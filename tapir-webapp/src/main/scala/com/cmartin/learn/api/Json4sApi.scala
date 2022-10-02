@@ -4,7 +4,6 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.Model.AircraftDto
 import com.cmartin.learn.api.Model.AircraftType
-import com.github.mlangc.slf4zio.api.LoggingSupport
 import org.json4s.JValue
 import org.json4s._
 import org.json4s.ext.EnumNameSerializer
@@ -17,7 +16,7 @@ import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait Json4sApi extends LoggingSupport {
+trait Json4sApi {
 
   implicit val serialization: Serialization = org.json4s.native.Serialization
   implicit val formats: Formats             = DefaultFormats + new EnumNameSerializer(AircraftType)
