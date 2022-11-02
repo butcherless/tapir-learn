@@ -3,13 +3,13 @@ object Versions {
   val akkaHttp   = "10.2.9"
   val akka       = "2.6.20"
   val h2         = "2.1.214"
-  val json4s     = "4.0.5"
-  val logback    = "1.2.11"
+  val json4s     = "4.0.6"
+  val logback    = "1.4.4"
   val slick      = "3.4.1"
   val sttp       = "3.6.2"
-  val tapir      = "1.1.2"
-  val zioLogging = "2.1.1"
-  val zioPrelude = "1.0.0-RC15"
+  val tapir      = "1.1.4"
+  val zioLogging = "2.1.3"
+  val zioPrelude = "1.0.0-RC16"
 
   // test
   val scalatest = "3.2.14"

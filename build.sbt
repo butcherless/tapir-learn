@@ -41,16 +41,8 @@ lazy val `tapir-webapp` = project
     Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= mainAndTest,
-    assemblyJarName       := "tapir-webapp.jar",
-    name                  := "tapir-webapp",
-    assemblyMergeStrategy := {
-      // case PathList("io", "netty", "netty-all", xs @ _*) => MergeStrategy.first
-      case "META-INF/io.netty.versions.properties" => MergeStrategy.first
-      case "module-info.class"                     => MergeStrategy.first
-      case x                                       =>
-        val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
-        oldStrategy(x)
-    }
+    assemblyJarName := "tapir-webapp.jar",
+    name            := "tapir-webapp"
   )
   .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
   .settings(BuildInfoSettings.value)
@@ -153,3 +145,12 @@ addCommandAlias("xupdate", "clean;update")
 addCommandAlias("xdup", "dependencyUpdates")
 addCommandAlias("xcompile", "~aviation-root/cls ; compile")
 addCommandAlias("xtestCompile", "~aviation-root/cls ; Test/compile")
+
+ThisBuild / assemblyMergeStrategy := {
+  // case PathList("io", "netty", "netty-all", xs @ _*) => MergeStrategy.first
+  case "META-INF/io.netty.versions.properties" => MergeStrategy.first
+  case "module-info.class"                     => MergeStrategy.first
+  case x                                       =>
+    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+    oldStrategy(x)
+}
