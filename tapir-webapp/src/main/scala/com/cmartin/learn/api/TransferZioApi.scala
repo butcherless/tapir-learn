@@ -20,7 +20,7 @@ trait TransferZioApi {
    */
 
   val zioGetRoute =
-    ZioHttpInterpreter().toHttp(
+    ZioHttpInterpreter().toApp(
       TransferEndpoint.getTransferEndpoint.zServerLogic { id =>
         for {
           transfer <- TransferApi.doBusinessLogic(id)
