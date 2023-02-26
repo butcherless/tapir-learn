@@ -13,7 +13,7 @@ class ZioHttpServerApp
   // ZioSwaggerApi.route
 
   override def run =
-    Server.serve(routes)
+    Server.serve(routes.withDefaultErrorResponse)
       .provide(
         ServerConfig.live(ServerConfig()
           .binding(new InetSocketAddress(8090))) >>> Server.default
