@@ -9,7 +9,7 @@ object Versions {
   val sttp       = "3.6.2"
   val zioLogging = "2.1.10"
   val tapir      = "1.2.9"
-  val zioPrelude = "1.0.0-RC16"
+  val zioPrelude = "1.0.0-RC17"
 
   // test
   val scalatest = "3.2.15"
