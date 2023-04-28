@@ -2,9 +2,7 @@ package com.cmartin.learn
 
 import com.cmartin.learn.apizio.ActuatorApi
 import zio._
-import zio.http.{Server, ServerConfig}
-
-import java.net.InetSocketAddress
+import zio.http.Server
 class ZioHttpServerApp
     extends ZIOAppDefault {
 
@@ -12,11 +10,14 @@ class ZioHttpServerApp
     ActuatorApi.healthRoute // <>
   // ZioSwaggerApi.route
 
-  override def run =
+  override def run: URIO[Any, ExitCode] = {
+
     Server.serve(routes.withDefaultErrorResponse)
       .provide(
-        ServerConfig.live(ServerConfig()
-          .binding(new InetSocketAddress(8090))) >>> Server.default
-      ).exitCode
+        ZLayer.succeed(Server.Config.default.port(8090)),
+        Server.live
+      )
+      .exitCode
+  }
 
 }
