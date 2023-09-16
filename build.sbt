@@ -129,11 +129,12 @@ lazy val `aviation-test-utils` = project
 // clear screen and banner
 lazy val cls = taskKey[Unit]("Prints a separator")
 cls := {
-  val brs     = "\n".repeat(2)
-  val message = "* B U I L D   B E G I N S   H E R E *"
-  val chars   = "*".repeat(message.length())
+  val brs           = "\n".repeat(2)
+  val message       = "BUILD BEGINS HERE"
+  val spacedMessage = message.mkString("* ", " ", " *")
+  val chars         = "*".repeat(spacedMessage.length())
   println(s"$brs$chars")
-  println("* B U I L D   B E G I N S   H E R E *")
+  println(spacedMessage)
   println(s"$chars$brs ")
 }
 
