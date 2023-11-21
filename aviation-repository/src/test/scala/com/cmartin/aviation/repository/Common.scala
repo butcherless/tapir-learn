@@ -8,7 +8,7 @@ import slick.jdbc.{JdbcBackend, JdbcProfile}
 import zio.Runtime.{default => runtime}
 import zio.{Task, TaskLayer, Unsafe, ZIO, ZLayer}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 object Common {
 
@@ -37,7 +37,7 @@ object Common {
 
     /* H E L P E R S */
 
-    implicit val ec = scala.concurrent.ExecutionContext.global
+    implicit val ec: ExecutionContextExecutor = scala.concurrent.ExecutionContext.global
 
     def insertAirport(countryDbo: CountryDbo)(airportDbo: AirportDbo): DBIO[Long] = {
       for {

@@ -6,10 +6,11 @@ import io.circe.Decoder
 import io.circe.Encoder
 import io.circe.HCursor
 import io.circe.Json
+import org.json4s.DefaultFormats
 
 trait ApiCodecs {
 
-  implicit val formats = org.json4s.DefaultFormats
+  implicit val formats: DefaultFormats.type = org.json4s.DefaultFormats
 
   implicit lazy val aircraftEncoder: Encoder[Aircraft] = new Encoder[Aircraft] {
     override def apply(a: Aircraft): Json = {

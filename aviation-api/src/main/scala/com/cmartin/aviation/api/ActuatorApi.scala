@@ -23,7 +23,7 @@ trait ActuatorApi {
    */
   private def doGetLogic(): Future[Model.BuildInfoView] =
     Unsafe.unsafe { implicit u =>
-      runtime.unsafe.runToFuture(ZIO.succeed((BuildInfo.toView)))
+      runtime.unsafe.runToFuture(ZIO.succeed(BuildInfo.toView))
     }
 
 }
