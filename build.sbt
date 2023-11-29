@@ -150,6 +150,7 @@ addCommandAlias("xtestCompile", "~aviation-root/cls ; Test/compile")
 ThisBuild / assemblyMergeStrategy := {
   // case PathList("io", "netty", "netty-all", xs @ _*) => MergeStrategy.first
   case "META-INF/io.netty.versions.properties" => MergeStrategy.first
+  case "META-INF/versions/9/module-info.class" => MergeStrategy.first
   case "module-info.class"                     => MergeStrategy.first
   case "deriving.conf"                         => MergeStrategy.first
   case x                                       =>
