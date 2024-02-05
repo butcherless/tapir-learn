@@ -8,7 +8,7 @@ object Versions {
   val slick      = "3.4.1"
   val sttp       = "3.9.2"
   val zioLogging = "2.2.0"
-  val tapir      = "1.9.8"
+  val tapir      = "1.9.9"
   val zioPrelude = "1.0.0-RC22"
 
   // test
