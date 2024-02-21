@@ -24,9 +24,9 @@ class AircraftApiSpec extends AnyFlatSpec with Matchers with ScalatestRouteTest 
 
   import AircraftApiSpec._
 
-  implicit val timeout: RouteTestTimeout = RouteTestTimeout(5.seconds.dilated)
+  implicit val timeout: RouteTestTimeout    = RouteTestTimeout(5.seconds.dilated)
   implicit val serialization: Serialization = org.json4s.native.Serialization
-  implicit val formats: Formats = DefaultFormats + new EnumNameSerializer(AircraftType)
+  implicit val formats: Formats             = DefaultFormats + new EnumNameSerializer(AircraftType)
 
   behavior of "AircraftApi API"
 
