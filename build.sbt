@@ -3,7 +3,7 @@ import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.13"
 ThisBuild / organization := "com.cmartin.learn"
 
 lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
