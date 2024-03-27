@@ -14,7 +14,7 @@ trait AirportEndpoints {
   lazy val getByIataCodeEndpoint: PublicEndpoint[String, OutputError, AirportView, Any] =
     baseEndpoint.get
       .name("airport-get-by-iata-code-endpoint")
-      .description("Retrieves an Airport by its iata code")
+      .description("Retrieves an Airport by its IATA code")
       .in(airportPath)
       .in(iataCodePath)
       .out(jsonBody[AirportView].example(AirportEndpoints.airportViewExample))
@@ -41,6 +41,7 @@ trait AirportEndpoints {
       .errorOut(
         oneOf[OutputError](
           badRequestMapping,
+          conflictMapping,
           internalErrorMapping,
           defaultMapping
         )
@@ -49,7 +50,7 @@ trait AirportEndpoints {
   lazy val deleteEndpoint: PublicEndpoint[String, OutputError, Unit, Any] =
     baseEndpoint.delete
       .name("airport-delete-endpoint")
-      .description("Deletes an Airport by its iata code")
+      .description("Deletes an Airport by its IATA code")
       .in(airportPath)
       .in(iataCodePath)
       .out(statusCode(StatusCode.NoContent))
@@ -61,11 +62,17 @@ trait AirportEndpoints {
         )
       )
 
-  lazy val airportsResource = "countries"
-  lazy val airportPath      = baseApiResource / airportsResource
-  lazy val iataCodePath     = path[String]("iataCode")
+  lazy val airportsResource                                = "airports"
+  lazy val airportPath: EndpointInput[Unit]                = baseApiResource / airportsResource
+  lazy val iataCodePath: EndpointInput.PathCapture[String] = path[String]("code")
 }
 
 object AirportEndpoints extends AirportEndpoints {
-  val airportViewExample = AirportView("Madrid Barajas", "MAD", "LEMD", "es")
+  val airportViewExample: AirportView =
+    AirportView(
+      "Madrid Barajas",
+      "MAD",
+      "LEMD",
+      "es"
+    )
 }

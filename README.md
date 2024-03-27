@@ -63,7 +63,9 @@ Check Health endpoint
 
 http://localhost:8080/api/v1.0/health
 
+```bash
 curl -v http://localhost:8080/api/v1.0/health | jq
+```
 
 Run the test suites
 

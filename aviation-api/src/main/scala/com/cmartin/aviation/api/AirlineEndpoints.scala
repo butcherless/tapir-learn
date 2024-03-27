@@ -15,8 +15,8 @@ trait AirlineEndpoints {
 
   lazy val getByIataCodeEndpoint: PublicEndpoint[String, OutputError, AirlineView, Any] =
     baseEndpoint.get
-      .name("airport-get-by-iata-code-endpoint")
-      .description("Retrieves an Airport by its iata code")
+      .name("airline-get-by-iata-code-endpoint")
+      .description("Retrieves an Airline by its IATA code")
       .in(airlinePath)
       .in(codePath)
       .out(jsonBody[AirlineView].example(AirlineEndpoints.airlineViewExample))
@@ -31,8 +31,8 @@ trait AirlineEndpoints {
 
   lazy val postEndpoint: PublicEndpoint[AirlineView, OutputError, (String, AirlineView), Any] =
     baseEndpoint.post
-      .name("airport-post-endpoint")
-      .description("Creates an Airport")
+      .name("airline-post-endpoint")
+      .description("Creates an Airline")
       .in(airlinePath)
       .in(jsonBody[AirlineView].example(AirlineEndpoints.airlineViewExample))
       .out(
@@ -43,6 +43,7 @@ trait AirlineEndpoints {
       .errorOut(
         oneOf[OutputError](
           badRequestMapping,
+          conflictMapping,
           internalErrorMapping,
           defaultMapping
         )
@@ -50,8 +51,8 @@ trait AirlineEndpoints {
 
   lazy val deleteEndpoint: PublicEndpoint[String, OutputError, Unit, Any] =
     baseEndpoint.delete
-      .name("airport-delete-endpoint")
-      .description("Deletes an Airport by its iata code")
+      .name("airline-delete-endpoint")
+      .description("Deletes an Airline by its IATA code")
       .in(airlinePath)
       .in(codePath)
       .out(statusCode(StatusCode.NoContent))
@@ -70,5 +71,10 @@ trait AirlineEndpoints {
 
 object AirlineEndpoints extends AirlineEndpoints {
   val airlineViewExample: AirlineView =
-    AirlineView("Iberia", "IB", LocalDate.of(1927, 6, 28), "es") // TODO date
+    AirlineView(
+      "Iberia",
+      "IB",
+      LocalDate.of(1927, 6, 28),
+      "es"
+    ) // TODO date
 }

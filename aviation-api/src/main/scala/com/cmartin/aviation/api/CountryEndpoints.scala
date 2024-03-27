@@ -21,7 +21,8 @@ trait CountryEndpoints {
       .description("Retrieves a Country by its code")
       .in(countryPath)
       .in(codePath)
-      .out(jsonBody[CountryView].example(CountryEndpoints.countryViewExample))
+      .out(jsonBody[CountryView]
+        .example(CountryEndpoints.countryViewExample))
       .errorOut(
         oneOf[OutputError](
           badRequestMapping,
@@ -31,12 +32,28 @@ trait CountryEndpoints {
         )
       )
 
+  lazy val getAllEndpoint: PublicEndpoint[Unit, OutputError, List[CountryView], Any] =
+    baseEndpoint.get
+      .name("country-get-all-endpoint")
+      .description("Retrieves all the Countries")
+      .in(countryPath)
+      .out(jsonBody[List[CountryView]]
+        .example(CountryEndpoints.countriesViewExample))
+      .errorOut(
+        oneOf[OutputError](
+          internalErrorMapping,
+          defaultMapping
+        )
+      )
+
+
   lazy val postEndpoint: PublicEndpoint[CountryView, OutputError, (String, CountryView), Any] =
     baseEndpoint.post
       .name("country-post-endpoint")
       .description("Creates a Country")
       .in(countryPath)
-      .in(jsonBody[CountryView].example(CountryEndpoints.countryViewExample))
+      .in(jsonBody[CountryView]
+        .example(CountryEndpoints.countryViewExample))
       .out(
         statusCode(StatusCode.Created)
           .and(header[String](`Content-Location`.name))
@@ -56,10 +73,12 @@ trait CountryEndpoints {
       .name("country-put-endpoint")
       .description("Updates a Country")
       .in(countryPath)
-      .in(jsonBody[CountryView].example(CountryEndpoints.countryViewExample))
+      .in(jsonBody[CountryView]
+        .example(CountryEndpoints.countryViewExample))
       .out(
         statusCode(StatusCode.Ok)
-          .and(jsonBody[CountryView].example(CountryEndpoints.countryViewExample))
+          .and(jsonBody[CountryView]
+            .example(CountryEndpoints.countryViewExample))
       )
       .errorOut(
         oneOf[OutputError](
@@ -92,7 +111,21 @@ trait CountryEndpoints {
 
 object CountryEndpoints extends CountryEndpoints {
   val countryViewExample: CountryView =
-    CountryView(CountryCode("es"), "Spain")
+    CountryView(
+      CountryCode("es"),
+      "Spain"
+    )
+
+  val countriesViewExample: List[CountryView] = {
+    List(
+      countryViewExample,
+      CountryView(
+        CountryCode("uk"),
+        "United Kingdom"
+      )
+    )
+  }
+
 
   object Implicits {
     implicit val encodeCountryCode: Encoder[CountryCode] =

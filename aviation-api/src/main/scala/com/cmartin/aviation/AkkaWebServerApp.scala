@@ -4,13 +4,13 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import com.cmartin.aviation.api.configuration.ApiConfiguration
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
-import scala.util.Failure
-import scala.util.Success
+import scala.util.{Failure, Success}
 
-object AkkaWebServerApp extends App with ApiConfiguration {
+object AkkaWebServerApp
+    extends App
+    with ApiConfiguration {
   // A K K A  A C T O R  S Y S T E M
   implicit lazy val system: ActorSystem           = ActorSystem("WebAppActorSystem")
   implicit val executionContext: ExecutionContext = system.dispatcher
@@ -30,7 +30,7 @@ object AkkaWebServerApp extends App with ApiConfiguration {
       system.log.info("Server online at http://{}:{}/", address.getHostString, address.getPort)
 
     case Failure(ex) =>
-      system.log.error("Failed to bind HTTP endpoint, terminating system", ex)
+      system.log.error(s"Failed to bind HTTP endpoint, terminating system: $ex")
       system.terminate()
   }
 }
