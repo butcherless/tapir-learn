@@ -30,6 +30,9 @@ trait BaseEndpoint {
   val notFoundMapping: EndpointOutput.OneOfVariant[NotFoundError] =
     oneOfVariantFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
 
+  val conflictMapping: EndpointOutput.OneOfVariant[ConflictError] =
+    oneOfVariantFromMatchType(StatusCode.Conflict, jsonBody[ConflictError])
+
   val internalErrorMapping: EndpointOutput.OneOfVariant[NotFoundError] =
     oneOfVariantFromMatchType(StatusCode.NotFound, jsonBody[NotFoundError])
 

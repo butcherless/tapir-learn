@@ -45,6 +45,7 @@ trait CountryEndpoints {
       .errorOut(
         oneOf[OutputError](
           badRequestMapping,
+          conflictMapping,
           internalErrorMapping,
           defaultMapping
         )
@@ -84,13 +85,14 @@ trait CountryEndpoints {
         )
       )
 
-  lazy val countriesResource                = "countries"
-  lazy val countryPath: EndpointInput[Unit] = countriesResource
-  lazy val codePath                         = path[String]("code")
+  lazy val countriesResource                           = "countries"
+  lazy val countryPath: EndpointInput[Unit]            = countriesResource
+  lazy val codePath: EndpointInput.PathCapture[String] = path[String]("code")
 }
 
 object CountryEndpoints extends CountryEndpoints {
-  val countryViewExample = CountryView(CountryCode("es"), "Spain")
+  val countryViewExample: CountryView =
+    CountryView(CountryCode("es"), "Spain")
 
   object Implicits {
     implicit val encodeCountryCode: Encoder[CountryCode] =
