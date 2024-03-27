@@ -27,7 +27,7 @@ class CountryApiSpec
     with MockFactory
     with ScalatestRouteTest {
 
-  implicit val timeout               = RouteTestTimeout(5.seconds.dilated)
+  val timeout: RouteTestTimeout = RouteTestTimeout(5.seconds.dilated)
   val countryService: CountryService = mock[CountryService]
   val countryApi: CountryApi         = CountryApi(countryService)
 
@@ -78,7 +78,7 @@ class CountryApiSpec
       .once()
 
     // W H E N
-    Get(s"$baseApiPath/$countriesResource/${code}") ~>
+    Get(s"$baseApiPath/$countriesResource/$code") ~>
       countryApi.getRoute ~>
       // T H E N
       check {
@@ -92,7 +92,7 @@ class CountryApiSpec
     val code = CountryCode("esp")
 
     // W H E N
-    Get(s"$baseApiPath/$countriesResource/${code}") ~>
+    Get(s"$baseApiPath/$countriesResource/$code") ~>
       countryApi.getRoute ~>
       // T H E N
       check {
@@ -112,7 +112,7 @@ class CountryApiSpec
       .once()
 
     // W H E N
-    Get(s"$baseApiPath/$countriesResource/${code}") ~>
+    Get(s"$baseApiPath/$countriesResource/$code") ~>
       countryApi.getRoute ~>
       // T H E N
       check {
@@ -152,7 +152,7 @@ class CountryApiSpec
       .returns(ZIO.succeed(1))
       .once()
     // W H E N
-    Delete(s"$baseApiPath/$countriesResource/${code}") ~>
+    Delete(s"$baseApiPath/$countriesResource/$code") ~>
       countryApi.deleteRoute ~>
       check {
         // T H E N
