@@ -14,9 +14,10 @@ Run the following commands for quick startup and check
 1. git clone https://github.com/butcherless/tapir-learn.git
 2. cd tapir-learn
 3. sbt
-4. reStart
-5. http://localhost:8080/api/v1.0/docs
-
+4. aviation-api/reStart
+5. http://localhost:8080/docs
+6. aviation-web/reStart
+7. http://localhost:8081/docs
 
 ## Project structure
 
@@ -132,21 +133,9 @@ Basic standard configuration
 
 https://doc.akka.io/docs/akka/current/general/configuration.html
 
-    src/main/resources/application.conf
+    tapir-webapp/src/main/resources/application.conf
+
 
 ## Tapir docs
 
 https://tapir-scala.readthedocs.io/en/latest/index.html
-
-## Experimental
-
-CI tasks with Seed build tool:
-
-    docker run -it tindzk/seed:0.1.6 /bin/sh
-    apk add git
-    cd
-    git clone https://github.com/butcherless/tapir-learn.git
-    cd tapir-learn
-    bloop server &
-    seed bloop
-    bloop test tapirlearn

@@ -19,9 +19,7 @@ trait SwaggerApi {
     SwaggerInterpreter().fromEndpoints[Future](endpoints, info)
 
   private lazy val info: Info =
-    Info("Tapir Learning Service API", "1.0.0-SNAPSHOT",
-      Some("Researching about Tapir library")
-    )
+    Info("Tapir Learning Service API", "1.0.0-SNAPSHOT", Some("Researching about Tapir library"))
 
   private lazy val endpoints = List(
     ActuatorEndpoint.healthEndpoint,

@@ -12,7 +12,7 @@ import scala.util.{Failure, Success}
   https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html
  */
 object AkkaWebServerApp
-  extends App
+    extends App
     with ApiConfiguration {
 
   // A K K A  A C T O R  S Y S T E M
@@ -34,7 +34,7 @@ object AkkaWebServerApp
       system.log.info("Server online at http://{}:{}/", address.getHostString, address.getPort)
 
     case Failure(ex) =>
-      system.log.error("Failed to bind HTTP endpoint, terminating system", ex)
+      system.log.error(s"Failed to bind HTTP endpoint, terminating system: $ex")
       system.terminate()
   }
 

@@ -46,7 +46,6 @@ trait CountryEndpoints {
         )
       )
 
-
   lazy val postEndpoint: PublicEndpoint[CountryView, OutputError, (String, CountryView), Any] =
     baseEndpoint.post
       .name("country-post-endpoint")
@@ -125,7 +124,6 @@ object CountryEndpoints extends CountryEndpoints {
       )
     )
   }
-
 
   object Implicits {
     implicit val encodeCountryCode: Encoder[CountryCode] =

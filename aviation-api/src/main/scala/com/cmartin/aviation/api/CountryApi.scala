@@ -74,7 +74,7 @@ class CountryApi(countryService: CountryService) {
       country  <- countryService.findByCode(criteria)
     } yield country.toView
   }
-  private def doGetAllLogic(): ApiResponse[List[CountryView]] = ???
+  private def doGetAllLogic(): ApiResponse[List[CountryView]]       = ???
 
   private def doPostLogic(request: CountryView): ApiResponse[(String, CountryView)] = {
     for {
