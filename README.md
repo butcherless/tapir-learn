@@ -51,15 +51,16 @@ Compile the application
 
 `compile` or `~compile` for continuous compiling
 
-Start, stop the web server
+Manage the web server with Revolver plugin
 
 `reStart`, `reStop`, `reStatus`, or `~reStart`
 
-Check Swagger API
+Check Swagger API:
 
-http://localhost:8080/docs
+- `Akka` implementation (`aviation-api` module): http://localhost:8080/docs
+- `ZIO` implementation (`aviation-web` odule): http://localhost:8081/docs/
 
-Check Health endpoint
+Check Health endpoint (Akka)
 
 http://localhost:8080/api/v1.0/health
 

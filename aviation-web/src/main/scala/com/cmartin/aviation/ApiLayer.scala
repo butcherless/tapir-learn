@@ -6,6 +6,7 @@ import sttp.apispec.openapi.Info
 import sttp.model.{HeaderNames, StatusCode}
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.zio._
+import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 import sttp.tapir.ztapir._
 import sttp.tapir.{EndpointInput, PublicEndpoint, Schema, SchemaType}
@@ -82,13 +83,13 @@ object ApiLayer {
     }
 
     implicit class ModelToView(model: Model.Country) {
-      def toView(): CountryView =
+      def toView: CountryView =
         CountryView(CountryCode(model.code), model.name)
     }
 
     implicit class ModelSeqToView(models: Seq[Model.Country]) {
-      def toView(): Seq[CountryView] =
-        models.map(_.toView())
+      def toView: Seq[CountryView] =
+        models.map(_.toView)
 
     }
   }
@@ -147,7 +148,8 @@ object ApiLayer {
         .out(jsonBody[Seq[CountryView]].example(countryViewSeqExample))
         .errorOut(
           oneOf[ErrorInfo](
-            oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound].description("not found"))),
+            oneOfVariant(statusCode(StatusCode.NotFound)
+              .and(jsonBody[NotFound].description("not found"))),
             commonMappings: _*
           )
         )
@@ -165,9 +167,9 @@ object ApiLayer {
         ).errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NoContent).and(emptyOutputAs(NoContent))),
-            (oneOfVariant(
+            oneOfVariant(
               statusCode(StatusCode.Conflict).and(jsonBody[Conflict].description("duplicated"))
-            ) +: commonMappings): _*
+            ) +: commonMappings: _*
           )
         )
 
@@ -208,23 +210,23 @@ object ApiLayer {
       postEndpoint.zServerLogic(postLogic)
     )
 
-    lazy val countryViewExample    = CountryView(CountryCode("es"), "Spain")
-    lazy val ptCountryViewExample  = CountryView(CountryCode("pt"), "Portugal")
-    lazy val countryViewSeqExample = Seq(countryViewExample, ptCountryViewExample)
+    lazy val countryViewExample: CountryView         = CountryView(CountryCode("es"), "Spain")
+    lazy val ptCountryViewExample: CountryView       = CountryView(CountryCode("pt"), "Portugal")
+    lazy val countryViewSeqExample: Seq[CountryView] = Seq(countryViewExample, ptCountryViewExample)
 
     // helper functions
     private def getByCodeLogic(code: String): IO[ErrorInfo, CountryView] =
       for {
         _           <- ZIO.logInfo(s"getByCodeLogic: $code)")
         country     <- CountryService.searchByCode(code)
-        countryView <- ZIO.succeed(country.toView())
+        countryView <- ZIO.succeed(country.toView)
       } yield countryView
 
     private def getAllLogic(x: Unit): IO[ErrorInfo, Seq[CountryView]] =
       for {
         _            <- ZIO.logInfo(s"getAllLogic")
         countries    <- CountryService.searchAll()
-        countryViews <- ZIO.succeed(countries.toView())
+        countryViews <- ZIO.succeed(countries.toView)
       } yield countryViews
 
     private def postLogic(view: CountryView): IO[ErrorInfo, String] =
@@ -307,14 +309,14 @@ object ApiLayer {
           )
         )
 
-    lazy val airportViewExample = AirportView("Madrid Barajas", "MAD", "LEMD", "es")
+    lazy val airportViewExample: AirportView = AirportView("Madrid Barajas", "MAD", "LEMD", "es")
   }
 
   object SwaggerDocs {
 
     val info: Info = Info("Martin Air API", "1.0")
 
-    val swaggerEndpoints: List[ZServerEndpoint[Any, Any]] =
+    val swaggerEndpoints: List[ServerEndpoint[Any, Task]] =
       SwaggerInterpreter().fromEndpoints[Task](
         List(
           CountryEndpoints.getEndpoint,

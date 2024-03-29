@@ -3,6 +3,7 @@ package com.cmartin.learn
 import com.cmartin.learn.apizio.ActuatorApi
 import zio._
 import zio.http.Server
+
 class ZioHttpServerApp
     extends ZIOAppDefault {
 

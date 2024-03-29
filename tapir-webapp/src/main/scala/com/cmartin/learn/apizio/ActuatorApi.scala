@@ -1,6 +1,6 @@
 package com.cmartin.learn.apizio
 
-import com.cmartin.learn.api.ActuatorEndpoint
+import com.cmartin.learn.api.{ActuatorEndpoint, SwaggerApi}
 import com.cmartin.learn.domain.ApiConverters
 import sttp.tapir.server.ziohttp.ZioHttpInterpreter
 import sttp.tapir.ztapir._

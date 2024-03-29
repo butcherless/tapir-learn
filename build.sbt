@@ -31,6 +31,7 @@ lazy val `aviation-root` = project
     `aviation-repository`,
     `aviation-service`,
     `aviation-api`,
+    `aviation-web`,
     `tapir-webapp`
   )
 
