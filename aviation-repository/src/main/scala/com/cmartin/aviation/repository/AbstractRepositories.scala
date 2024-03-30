@@ -62,23 +62,27 @@ object AbstractRepositories {
       * @param id
       *   entity identifier
       * @return
-      *   number of entites affected
+      *   number of entities affected
       */
     def delete(id: Long): F[Int]
 
     /** Deletes all the entities from the repository
       *
       * @return
-      *   number of entites affected
+      *   number of entities affected
       */
     def deleteAll(): F[Int]
   }
 
-  trait AbstractCountryRepository[F[_]] extends AbstractRepository[F, CountryDbo] {
+  trait AbstractCountryRepository[F[_]]
+      extends AbstractRepository[F, CountryDbo] {
+
     def findByCode(code: String): F[Option[CountryDbo]]
   }
 
-  trait AbstractAirportRepository[F[_]] extends AbstractRepository[F, AirportDbo] {
+  trait AbstractAirportRepository[F[_]]
+      extends AbstractRepository[F, AirportDbo] {
+
     def findByIataCode(code: String): F[Option[AirportDbo]]
     def findByIcaoCode(code: String): F[Option[AirportDbo]]
     def findByCountryCode(code: String): F[Seq[AirportDbo]]
@@ -86,9 +90,12 @@ object AbstractRepositories {
 
   }
 
-  trait AbstractAirlineRepository[F[_]] extends AbstractRepository[F, AirlineDbo]
+  trait AbstractAirlineRepository[F[_]]
+      extends AbstractRepository[F, AirlineDbo]
 
-  trait AbstractRouteRepository[F[_]] extends AbstractRepository[F, RouteDbo] {
+  trait AbstractRouteRepository[F[_]]
+      extends AbstractRepository[F, RouteDbo] {
+
     def findByIataOrigin(iataCode: String): F[Seq[RouteDbo]]
     def findByIataDestination(iataCode: String): F[Seq[RouteDbo]]
   }

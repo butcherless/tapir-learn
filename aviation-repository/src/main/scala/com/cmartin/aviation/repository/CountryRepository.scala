@@ -7,7 +7,22 @@ import zio.{RIO, Task, ZIO}
 trait CountryRepository
     extends BaseRepository[CountryDbo] {
 
+  /** Retrieves a Country by its code
+    *
+    * @param code
+    *   country code
+    * @return
+    *   the country
+    */
   def findByCode(code: String): Task[Option[CountryDbo]]
+
+  /** Deletes a Country by its code
+    *
+    * @param code
+    *   country code
+    * @return
+    *   delete count
+    */
   def delete(code: String): Task[Int]
 
 }

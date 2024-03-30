@@ -24,7 +24,7 @@ object common {
       extends JdbcProfile {
     import api._
     implicit class Dbio2Zio[R](dbio: DBIO[R]) {
-      def toZio(): RIO[JdbcBackend#DatabaseDef, R] =
+      def toZio: RIO[JdbcBackend#DatabaseDef, R] =
         SlickToZioSyntax.fromDBIO(dbio)
     }
 

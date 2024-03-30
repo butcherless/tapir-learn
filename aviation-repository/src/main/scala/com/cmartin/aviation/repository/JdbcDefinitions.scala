@@ -5,6 +5,7 @@ import slick.jdbc.JdbcProfile
 
 object JdbcDefinitions {
 
+  private val FIND_ALL_MAX = 100
   /** Relational Profile for mapping domain and persistence models
     */
   trait Profile {
@@ -90,10 +91,14 @@ object JdbcDefinitions {
       }
 
       def findAll(): DBIO[Seq[E]] =
-        entities.result
+        entities
+          .take(FIND_ALL_MAX)
+          .result
 
       def count(): DBIO[Int] =
-        entities.length.result
+        entities
+          .length
+          .result
 
       def insert(e: E): DBIO[Long] =
         entityReturningId() += e
@@ -102,13 +107,18 @@ object JdbcDefinitions {
         entities returning entities.map(_.id) ++= seq
 
       def update(e: E): DBIO[Int] =
-        entities.filter(_.id === e.id).update(e)
+        entities
+          .filter(_.id === e.id)
+          .update(e)
 
       def delete(id: Long): DBIO[Int] =
-        entities.filter(_.id === id).delete
+        entities
+          .filter(_.id === id)
+          .delete
 
       def deleteAll(): DBIO[Int] =
-        entities.delete
+        entities
+          .delete
 
       private def entityReturningId(): ReturningInsertActionComposer[E, Long] =
         entities returning entities.map(_.id)

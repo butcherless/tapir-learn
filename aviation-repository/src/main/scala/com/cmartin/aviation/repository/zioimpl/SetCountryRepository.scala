@@ -57,11 +57,23 @@ final case class SetCountryRepository(seq: TRef[Int], set: TSet[CountryDbo])
       for {
         countries <- set.toSet
         opt       <- STM.succeed(countries.find(_.code == code))
-        count     <- opt.fold(
-                       STM.succeed(0)
-                     )(c => set.delete(c).map(_ => 1))
+        count     <- deleteCountry(opt)
       } yield count
     }
+
+  override def delete(id: Long): Task[Int] =
+    STM.atomically {
+      for {
+        countries <- set.toSet
+        opt       <- STM.succeed(countries.find(_.id == id))
+        count     <- deleteCountry(opt)
+      } yield count
+    }
+
+  private def deleteCountry(option: Option[CountryDbo]) =
+    option.fold(
+      STM.succeed(0)
+    )(a => set.delete(a).map(_ => 1))
 
 }
 

@@ -26,7 +26,7 @@ case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
     } yield route
 
     query.result
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
   override def findByIataDestination(iataCode: String): IO[Throwable, Seq[RouteDbo]] = {
@@ -36,7 +36,7 @@ case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
     } yield route
 
     query.result
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 
@@ -51,7 +51,7 @@ case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
     } yield route
 
     query.result.headOption
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 

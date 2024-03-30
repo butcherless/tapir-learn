@@ -198,7 +198,10 @@ object JdbcRepositories {
 
   }
 
-  class DataAccessObject(configPath: String) extends JdbcProfile with AviationRepositories {
+  class DataAccessObject(configPath: String)
+    extends JdbcProfile
+      with AviationRepositories {
+
     val config = DatabaseConfig.forConfig[JdbcProfile](configPath)
 
     implicit def runAction[A](action: api.DBIO[A]): Future[A] =

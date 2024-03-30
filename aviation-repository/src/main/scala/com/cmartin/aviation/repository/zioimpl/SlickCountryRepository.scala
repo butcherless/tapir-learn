@@ -20,14 +20,14 @@ case class SlickCountryRepository(db: JdbcBackend#DatabaseDef)
   override def findByCode(code: String): Task[Option[CountryDbo]] = {
     val query = entities.filter(_.code === code)
     query.result.headOption
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 
   override def delete(code: String): Task[Int] = {
     val query = entities.filter(_.code === code)
     query.delete
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 

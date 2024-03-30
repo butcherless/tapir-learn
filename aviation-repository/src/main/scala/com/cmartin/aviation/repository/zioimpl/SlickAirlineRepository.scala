@@ -20,21 +20,21 @@ case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
   override def deleteByIataCode(iataCode: String): Task[Int] = {
     val query = entities.filter(_.iataCode === iataCode)
     query.delete
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 
   override def findByIataCode(code: String): Task[Option[AirlineDbo]] = {
     val query = entities.filter(_.iataCode === code)
     query.result.headOption
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 
   override def findByIcaoCode(code: String): Task[Option[AirlineDbo]] = {
     val query = entities.filter(_.icaoCode === code)
     query.result.headOption
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 
@@ -45,14 +45,14 @@ case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
     } yield airline
 
     query.result
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 
   override def findByName(name: String): Task[Seq[AirlineDbo]] = {
     val query = entities.filter(_.name like s"%$name%")
     query.result
-      .toZio()
+      .toZio
       .provideDbLayer(db)
   }
 

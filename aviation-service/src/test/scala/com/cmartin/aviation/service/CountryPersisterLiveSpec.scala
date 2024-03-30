@@ -162,7 +162,7 @@ class CountryPersisterLiveSpec
 
   it should "manage a database exception: delete" in {
     // GIVEN
-    (countryRepoMock.delete _)
+    (countryRepoMock.delete(_: String))
       .expects(spainCode)
       .returns(TestRepositories.failDefault())
       .once()

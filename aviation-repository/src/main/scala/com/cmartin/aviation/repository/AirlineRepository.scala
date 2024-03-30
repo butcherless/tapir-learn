@@ -47,9 +47,9 @@ trait AirlineRepository
     */
   def findByCountryCode(code: String): Task[Seq[AirlineDbo]]
 
-  /** Deletes an Airline by its iata code
+  /** Deletes an Airline by its IATA code
     * @param code
-    *   airline iata code
+    *   airline IATA code
     * @return
     *   number of deleted rows
     */
