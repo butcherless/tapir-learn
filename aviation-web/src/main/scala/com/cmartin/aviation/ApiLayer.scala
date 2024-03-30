@@ -126,7 +126,7 @@ object ApiLayer {
     lazy val countryPath: EndpointInput[Unit] = countriesResource
     lazy val codePath                         = path[String]("code").description("Country code")
 
-    val getEndpoint: PublicEndpoint[String, ErrorInfo, CountryView, Any] =
+    val get: PublicEndpoint[String, ErrorInfo, CountryView, Any] =
       endpoint.get
         .name("get-by-code-endpoint")
         .description("Retrieves a Country by its code")
@@ -140,7 +140,7 @@ object ApiLayer {
           )
         )
 
-    val getAllEndpoint: PublicEndpoint[Unit, ErrorInfo, Seq[CountryView], Any] =
+    val getAll: PublicEndpoint[Unit, ErrorInfo, Seq[CountryView], Any] =
       endpoint.get
         .name("get-all-endpoint")
         .description("Retrieves a finite Country sequence")
@@ -154,7 +154,7 @@ object ApiLayer {
           )
         )
 
-    lazy val postEndpoint: PublicEndpoint[CountryView, ErrorInfo, String, Any] =
+    lazy val post: PublicEndpoint[CountryView, ErrorInfo, String, Any] =
       endpoint.post
         .name("post-endpoint")
         .description("Creates a Country")
@@ -173,7 +173,7 @@ object ApiLayer {
           )
         )
 
-    lazy val putEndpoint: PublicEndpoint[CountryView, ErrorInfo, CountryView, Any] =
+    lazy val put: PublicEndpoint[CountryView, ErrorInfo, CountryView, Any] =
       endpoint.put
         .name("put-endpoint")
         .description("Updates a Country")
@@ -190,7 +190,7 @@ object ApiLayer {
           )
         )
 
-    lazy val deleteEndpoint: PublicEndpoint[String, ErrorInfo, Unit, Any] =
+    lazy val delete: PublicEndpoint[String, ErrorInfo, Unit, Any] =
       endpoint.delete
         .name("delete-endpoint")
         .description("Deletes a Country by its code")
@@ -205,9 +205,9 @@ object ApiLayer {
         )
 
     lazy val serverEndpoints = List(
-      getEndpoint.zServerLogic(getByCodeLogic),
-      getAllEndpoint.zServerLogic(getAllLogic),
-      postEndpoint.zServerLogic(postLogic)
+      get.zServerLogic(getByCodeLogic),
+      getAll.zServerLogic(getAllLogic),
+      post.zServerLogic(postLogic)
     )
 
     lazy val countryViewExample: CountryView         = CountryView(CountryCode("es"), "Spain")
@@ -246,7 +246,7 @@ object ApiLayer {
     lazy val airportPath      = airportsResource
     lazy val iataCodePath     = path[String]("iataCode")
 
-    lazy val getByIataCodeEndpoint: PublicEndpoint[String, ErrorInfo, AirportView, Any] =
+    lazy val getByIataCode: PublicEndpoint[String, ErrorInfo, AirportView, Any] =
       endpoint.get
         .name("get-by-iata-code-endpoint")
         .description("Retrieves an Airport by its iata code")
@@ -260,7 +260,7 @@ object ApiLayer {
           )
         )
 
-    lazy val postEndpoint: PublicEndpoint[AirportView, ErrorInfo, (String, AirportView), Any] =
+    lazy val post: PublicEndpoint[AirportView, ErrorInfo, (String, AirportView), Any] =
       endpoint.post
         .name("post-endpoint")
         .description("Creates an Airport")
@@ -278,7 +278,7 @@ object ApiLayer {
           )
         )
 
-    lazy val countryPutEndpoint: PublicEndpoint[AirportView, ErrorInfo, AirportView, Any] =
+    lazy val put: PublicEndpoint[AirportView, ErrorInfo, AirportView, Any] =
       endpoint.put
         .name("put-endpoint")
         .description("Updates an Airport")
@@ -295,7 +295,7 @@ object ApiLayer {
           )
         )
 
-    lazy val deleteEndpoint: PublicEndpoint[String, ErrorInfo, Unit, Any] =
+    lazy val delete: PublicEndpoint[String, ErrorInfo, Unit, Any] =
       endpoint.delete
         .name("delete-endpoint")
         .description("Deletes an Airport by its iata code")
@@ -319,14 +319,14 @@ object ApiLayer {
     val swaggerEndpoints: List[ServerEndpoint[Any, Task]] =
       SwaggerInterpreter().fromEndpoints[Task](
         List(
-          CountryEndpoints.getEndpoint,
-          CountryEndpoints.getAllEndpoint,
-          CountryEndpoints.postEndpoint,
-          CountryEndpoints.putEndpoint,
-          CountryEndpoints.deleteEndpoint,
-          AirportEndpoints.getByIataCodeEndpoint,
-          AirportEndpoints.postEndpoint,
-          AirportEndpoints.deleteEndpoint
+          CountryEndpoints.get,
+          CountryEndpoints.getAll,
+          CountryEndpoints.post,
+          CountryEndpoints.put,
+          CountryEndpoints.delete,
+          AirportEndpoints.getByIataCode,
+          AirportEndpoints.post,
+          AirportEndpoints.delete
         ),
         info
       )

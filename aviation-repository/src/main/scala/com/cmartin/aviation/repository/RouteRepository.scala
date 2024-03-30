@@ -7,9 +7,45 @@ import zio.{IO, ZIO}
 trait RouteRepository
     extends BaseRepository[RouteDbo] {
 
+  /** Retrieves a sequence of Routes based on the provided IATA origin code.
+    *
+    * @param iataCode
+    *   the IATA origin code to search for
+    * @return
+    *   the matching routes
+    */
   def findByIataOrigin(iataCode: String): IO[Throwable, Seq[RouteDbo]]
+
+  /** Retrieves a sequence of Routes based on the provided IATA destination
+    * code.
+    *
+    * @param iataCode
+    *   the IATA destination code to search for
+    * @return
+    *   the matching routes
+    */
   def findByIataDestination(iataCode: String): IO[Throwable, Seq[RouteDbo]]
+
+  /** Retrieves an optional Route based on the provided IATA origin and
+    * destination codes.
+    *
+    * @param iataOrigin
+    *   the IATA origin code to search for
+    * @param iataDestination
+    *   the IATA destination code to search for
+    * @return
+    */
   def findByOriginAndDestination(iataOrigin: String, iataDestination: String): IO[Throwable, Option[RouteDbo]]
+
+  /** Deletes a Route based on the provided IATA origin and destination codes.
+    *
+    * @param iataOrigin
+    *   the IATA origin code of the route to delete
+    * @param iataDestination
+    *   the IATA destination code of the route to delete
+    * @return
+    *   the number of rows affected by the deletion
+    */
   def deleteByOriginAndDestination(iataOrigin: String, iataDestination: String): IO[Throwable, Int]
 }
 
