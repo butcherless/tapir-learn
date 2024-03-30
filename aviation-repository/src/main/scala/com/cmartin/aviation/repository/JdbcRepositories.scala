@@ -199,7 +199,7 @@ object JdbcRepositories {
   }
 
   class DataAccessObject(configPath: String)
-    extends JdbcProfile
+      extends JdbcProfile
       with AviationRepositories {
 
     val config = DatabaseConfig.forConfig[JdbcProfile](configPath)

@@ -6,6 +6,7 @@ import slick.jdbc.JdbcProfile
 object JdbcDefinitions {
 
   private val FIND_ALL_MAX = 100
+
   /** Relational Profile for mapping domain and persistence models
     */
   trait Profile {

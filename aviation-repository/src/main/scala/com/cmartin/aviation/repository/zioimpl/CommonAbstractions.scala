@@ -95,7 +95,7 @@ object CommonAbstractions
           .provideDbLayer(db)
       }
 
-      override def count(): Task[Int]              =
+      override def count(): Task[Int] =
         entities.length.result
           .toZio
           .provideDbLayer(db)
