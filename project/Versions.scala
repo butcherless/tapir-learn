@@ -7,11 +7,11 @@ object Versions {
   val logback    = "1.5.3"
   val slick      = "3.4.1"
   val sttp       = "3.9.5"
-  val tapir      = "1.10.3"
+  val tapir      = "1.10.4"
   val zioLogging = "2.2.2"
   val zioPrelude = "1.0.0-RC23"
 
   // test
-  val scalaMock = "5.2.0"
+  val scalaMock = "6.0.0"
   val scalatest = "3.2.18"
 }
