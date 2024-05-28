@@ -10,9 +10,9 @@ object ZioHttpServer
 
   val routeAspects = Middleware.debug ++ Middleware.timeout(5.seconds) // ++ loggingAspect
 
-  val routes: HttpApp[Any] =
+  val routes =
     ZioHttpInterpreter().toHttp(
-      SwaggerDocs.swaggerEndpoints ++
+      //SwaggerDocs.swaggerEndpoints ++
         CountryEndpoints.serverEndpoints
     ) // @@ Middleware.debug // @@ routeAspects
 
