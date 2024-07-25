@@ -13,8 +13,8 @@ object ZioHttpServer
   val endpoints = SwaggerDocs.swaggerEndpoints ++ CountryEndpoints.serverEndpoints
 
   val routes = ZioHttpInterpreter()
-    .toHttp(endpoints)  // @@ Middleware.debug // @@ routeAspects
-  
+    .toHttp(endpoints) // @@ Middleware.debug // @@ routeAspects
+
   // val managedErrorRoutes = ??? // mapError or catchAll
 
   // verify: http://localhost:8081/docs/
