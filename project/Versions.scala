@@ -8,7 +8,7 @@ object Versions {
   val logback    = "1.5.8"
   val slick      = "3.4.1"
   val sttp       = "3.9.8"
-  val tapir      = "1.11.3"
+  val tapir      = "1.11.4"
   val zioLogging = "2.3.1"
   val zioPrelude = "1.0.0-RC31"
 
