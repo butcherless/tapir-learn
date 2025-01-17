@@ -10,7 +10,7 @@ object Versions {
   val tapir      = "1.11.12"
   val sttp       = "3.10.2"
   val zioLogging = "2.4.0"
-  val zioPrelude = "1.0.0-RC36"
+  val zioPrelude = "1.0.0-RC37"
 
   // test
   val scalaMock = "6.1.1"
