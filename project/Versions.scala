@@ -13,6 +13,6 @@ object Versions {
   val zioPrelude = "1.0.0-RC39"
 
   // test
-  val scalaMock = "6.2.0"
+  val scalaMock = "7.3.0"
   val scalatest = "3.2.19"
 }
