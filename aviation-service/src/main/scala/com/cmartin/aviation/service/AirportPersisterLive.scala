@@ -52,7 +52,7 @@ case class AirportPersisterLive(
       case Some(dbo) =>
         countryRepository.find(dbo.countryId)
           .map(opt => Some(dbo.toDomain(opt.get))) // safe access by foreign key
-      case None =>
+      case None      =>
         ZIO.none
     }
 
