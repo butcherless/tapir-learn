@@ -7,7 +7,7 @@ object Versions {
   val json4s     = "4.0.7"
   val logback    = "1.5.18"
   val slick      = "3.4.1"
-  val tapir      = "1.11.32"
+  val tapir      = "1.11.42"
   val sttp       = "3.11.0"
   val zioLogging = "2.5.0"
   val zioPrelude = "1.0.0-RC40"
