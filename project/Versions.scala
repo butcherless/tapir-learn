@@ -5,7 +5,7 @@ object Versions {
   val akkaHttp   = "10.5.3"
   val h2         = "2.3.232"
   val json4s     = "4.0.7"
-  val logback    = "1.5.18"
+  val logback    = "1.5.20"
   val slick      = "3.4.1"
   val tapir      = "1.11.32"
   val sttp       = "3.11.0"
