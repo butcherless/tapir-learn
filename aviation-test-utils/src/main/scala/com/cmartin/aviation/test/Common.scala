@@ -30,7 +30,7 @@ object Common {
 
     /* H E L P E R S */
 
-    implicit val ec = scala.concurrent.ExecutionContext.global
+    implicit val ec: scala.concurrent.ExecutionContextExecutor = scala.concurrent.ExecutionContext.global
 
     def insertAirport(countryDbo: CountryDbo)(airportDbo: AirportDbo): DBIO[Long] = {
       for {

@@ -112,6 +112,8 @@ lazy val `aviation-test-utils` = project
   )
   .dependsOn(`aviation-core`, `aviation-repository`)
 
+Global / excludeLintKeys ++= Set(useGitDescribe, gitDescribedVersion)
+
 // ─── Aliases ────────────────────────────────────────────────────────────────
 
 addCommandAlias("xcoverage",    "clean;coverage;test;coverageReport")

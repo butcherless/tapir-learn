@@ -20,9 +20,7 @@ object ZioHttpServer
   // verify: http://localhost:8081/docs/
   override def run =
     Server.serve(routes)
-      .exitCode
       .provide(
-        Server
-          .defaultWithPort(8081)
+        Server.defaultWithPort(8081)
       )
 }

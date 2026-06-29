@@ -17,11 +17,11 @@ object Dependencies {
   val coreTest = Seq()
 
   val repoMain = Seq(
-    "com.typesafe.slick" %% "slick"          % Versions.slick exclude ("org.slf4j", "slf4j-api") exclude (
-      "com.typesafe",
-      "config"
-    ),
-    "com.typesafe.slick" %% "slick-hikaricp" % Versions.slick exclude ("org.slf4j", "slf4j-api")
+    "com.typesafe.slick" %% "slick"          % Versions.slick
+      .exclude("org.slf4j", "slf4j-api")
+      .exclude("com.typesafe", "config"),
+    "com.typesafe.slick" %% "slick-hikaricp" % Versions.slick
+      .exclude("org.slf4j", "slf4j-api")
   )
 
   val h2Test = Seq(

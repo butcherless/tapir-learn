@@ -11,13 +11,11 @@ class ZioHttpServerApp
     ActuatorApi.healthRoute // <>
   // ZioSwaggerApi.route
 
-  override def run: URIO[Any, ExitCode] = {
+  override def run =
     Server.serve(routes)
       .provide(
         ZLayer.succeed(Server.Config.default.port(8090)),
         Server.live
       )
-      .exitCode
-  }
 
 }
