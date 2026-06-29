@@ -1,4 +1,5 @@
 import Dependencies.*
+import com.github.sbt.git.SbtGit.GitKeys.{gitDescribedVersion, useGitDescribe}
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
