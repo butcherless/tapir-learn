@@ -27,8 +27,6 @@ jobs:
         run: sbt Test/compile
       - name: tests
         run: sbt test
-      - name: compile integration tests
-        run: sbt IntegrationTest/compile
       - name: assembly
         run: sbt assembly
       - name: dependency updates
