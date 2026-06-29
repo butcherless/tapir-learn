@@ -1,28 +1,28 @@
 import Dependencies.*
-import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / scalaVersion := Versions.scala
 ThisBuild / organization := "com.cmartin.learn"
 
-lazy val basicScalacOptions = Seq( // some of the Rob Norris tpolecat options
-  "-deprecation",          // Emit warning and location for usages of deprecated APIs.
+lazy val basicScalacOptions = Seq(
+  "-deprecation",
   "-encoding",
-  "utf-8",                 // Specify character encoding used by source files.
-  "-explaintypes",         // Explain type errors in more detail.
-  "-explaintypes",         // Explain type errors in more detail.
-  "-unchecked",            // Enable additional warnings where generated code depends on assumptions.
-  "-feature",              // Emit warning and location for usages of features that should be imported explicitly.
-  "-language:higherKinds", // Allow higher-kinded types
+  "utf-8",
+  "-explaintypes",
+  "-unchecked",
+  "-feature",
+  "-language:higherKinds",
   "-language:implicitConversions",
   "-language:postfixOps"
 )
 
 lazy val commonSettings = Seq(
   libraryDependencies ++= commonTest,
-  scalacOptions ++= basicScalacOptions
+  scalacOptions       ++= basicScalacOptions
 )
+
+// ─── Modules ────────────────────────────────────────────────────────────────
 
 lazy val `aviation-root` = project
   .in(file("."))
@@ -34,28 +34,26 @@ lazy val `aviation-root` = project
     `aviation-web`,
     `tapir-webapp`
   )
+  .settings(
+    name           := "aviation-root",
+    publish / skip := true
+  )
 
 lazy val `tapir-webapp` = project
   .in(file("tapir-webapp"))
-  .configs(IntegrationTest)
   .settings(
-    Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= mainAndTest,
-    assemblyJarName := "tapir-webapp.jar",
-    name            := "tapir-webapp"
+    assembly / assemblyJarName := "tapir-webapp.jar",
+    name                       := "tapir-webapp",
+    coverageExcludedPackages   := "<empty>;.*ServerApp.*"
   )
-  .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
-  .settings(BuildInfoSettings.value)
-  // plugins
-  .enablePlugins(BuildInfoPlugin)
-  .enablePlugins(GitVersioning)
+  .settings(BuildInfoSettings.value*)
+  .enablePlugins(BuildInfoPlugin, GitVersioning)
 
 lazy val `aviation-web` = project
   .in(file("aviation-web"))
-  .configs(IntegrationTest)
   .settings(
-    Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= webMain,
     name                 := "aviation-web",
@@ -66,20 +64,16 @@ lazy val `aviation-web` = project
 
 lazy val `aviation-core` = project
   .in(file("aviation-core"))
-  .configs(IntegrationTest)
   .settings(
-    Defaults.itSettings,
     commonSettings,
-    libraryDependencies ++= coreMain,
-    name := "aviation-core"
+    libraryDependencies      ++= coreMain,
+    name                     := "aviation-core",
+    coverageExcludedPackages := "<empty>;.*Configuration.*"
   )
-  .settings(coverageExcludedPackages := "<empty>;.*Configuration.*")
 
 lazy val `aviation-repository` = project
   .in(file("aviation-repository"))
-  .configs(IntegrationTest)
   .settings(
-    Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= repoMain ++ h2Test,
     name              := "aviation-repository",
@@ -89,48 +83,49 @@ lazy val `aviation-repository` = project
 
 lazy val `aviation-service` = project
   .in(file("aviation-service"))
-  .configs(IntegrationTest)
   .settings(
-    Defaults.itSettings,
     commonSettings,
     libraryDependencies ++= serviceTest,
     name              := "aviation-service",
     parallelExecution := false
   )
   .dependsOn(`aviation-core`, `aviation-repository`, `aviation-test-utils` % "test->compile")
-//TODO repository interface / implementation modules
-//TODO .dependsOn(`aviation-core`, `aviation-repository` % "test->compile")
 
 lazy val `aviation-api` = project
   .in(file("aviation-api"))
-  .configs(IntegrationTest)
   .settings(
-    Defaults.itSettings,
     commonSettings,
-    libraryDependencies ++= apiMain ++ apiTest,
-    assemblyJarName := "aviation-webapp.jar",
-    name            := "aviation-api"
+    libraryDependencies        ++= apiMain ++ apiTest,
+    assembly / assemblyJarName := "aviation-webapp.jar",
+    name                       := "aviation-api",
+    coverageExcludedPackages   := "<empty>;.*ServerApp.*"
   )
+  .settings(AviationBuildInfoSettings.value*)
   .dependsOn(`aviation-core`)
-  .settings(coverageExcludedPackages := "<empty>;.*ServerApp.*")
-  .settings(AviationBuildInfoSettings.value)
-  // plugins
-  .enablePlugins(BuildInfoPlugin)
-  .enablePlugins(GitVersioning)
+  .enablePlugins(BuildInfoPlugin, GitVersioning)
 
 lazy val `aviation-test-utils` = project
   .in(file("aviation-test-utils"))
   .settings(
-//    libraryDependencies ++= apiMain ++ apiTest,
-    assemblyJarName := "aviation-test-utils.jar",
-    name            := "aviation-test-utils"
+    assembly / assemblyJarName := "aviation-test-utils.jar",
+    name                       := "aviation-test-utils"
   )
   .dependsOn(`aviation-core`, `aviation-repository`)
 
-// clear screen and banner
+// ─── Aliases ────────────────────────────────────────────────────────────────
+
+addCommandAlias("xcoverage",    "clean;coverage;test;coverageReport")
+addCommandAlias("xreload",      "clean;reload")
+addCommandAlias("xupdate",      "clean;update")
+addCommandAlias("xdup",         "dependencyUpdates")
+addCommandAlias("xcompile",     "~aviation-root/cls ; compile")
+addCommandAlias("xtestCompile", "~aviation-root/cls ; Test/compile")
+
+// ─── Tasks ──────────────────────────────────────────────────────────────────
+
 lazy val cls = taskKey[Unit]("Prints a separator")
-cls := {
-  val downArrow     = "\u2193"
+LocalRootProject / cls := Def.uncached {
+  val downArrow     = "↓"
   val brs           = "\n".repeat(2)
   val message       = "BUILD BEGINS HERE"
   val spacedMessage = message.mkString(s"$downArrow ", " ", s" $downArrow")
@@ -140,22 +135,17 @@ cls := {
   println(s"$chars$brs ")
 }
 
-addCommandAlias("xcoverage", "clean;coverage;test;coverageReport")
-addCommandAlias("xreload", "clean;reload")
-addCommandAlias("xstart", "clean;reStart")
-addCommandAlias("xstop", "reStop;clean")
-addCommandAlias("xupdate", "clean;update")
-addCommandAlias("xdup", "dependencyUpdates")
-addCommandAlias("xcompile", "~aviation-root/cls ; compile")
-addCommandAlias("xtestCompile", "~aviation-root/cls ; Test/compile")
+// ─── Assembly ───────────────────────────────────────────────────────────────
 
 ThisBuild / assemblyMergeStrategy := {
-  // case PathList("io", "netty", "netty-all", xs @ _*) => MergeStrategy.first
-  case "META-INF/io.netty.versions.properties" => MergeStrategy.first
-  case "META-INF/versions/9/module-info.class" => MergeStrategy.first
-  case "module-info.class"                     => MergeStrategy.first
-  case "deriving.conf"                         => MergeStrategy.first
-  case x                                       =>
+  case PathList("org", "json4s", _*)                                   => MergeStrategy.first
+  case PathList("META-INF", "versions", _, "module-info.class")        => MergeStrategy.discard
+  case PathList("META-INF", "versions", _, "OSGI-INF", "MANIFEST.MF") => MergeStrategy.discard
+  case PathList("META-INF", "services", _*)                            => MergeStrategy.concat
+  case "META-INF/io.netty.versions.properties"                         => MergeStrategy.first
+  case "module-info.class"                                             => MergeStrategy.discard
+  case "deriving.conf"                                                 => MergeStrategy.first
+  case x                                                               =>
     val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
 }

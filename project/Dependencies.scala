@@ -5,7 +5,7 @@ object Dependencies {
   val commonMain = Seq()
 
   val commonTest = Seq(
-    "org.scalatest" %% "scalatest" % Versions.scalatest % "it, test"
+    "org.scalatest" %% "scalatest" % Versions.scalatest % Test
   )
 
   val coreMain = Seq(
@@ -70,12 +70,12 @@ object Dependencies {
     /*
        T E S T
      */
-    "org.scalatest"                 %% "scalatest"                     % Versions.scalatest % "it, test",
+    "org.scalatest"                 %% "scalatest"                     % Versions.scalatest % Test,
     "com.typesafe.akka"             %% "akka-http-testkit"             % Versions.akkaHttp  % Test,
     "com.typesafe.akka"             %% "akka-testkit"                  % Versions.akka      % Test,
     // S T T P
     "com.softwaremill.sttp.client3" %% "core"                          % Versions.sttp, // % "it, test",
     "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % Versions.sttp, // % "it, test",
-    "com.softwaremill.sttp.client3" %% "circe"                         % Versions.sttp      % "it, test"
+    "com.softwaremill.sttp.client3" %% "circe"                         % Versions.sttp      % Test
   )
 }
