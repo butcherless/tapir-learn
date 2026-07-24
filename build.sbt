@@ -20,7 +20,7 @@ lazy val basicScalacOptions = Seq(
 
 lazy val commonSettings = Seq(
   libraryDependencies ++= commonTest,
-  scalacOptions       ++= basicScalacOptions
+  scalacOptions ++= basicScalacOptions
 )
 
 // ─── Modules ────────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ lazy val `tapir-webapp` = project
     name                       := "tapir-webapp",
     coverageExcludedPackages   := "<empty>;.*ServerApp.*"
   )
-  .settings(BuildInfoSettings.value*)
+  .settings(BuildInfoSettings.value *)
   .enablePlugins(BuildInfoPlugin, GitVersioning)
 
 lazy val `aviation-web` = project
@@ -67,7 +67,7 @@ lazy val `aviation-core` = project
   .in(file("aviation-core"))
   .settings(
     commonSettings,
-    libraryDependencies      ++= coreMain,
+    libraryDependencies ++= coreMain,
     name                     := "aviation-core",
     coverageExcludedPackages := "<empty>;.*Configuration.*"
   )
@@ -96,12 +96,12 @@ lazy val `aviation-api` = project
   .in(file("aviation-api"))
   .settings(
     commonSettings,
-    libraryDependencies        ++= apiMain ++ apiTest,
+    libraryDependencies ++= apiMain ++ apiTest,
     assembly / assemblyJarName := "aviation-webapp.jar",
     name                       := "aviation-api",
     coverageExcludedPackages   := "<empty>;.*ServerApp.*"
   )
-  .settings(AviationBuildInfoSettings.value*)
+  .settings(AviationBuildInfoSettings.value *)
   .dependsOn(`aviation-core`)
   .enablePlugins(BuildInfoPlugin, GitVersioning)
 
@@ -117,11 +117,11 @@ Global / excludeLintKeys ++= Set(useGitDescribe, gitDescribedVersion)
 
 // ─── Aliases ────────────────────────────────────────────────────────────────
 
-addCommandAlias("xcoverage",    "clean;coverage;test;coverageReport")
-addCommandAlias("xreload",      "clean;reload")
-addCommandAlias("xupdate",      "clean;update")
-addCommandAlias("xdup",         "dependencyUpdates")
-addCommandAlias("xcompile",     "~aviation-root/cls ; compile")
+addCommandAlias("xcoverage", "clean;coverage;test;coverageReport")
+addCommandAlias("xreload", "clean;reload")
+addCommandAlias("xupdate", "clean;update")
+addCommandAlias("xdup", "dependencyUpdates")
+addCommandAlias("xcompile", "~aviation-root/cls ; compile")
 addCommandAlias("xtestCompile", "~aviation-root/cls ; Test/compile")
 
 // ─── Tasks ──────────────────────────────────────────────────────────────────
@@ -141,14 +141,14 @@ LocalRootProject / cls := Def.uncached {
 // ─── Assembly ───────────────────────────────────────────────────────────────
 
 ThisBuild / assemblyMergeStrategy := {
-  case PathList("org", "json4s", _*)                                   => MergeStrategy.first
-  case PathList("META-INF", "versions", _, "module-info.class")        => MergeStrategy.discard
+  case PathList("org", "json4s", _*)                                  => MergeStrategy.first
+  case PathList("META-INF", "versions", _, "module-info.class")       => MergeStrategy.discard
   case PathList("META-INF", "versions", _, "OSGI-INF", "MANIFEST.MF") => MergeStrategy.discard
-  case PathList("META-INF", "services", _*)                            => MergeStrategy.concat
-  case "META-INF/io.netty.versions.properties"                         => MergeStrategy.first
-  case "module-info.class"                                             => MergeStrategy.discard
-  case "deriving.conf"                                                 => MergeStrategy.first
-  case x                                                               =>
+  case PathList("META-INF", "services", _*)                           => MergeStrategy.concat
+  case "META-INF/io.netty.versions.properties"                        => MergeStrategy.first
+  case "module-info.class"                                            => MergeStrategy.discard
+  case "deriving.conf"                                                => MergeStrategy.first
+  case x                                                              =>
     val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
 }
