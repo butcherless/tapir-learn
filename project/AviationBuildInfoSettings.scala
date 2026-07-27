@@ -11,7 +11,13 @@ object AviationBuildInfoSettings {
     SettingKey[String]("gitCommit").withRank(KeyRanks.Invisible)
 
   val value: Seq[Def.Setting[?]] = Seq(
-    buildInfoKeys    := Seq(BuildInfoKey(name), BuildInfoKey(version), BuildInfoKey(scalaVersion), BuildInfoKey(sbtVersion), BuildInfoKey(gitCommitString)),
+    buildInfoKeys    := Seq(
+      BuildInfoKey(name),
+      BuildInfoKey(version),
+      BuildInfoKey(scalaVersion),
+      BuildInfoKey(sbtVersion),
+      BuildInfoKey(gitCommitString)
+    ),
     buildInfoPackage := s"${"com.cmartin.aviation"}.api",
     buildInfoOptions ++= Seq(BuildInfoOption.ToJson, BuildInfoOption.BuildTime),
     gitCommitString  := git.gitHeadCommit.value.getOrElse("unavailable")
