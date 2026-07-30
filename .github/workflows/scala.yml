@@ -21,14 +21,14 @@ jobs:
           java-version: '21'
           cache: sbt
       - uses: sbt/setup-sbt@v1
+      - name: formatting
+        run: sbt scalafmtCheckAll
       - name: compile
         run: sbt -v compile
       - name: compile unit tests
         run: sbt Test/compile
       - name: tests
         run: sbt test
-      - name: formatting
-        run: sbt scalafmtCheckAll
       - name: assembly
         run: sbt assembly
       - name: dependency updates
