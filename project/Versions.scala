@@ -1,7 +1,7 @@
 object Versions {
   val scala      = "2.13.18"
   // main
-  val akka       = "2.6.20"
+  val akka       = "2.8.8"
   val akkaHttp   = "10.5.3"
   val json4s     = "4.1.1"
   val h2         = "2.4.240"

@@ -38,7 +38,9 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server"  % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-json-circe"        % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"      % Versions.tapir,
-    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir
+    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir,
+    "com.typesafe.akka"           %% "akka-stream"             % Versions.akka,
+    "com.typesafe.akka"           %% "akka-slf4j"              % Versions.akka
   )
 
   val webMain = Seq(
@@ -63,6 +65,7 @@ object Dependencies {
     "com.softwaremill.sttp.tapir"   %% "tapir-json-json4s"             % Versions.tapir,
     "com.softwaremill.sttp.tapir"   %% "tapir-zio-http-server"         % Versions.tapir,
     "com.typesafe.akka"             %% "akka-slf4j"                    % Versions.akka,
+    "com.typesafe.akka"             %% "akka-stream"                   % Versions.akka,
     "ch.qos.logback"                 % "logback-classic"               % Versions.logback,
     "dev.zio"                       %% "zio-prelude"                   % Versions.zioPrelude,
     "io.github.json4s"              %% "json4s-ext"                    % Versions.json4s,
