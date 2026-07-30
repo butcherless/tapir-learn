@@ -1,12 +1,12 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model._
-import slick.jdbc.JdbcProfile
+import slick.jdbc.{JdbcActionComponent, JdbcProfile}
 import slick.lifted.{Index, ProvenShape}
 
 import java.time.LocalDate
 
-object Tables extends JdbcProfile {
+object Tables extends JdbcProfile with JdbcActionComponent.OneRowPerStatementOnly {
   import CommonAbstractions.Table.LongBasedTable
   import api._
 

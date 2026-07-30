@@ -3,7 +3,7 @@ package com.cmartin.aviation.repository
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.repository.zioimpl.Tables.TableNames
 import slick.basic.DatabaseConfig
-import slick.jdbc.JdbcProfile
+import slick.jdbc.{JdbcActionComponent, JdbcProfile}
 import slick.lifted.{Index, ProvenShape}
 import zio.Task
 
@@ -200,6 +200,7 @@ object JdbcRepositories {
 
   class DataAccessObject(configPath: String)
       extends JdbcProfile
+      with JdbcActionComponent.OneRowPerStatementOnly
       with AviationRepositories {
 
     val config = DatabaseConfig.forConfig[JdbcProfile](configPath)

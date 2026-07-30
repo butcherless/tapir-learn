@@ -5,12 +5,13 @@ import com.cmartin.aviation.repository.RouteRepository
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.AbstractLongRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Routes
 import com.cmartin.aviation.repository.zioimpl.common.SlickToZioSyntax.fromDBIO
-import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.jdbc.{JdbcActionComponent, JdbcBackend, JdbcProfile}
 import zio.{IO, RLayer, ZLayer}
 
-case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
+case class SlickRouteRepository(db: JdbcBackend#Database)
     extends AbstractLongRepository[RouteDbo, Routes](db)
     with JdbcProfile
+    with JdbcActionComponent.OneRowPerStatementOnly
     with RouteRepository {
 
   import api._
@@ -76,6 +77,6 @@ case class SlickRouteRepository(db: JdbcBackend#DatabaseDef)
 }
 
 object SlickRouteRepository {
-  val layer: RLayer[JdbcBackend#DatabaseDef, RouteRepository] =
+  val layer: RLayer[JdbcBackend#Database, RouteRepository] =
     ZLayer.fromFunction(SlickRouteRepository(_))
 }

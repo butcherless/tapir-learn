@@ -1,12 +1,13 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.Model.LongDbo
-import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.jdbc.{JdbcActionComponent, JdbcBackend, JdbcProfile}
 import zio.Task
 
 //TODO refactor: move to common module/project
 object CommonAbstractions
-    extends JdbcProfile {
+    extends JdbcProfile
+    with JdbcActionComponent.OneRowPerStatementOnly {
   import api._
   import common.Implicits.Dbio2Zio
 
@@ -79,12 +80,12 @@ object CommonAbstractions
     }
 
     abstract class AbstractLongRepository[E <: LongDbo, T <: LongBasedTable[E]](
-        db: JdbcBackend#DatabaseDef
+        db: JdbcBackend#Database
     ) extends BaseRepository[E] {
 
       val entities: TableQuery[T]
 
-      /*       implicit def provide[T](zio: RIO[JdbcBackend#DatabaseDef, T]): Task[T] =
+      /*       implicit def provide[T](zio: RIO[JdbcBackend#Database, T]): Task[T] =
         zio.provide(ZLayer.succeed(db))
        */
 

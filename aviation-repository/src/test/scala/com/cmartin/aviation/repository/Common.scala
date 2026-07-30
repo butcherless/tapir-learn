@@ -51,10 +51,10 @@ object Common {
 
   }
 
-  val dbLayer: TaskLayer[JdbcBackend#DatabaseDef] =
+  val dbLayer: TaskLayer[JdbcBackend#Database] =
     ZLayer.scoped(
       ZIO.attempt(DatabaseConfig.forConfig[JdbcProfile]("h2_dc"))
-        .map(_.db)
+        .map(dc => dc.db: JdbcBackend#Database)
     )
 
   val schemaHelperProgram: Task[Unit] =

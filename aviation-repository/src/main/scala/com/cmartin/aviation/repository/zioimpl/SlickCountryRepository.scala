@@ -4,12 +4,13 @@ import com.cmartin.aviation.repository.CountryRepository
 import com.cmartin.aviation.repository.Model.CountryDbo
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.AbstractLongRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Countries
-import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.jdbc.{JdbcActionComponent, JdbcBackend, JdbcProfile}
 import zio.{RLayer, Task, ZLayer}
 
-case class SlickCountryRepository(db: JdbcBackend#DatabaseDef)
+case class SlickCountryRepository(db: JdbcBackend#Database)
     extends AbstractLongRepository[CountryDbo, Countries](db)
     with JdbcProfile
+    with JdbcActionComponent.OneRowPerStatementOnly
     with CountryRepository {
 
   import api._
@@ -34,6 +35,6 @@ case class SlickCountryRepository(db: JdbcBackend#DatabaseDef)
 }
 
 object SlickCountryRepository {
-  val layer: RLayer[JdbcBackend#DatabaseDef, SlickCountryRepository] =
+  val layer: RLayer[JdbcBackend#Database, SlickCountryRepository] =
     ZLayer.fromFunction(SlickCountryRepository(_))
 }

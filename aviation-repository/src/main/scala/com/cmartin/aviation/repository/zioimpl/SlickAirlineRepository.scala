@@ -4,12 +4,13 @@ import com.cmartin.aviation.repository.AirlineRepository
 import com.cmartin.aviation.repository.Model.AirlineDbo
 import com.cmartin.aviation.repository.zioimpl.CommonAbstractions.Repository.AbstractLongRepository
 import com.cmartin.aviation.repository.zioimpl.Tables.Airlines
-import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.jdbc.{JdbcActionComponent, JdbcBackend, JdbcProfile}
 import zio.{RLayer, Task, ZLayer}
 
-case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
+case class SlickAirlineRepository(db: JdbcBackend#Database)
     extends AbstractLongRepository[AirlineDbo, Airlines](db)
     with JdbcProfile
+    with JdbcActionComponent.OneRowPerStatementOnly
     with AirlineRepository {
 
   import api._
@@ -59,6 +60,6 @@ case class SlickAirlineRepository(db: JdbcBackend#DatabaseDef)
 }
 
 object SlickAirlineRepository {
-  val layer: RLayer[JdbcBackend#DatabaseDef, AirlineRepository] =
+  val layer: RLayer[JdbcBackend#Database, AirlineRepository] =
     ZLayer.fromFunction(SlickAirlineRepository(_))
 }
