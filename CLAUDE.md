@@ -4,8 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-A Scala/sbt learning project exploring the [Tapir](https://tapir-scala.readthedocs.io/) library for defining
-HTTP APIs, with both Akka HTTP and ZIO HTTP server interpreters. The repo contains two independent codebases:
+A Scala 2.x / sbt 2.x learning project exploring the [Tapir](https://tapir-scala.readthedocs.io/) library for
+defining HTTP APIs, with both Akka HTTP and ZIO HTTP server interpreters. Application code targets Scala
+2.13 (`project/Versions.scala`); the build definition itself runs on sbt 2 (`project/build.properties`),
+whose own metabuild language is Scala 3 — these are independent and don't need to match. The repo contains
+two independent codebases:
 
 - **`tapir-webapp`** — the original module (package `com.cmartin.learn`). Money-transfer and aircraft APIs,
   each exposed twice: once via Akka HTTP (`AkkaWebServerApp`) and once via ZIO HTTP (`ZioHttpServerApp`).
