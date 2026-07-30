@@ -48,6 +48,11 @@ Run Sbt build tool
 
 `sbt` &#9166;
 
+> **sbt 2 note:** the commands below are meant to be typed one at a time inside the interactive
+> `sbt` shell. If you invoke sbt from the OS shell with several bare commands in one line (e.g.
+> `sbt clean compile`), sbt 2's thin client will fail to parse it (`Expected whitespace character`).
+> Join them with `;` in a single quoted string instead: `sbt "clean;compile"`.
+
 Compile the application 
 
 `compile` or `~compile` for continuous compiling
