@@ -27,6 +27,8 @@ jobs:
         run: sbt Test/compile
       - name: tests
         run: sbt test
+      - name: formatting
+        run: sbt scalafmtCheckAll
       - name: assembly
         run: sbt assembly
       - name: dependency updates
