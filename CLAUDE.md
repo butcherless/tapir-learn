@@ -27,8 +27,9 @@ space-separated commands (`sbt clean compile`) fail to parse under sbt 2's thin 
 - `testOnly com.cmartin.learn.api.ActuatorApiSpec` — run a single spec
 - `~testOnly com.cmartin.learn.api.ActuatorApiSpec -- -z "keyword"` — continuous run of tests matching `keyword`
   within a spec (ScalaTest `-z` substring filter)
-- `<module>/reStart`, `reStop`, `reStatus`, `~reStart` — run/manage a server app with sbt-revolver, e.g.
-  `aviation-api/reStart`, `aviation-web/reStart`, `tapir-webapp/reStart`
+- `<module>/reStart`, `reStop`, `reStatus`, `~reStart` — **currently broken**: `sbt-revolver` isn't in
+  `project/plugins.sbt` despite being README-documented, so this fails with `Not a valid key: reStart`.
+  Run a module's assembled jar instead (see "Running a server locally" below).
 - `reload` — reload sbt after editing `build.sbt`
 - `clean` — wipe `target` directories
 - `assembly` — build a fat jar for a module (`aviation-api` → `aviation-webapp.jar`, `tapir-webapp` →
@@ -44,10 +45,28 @@ JDK 21 (Zulu).
 
 ### Running a server locally
 
-- `aviation-api/reStart` → Akka HTTP implementation, Swagger UI at http://localhost:8080/docs
-- `aviation-web/reStart` → ZIO HTTP implementation, Swagger UI at http://localhost:8081/docs
-- `tapir-webapp/reStart` → Swagger UI at http://localhost:8080/docs
-- Health check: `curl -v http://localhost:8080/api/v1.0/health | jq`
+`reStart` is broken (see above). Build and run the assembled jar instead, e.g. for `tapir-webapp`:
+`sbt "tapir-webapp/assembly"` then `java -jar target/out/jvm/scala-2.13.18/tapir-webapp/tapir-webapp.jar`
+(Akka HTTP implementation, Swagger UI at http://localhost:8080/docs). Same pattern for `aviation-api`
+(→ `aviation-webapp.jar`) and `aviation-web` (ZIO HTTP, port 8081; no assembly jar name override, so it's
+`aviation-web-assembly-<version>.jar` — or use `sbt aviation-web/run`, which runs in-process rather than via
+an assembled jar and isn't affected by the swagger-ui merge-strategy issue below).
+Health check: `curl -v http://localhost:8080/api/v1.0/health | jq`.
+
+**Note:** before the assembly merge-strategy fix (see `assemblyMergeStrategy` in `build.sbt`), the
+assembled jars crashed the JVM on the very first HTTP request with `META-INF resources are missing`
+(tapir-swagger-ui-bundle's `SwaggerUI` static init failing because sbt-assembly's default strategy dropped
+the swagger-ui webjar's `META-INF/resources`, and `akka.jvm-exit-on-fatal-error` turns that into a hard
+JVM exit). Fixed per
+[tapir's documented merge strategy](https://tapir.softwaremill.com/en/latest/docs/openapi.html#using-swaggerui-with-sbt-assembly);
+verified live end-to-end via the `integration` subproject below.
+
+### Live integration tests
+
+`integration/src/test/scala/com/cmartin/learn/SttpITSpec.scala` makes real sttp requests against a running
+`tapir-webapp` server (health + transfers endpoints). It's a separate sbt subproject, deliberately left out
+of `aviation-root`'s aggregate so `compile`/`test` never require a live server. Start the server first (see
+above), then run `sbt integration/test`.
 
 ## Architecture
 

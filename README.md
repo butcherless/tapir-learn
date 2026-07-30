@@ -61,6 +61,12 @@ Manage the web server with Revolver plugin
 
 `reStart`, `reStop`, `reStatus`, or `~reStart`
 
+> **Currently broken:** `sbt-revolver` is not in `project/plugins.sbt`, so `reStart` fails with
+> `Not a valid key: reStart`. Until it's restored, run a module's server via its assembled jar
+> instead (also exercises the `assembly` task):
+> `sbt "<module>/assembly"` then `java -jar target/out/jvm/scala-2.13.18/<module>/<module>.jar`
+> (or `<jarName>` from `assembly / assemblyJarName` if it differs from the module name).
+
 Check Swagger API:
 
 - `Akka` implementation (`aviation-api` module): http://localhost:8080/docs
@@ -107,7 +113,14 @@ Rapid test cycle via continuous testing with a single test:
 
 ## Integration
 
-module: `tapir-webapp/reStart`
+Automated: the `integration` sbt subproject (`integration/src/test/scala/com/cmartin/learn/SttpITSpec.scala`)
+runs the same checks below as real sttp requests against a running server. It's intentionally left out of
+the default `aviation-root` aggregate (`compile`/`test` won't touch it), so run it explicitly:
+
+1. Start the server (see "Currently broken" note above for the `reStart` workaround), then
+2. `sbt integration/test`
+
+Manual: module: `tapir-webapp/reStart`
 
 bash command: `httpie`
 

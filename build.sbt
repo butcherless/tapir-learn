@@ -52,6 +52,19 @@ lazy val `tapir-webapp` = project
   .settings(BuildInfoSettings.value *)
   .enablePlugins(BuildInfoPlugin, GitVersioning)
 
+// live tests against a running tapir-webapp server (see README's "Integration" section).
+// intentionally left out of `aviation-root`'s aggregate so `compile`/`test` don't require a
+// live server; run explicitly with `sbt integration/test`.
+lazy val integration = project
+  .in(file("integration"))
+  .dependsOn(`tapir-webapp`)
+  .settings(
+    commonSettings,
+    libraryDependencies += "com.softwaremill.sttp.client3" %% "circe" % Versions.sttp,
+    name                                                   := "tapir-webapp-integration",
+    publish / skip                                         := true
+  )
+
 lazy val `aviation-web` = project
   .in(file("aviation-web"))
   .settings(
@@ -141,14 +154,20 @@ LocalRootProject / cls := Def.uncached {
 // ─── Assembly ───────────────────────────────────────────────────────────────
 
 ThisBuild / assemblyMergeStrategy := {
-  case PathList("org", "json4s", _*)                                  => MergeStrategy.first
-  case PathList("META-INF", "versions", _, "module-info.class")       => MergeStrategy.discard
-  case PathList("META-INF", "versions", _, "OSGI-INF", "MANIFEST.MF") => MergeStrategy.discard
-  case PathList("META-INF", "services", _*)                           => MergeStrategy.concat
-  case "META-INF/io.netty.versions.properties"                        => MergeStrategy.first
-  case "module-info.class"                                            => MergeStrategy.discard
-  case "deriving.conf"                                                => MergeStrategy.first
-  case x                                                              =>
+  case PathList("org", "json4s", _*)                                                => MergeStrategy.first
+  case PathList("META-INF", "versions", _, "module-info.class")                     => MergeStrategy.discard
+  case PathList("META-INF", "versions", _, "OSGI-INF", "MANIFEST.MF")               => MergeStrategy.discard
+  case PathList("META-INF", "services", _*)                                         => MergeStrategy.concat
+  // required by tapir-swagger-ui-bundle, otherwise SwaggerUI's static init throws
+  // "META-INF resources are missing" and crashes the JVM on the first request
+  // (see https://tapir.softwaremill.com/en/latest/docs/openapi.html#using-swaggerui-with-sbt-assembly)
+  case PathList("META-INF", "maven", "org.webjars", "swagger-ui", "pom.properties") =>
+    MergeStrategy.singleOrError
+  case PathList("META-INF", "resources", "webjars", "swagger-ui", _*)               => MergeStrategy.singleOrError
+  case "META-INF/io.netty.versions.properties"                                      => MergeStrategy.first
+  case "module-info.class"                                                          => MergeStrategy.discard
+  case "deriving.conf"                                                              => MergeStrategy.first
+  case x                                                                            =>
     val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
 }
