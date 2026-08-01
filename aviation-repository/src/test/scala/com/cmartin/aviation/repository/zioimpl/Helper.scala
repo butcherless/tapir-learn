@@ -1,7 +1,7 @@
 package com.cmartin.aviation.repository.zioimpl
 
 import com.cmartin.aviation.repository.zioimpl.common.SlickToZioSyntax
-import slick.jdbc.{JdbcBackend, JdbcProfile}
+import slick.jdbc.{JdbcActionComponent, JdbcBackend, JdbcProfile}
 import zio.{IO, RLayer, ZIO, ZLayer}
 
 object Helper {
@@ -11,9 +11,10 @@ object Helper {
     def dropSchema(): IO[Throwable, Unit]
   }
 
-  case class SlickSchemaManager(db: JdbcBackend#DatabaseDef)
+  case class SlickSchemaManager(db: JdbcBackend#Database)
       extends SchemaManager
-      with JdbcProfile {
+      with JdbcProfile
+      with JdbcActionComponent.OneRowPerStatementOnly {
     import api._
 
     val dbLayer                                      = ZLayer.succeed(db)
@@ -37,7 +38,7 @@ object Helper {
   }
 
   object SlickSchemaManager {
-    val layer: RLayer[JdbcBackend#DatabaseDef, SlickSchemaManager] =
+    val layer: RLayer[JdbcBackend#Database, SlickSchemaManager] =
       ZLayer.fromFunction(db => SlickSchemaManager(db))
 
     def createSchema(): ZIO[SchemaManager, Throwable, Unit] =

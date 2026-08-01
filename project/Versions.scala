@@ -1,12 +1,12 @@
 object Versions {
   val scala      = "2.13.18"
   // main
-  val akka       = "2.6.20"
+  val akka       = "2.8.8"
   val akkaHttp   = "10.5.3"
   val json4s     = "4.1.1"
   val h2         = "2.4.240"
   val logback    = "1.6.1"
-  val slick      = "3.4.1"
+  val slick      = "3.6.1"
   val tapir      = "1.13.30"
   val sttp       = "3.11.0"
   val zioLogging = "2.5.3"
