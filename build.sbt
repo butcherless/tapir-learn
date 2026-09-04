@@ -169,6 +169,10 @@ ThisBuild / assemblyMergeStrategy := {
   // scala-library 3.9.0 folded in the `@unroll` annotation that com.lihaoyi:unroll-annotation
   // (a transitive dependency) also still ships, so both jars now provide the same class/tasty file
   case PathList("scala", "annotation", "unroll.class" | "unroll.tasty")             => MergeStrategy.first
+  // pekko-protobuf-v3 vendors its own copy of the well-known-types .proto schema sources, which
+  // collide (with different byte content) with protobuf-java's copy; neither is read by this app
+  // at runtime, so it's safe to just pick one.
+  case PathList("google", "protobuf", _*)                                          => MergeStrategy.first
   case x                                                                            =>
     val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)
