@@ -27,9 +27,9 @@ class CountryApiSpec
     with MockFactory
     with ScalatestRouteTest {
 
-  val timeout: RouteTestTimeout      = RouteTestTimeout(10.seconds.dilated)
-  val countryService: CountryService = mock[CountryService]
-  val countryApi: CountryApi         = CountryApi(countryService)
+  implicit val timeout: RouteTestTimeout = RouteTestTimeout(10.seconds.dilated)
+  val countryService: CountryService     = mock[CountryService]
+  val countryApi: CountryApi             = CountryApi(countryService)
 
   behavior of "CountryApi"
 
