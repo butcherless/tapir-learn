@@ -1,7 +1,7 @@
 package com.cmartin.aviation.api
 
-import akka.http.scaladsl.server.Route
-import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import org.apache.pekko.http.scaladsl.server.Route
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 import zio.Runtime.{default => runtime}
 import zio.{Unsafe, ZIO}
 
@@ -12,7 +12,7 @@ trait ActuatorApi {
   import ActuatorEndpoint._
 
   lazy val route: Route =
-    AkkaHttpServerInterpreter()
+    PekkoHttpServerInterpreter()
       .toRoute(
         ActuatorEndpoint.healthEndpoint.serverLogicSuccess(_ =>
           doGetLogic()

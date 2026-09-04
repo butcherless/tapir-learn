@@ -1,7 +1,7 @@
 package com.cmartin.aviation.api
 
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.Directives._
+import org.apache.pekko.http.scaladsl.server.Route
 import com.cmartin.aviation.api.BaseEndpoint._
 import com.cmartin.aviation.api.Common._
 import com.cmartin.aviation.api.Model._
@@ -9,10 +9,11 @@ import com.cmartin.aviation.api.validator.CountryValidator
 import com.cmartin.aviation.api.validator.CountryValidator._
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.CountryService
-import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 import zio.ZIO
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CountryApi(countryService: CountryService) {
   import CountryApi._
@@ -24,8 +25,8 @@ class CountryApi(countryService: CountryService) {
       deleteRoute
 
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
-      CountryEndpoints.getByCodeEndpoint.serverLogic { request =>
+    PekkoHttpServerInterpreter().toRoute(
+      CountryEndpoints.getByCodeEndpoint.serverLogic[Future] { request =>
         run(
           doGetLogic(request)
         )
@@ -33,8 +34,8 @@ class CountryApi(countryService: CountryService) {
     )
 
   lazy val getAllRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
-      CountryEndpoints.getAllEndpoint.serverLogic { _ =>
+    PekkoHttpServerInterpreter().toRoute(
+      CountryEndpoints.getAllEndpoint.serverLogic[Future] { _ =>
         run(
           doGetAllLogic()
         )
@@ -42,8 +43,8 @@ class CountryApi(countryService: CountryService) {
     )
 
   lazy val postRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
-      CountryEndpoints.postEndpoint.serverLogic { request =>
+    PekkoHttpServerInterpreter().toRoute(
+      CountryEndpoints.postEndpoint.serverLogic[Future] { request =>
         run(
           doPostLogic(request)
         )
@@ -51,8 +52,8 @@ class CountryApi(countryService: CountryService) {
     )
 
   lazy val putRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
-      CountryEndpoints.putEndpoint.serverLogic { request =>
+    PekkoHttpServerInterpreter().toRoute(
+      CountryEndpoints.putEndpoint.serverLogic[Future] { request =>
         run(
           doPutLogic(request)
         )
@@ -60,8 +61,8 @@ class CountryApi(countryService: CountryService) {
     )
 
   lazy val deleteRoute: Route =
-    AkkaHttpServerInterpreter()
-      .toRoute(CountryEndpoints.deleteEndpoint.serverLogic { request =>
+    PekkoHttpServerInterpreter()
+      .toRoute(CountryEndpoints.deleteEndpoint.serverLogic[Future] { request =>
         run(
           doDeleteLogic(request)
         )

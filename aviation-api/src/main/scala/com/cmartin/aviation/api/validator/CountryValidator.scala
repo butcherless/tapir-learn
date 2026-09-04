@@ -35,7 +35,7 @@ object CountryValidator {
     Validation.validateWith(
       validateCode(request.code),
       validateName(request.name)
-    )(Country)
+    )(Country.apply)
   }
 
   def validatePutRequest(request: CountryView): Validation[ValidationError, Country] = {

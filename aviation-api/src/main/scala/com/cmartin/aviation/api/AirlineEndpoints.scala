@@ -1,6 +1,6 @@
 package com.cmartin.aviation.api
 
-import akka.http.scaladsl.model.headers.`Content-Location`
+import org.apache.pekko.http.scaladsl.model.headers.`Content-Location`
 import com.cmartin.aviation.api.BaseEndpoint._
 import com.cmartin.aviation.api.Model._
 import io.circe.generic.auto._

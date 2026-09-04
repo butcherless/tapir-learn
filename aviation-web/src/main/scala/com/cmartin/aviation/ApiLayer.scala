@@ -136,7 +136,7 @@ object ApiLayer {
         .errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound].description("resource not found"))),
-            commonMappings: _*
+            commonMappings*
           )
         )
 
@@ -150,7 +150,7 @@ object ApiLayer {
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NotFound)
               .and(jsonBody[NotFound].description("not found"))),
-            commonMappings: _*
+            commonMappings*
           )
         )
 
@@ -169,7 +169,7 @@ object ApiLayer {
             oneOfVariant(statusCode(StatusCode.NoContent).and(emptyOutputAs(NoContent))),
             oneOfVariant(
               statusCode(StatusCode.Conflict).and(jsonBody[Conflict].description("duplicated"))
-            ) +: commonMappings: _*
+            ) +: commonMappings*
           )
         )
 
@@ -186,7 +186,7 @@ object ApiLayer {
         .errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NoContent).and(emptyOutputAs(NoContent))),
-            commonMappings: _*
+            commonMappings*
           )
         )
 
@@ -200,11 +200,11 @@ object ApiLayer {
         .errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound].description("not found"))),
-            commonMappings: _*
+            commonMappings*
           )
         )
 
-    lazy val serverEndpoints = List(
+    lazy val serverEndpoints: List[ServerEndpoint[Any, Task]] = List(
       get.zServerLogic(getByCodeLogic),
       getAll.zServerLogic(getAllLogic),
       post.zServerLogic(postLogic)
@@ -256,7 +256,7 @@ object ApiLayer {
         .errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound].description("not found"))),
-            commonMappings: _*
+            commonMappings*
           )
         )
 
@@ -274,7 +274,7 @@ object ApiLayer {
         .errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NoContent).and(emptyOutputAs(NoContent))),
-            commonMappings: _*
+            commonMappings*
           )
         )
 
@@ -291,7 +291,7 @@ object ApiLayer {
         .errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NoContent).and(emptyOutputAs(NoContent))),
-            commonMappings: _*
+            commonMappings*
           )
         )
 
@@ -305,7 +305,7 @@ object ApiLayer {
         .errorOut(
           oneOf[ErrorInfo](
             oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[NotFound].description("not found"))),
-            commonMappings: _*
+            commonMappings*
           )
         )
 

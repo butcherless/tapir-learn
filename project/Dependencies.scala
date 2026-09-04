@@ -35,12 +35,12 @@ object Dependencies {
 
   val apiMain = Seq(
     "com.softwaremill.sttp.tapir" %% "tapir-core"              % Versions.tapir,
-    "com.softwaremill.sttp.tapir" %% "tapir-akka-http-server"  % Versions.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-pekko-http-server" % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-json-circe"        % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"      % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir,
-    "com.typesafe.akka"           %% "akka-stream"             % Versions.akka,
-    "com.typesafe.akka"           %% "akka-slf4j"              % Versions.akka
+    "org.apache.pekko"            %% "pekko-stream"            % Versions.pekko,
+    "org.apache.pekko"            %% "pekko-slf4j"             % Versions.pekko
   )
 
   val webMain = Seq(
@@ -50,32 +50,36 @@ object Dependencies {
   )
 
   val apiTest = Seq(
-    "com.typesafe.akka" %% "akka-http-testkit" % Versions.akkaHttp  % Test,
-    "com.typesafe.akka" %% "akka-testkit"      % Versions.akka      % Test,
-    "org.scalamock"     %% "scalamock"         % Versions.scalaMock % Test
+    "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp  % Test,
+    "org.apache.pekko" %% "pekko-testkit"      % Versions.pekko      % Test,
+    "org.scalamock"    %% "scalamock"          % Versions.scalaMock % Test
   )
 
   val mainAndTest = Seq(
     // T A P I R
     "com.softwaremill.sttp.tapir"   %% "tapir-core"                    % Versions.tapir,
-    "com.softwaremill.sttp.tapir"   %% "tapir-akka-http-server"        % Versions.tapir,
+    "com.softwaremill.sttp.tapir"   %% "tapir-pekko-http-server"       % Versions.tapir,
     "com.softwaremill.sttp.tapir"   %% "tapir-json-circe"              % Versions.tapir,
     "com.softwaremill.sttp.tapir"   %% "tapir-openapi-docs"            % Versions.tapir,
     "com.softwaremill.sttp.tapir"   %% "tapir-swagger-ui-bundle"       % Versions.tapir,
     "com.softwaremill.sttp.tapir"   %% "tapir-json-json4s"             % Versions.tapir,
     "com.softwaremill.sttp.tapir"   %% "tapir-zio-http-server"         % Versions.tapir,
-    "com.typesafe.akka"             %% "akka-slf4j"                    % Versions.akka,
-    "com.typesafe.akka"             %% "akka-stream"                   % Versions.akka,
+    "org.apache.pekko"              %% "pekko-slf4j"                   % Versions.pekko,
+    "org.apache.pekko"              %% "pekko-stream"                  % Versions.pekko,
     "ch.qos.logback"                 % "logback-classic"               % Versions.logback,
     "dev.zio"                       %% "zio-prelude"                   % Versions.zioPrelude,
     "io.github.json4s"              %% "json4s-ext"                    % Versions.json4s,
     "io.github.json4s"              %% "json4s-native"                 % Versions.json4s,
+    // json4s-native's reflection fallback (org.json4s.reflect.ScalaSigReader) reaches for this at
+    // runtime on Scala 3 for any case class without a matching CustomSerializer; without it on the
+    // classpath a NoClassDefFoundError there is fatal (`pekko.jvm-exit-on-fatal-error` kills the JVM).
+    "org.scala-lang"                %% "scala3-staging"                % Versions.scala,
     /*
        T E S T
      */
     "org.scalatest"                 %% "scalatest"                     % Versions.scalatest % Test,
-    "com.typesafe.akka"             %% "akka-http-testkit"             % Versions.akkaHttp  % Test,
-    "com.typesafe.akka"             %% "akka-testkit"                  % Versions.akka      % Test,
+    "org.apache.pekko"              %% "pekko-http-testkit"            % Versions.pekkoHttp % Test,
+    "org.apache.pekko"              %% "pekko-testkit"                 % Versions.pekko     % Test,
     // S T T P
     "com.softwaremill.sttp.client3" %% "core"                          % Versions.sttp, // % "it, test",
     "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % Versions.sttp, // % "it, test",

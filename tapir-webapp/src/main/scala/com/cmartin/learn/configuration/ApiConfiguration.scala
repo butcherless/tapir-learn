@@ -1,8 +1,8 @@
 package com.cmartin.learn.configuration
 
-import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.RouteConcatenation._
-import akka.http.scaladsl.server.directives.DebuggingDirectives
+import org.apache.pekko.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.RouteConcatenation._
+import org.apache.pekko.http.scaladsl.server.directives.DebuggingDirectives
 import com.cmartin.learn.api._
 
 trait ApiConfiguration {

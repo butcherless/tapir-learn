@@ -1,12 +1,12 @@
 package com.cmartin.learn.api
 
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.RouteConcatenation._
+import org.apache.pekko.http.scaladsl.model.StatusCodes
+import org.apache.pekko.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.Model._
 import com.cmartin.learn.domain.ApiConverters._
 import com.cmartin.learn.domain.Model.Transfer
-import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 import zio.{Task, Unsafe, ZIO}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,7 +25,7 @@ trait TransferApi {
 
   // tapir endpoint description to akka routes via .toRoute function
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       TransferEndpoint.getTransferEndpoint.serverLogic(
         doControllerLogic
       )
@@ -49,7 +49,7 @@ trait TransferApi {
   }
 
   lazy val getFilteredRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       TransferEndpoint.getFilteredTransferEndpoint.serverLogicSuccess { _ =>
         Future.successful(TransferEndpoint.transferListExample)
       }
@@ -57,7 +57,7 @@ trait TransferApi {
 
   //
   lazy val getWithHeaderRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       TransferEndpoint.getWithHeaderTransferEndpoint.serverLogicSuccess { _ =>
         Future.successful(())
       }
@@ -65,7 +65,7 @@ trait TransferApi {
 
   // dummy business process
   lazy val postRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       TransferEndpoint.postTransferEndpoint.serverLogicSuccess { inDto =>
         val transfer: Transfer  = inDto.toModel
         // simulated business process
@@ -75,14 +75,14 @@ trait TransferApi {
     )
 
   lazy val postJsonRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       TransferEndpoint.postJsonEndpoint.serverLogicSuccess { inDto =>
         Future.successful(inDto)
       }
     )
 
   lazy val getACEntityRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       TransferEndpoint.getACEntityEndpoint.serverLogicSuccess { _ =>
         Future.successful(TransferEndpoint.acEntityExample)
       }

@@ -1,7 +1,7 @@
 package com.cmartin.learn
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.http.scaladsl.Http
 import com.cmartin.learn.configuration.ApiConfiguration
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -9,13 +9,13 @@ import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
 /*
-  https://doc.akka.io/docs/akka-http/current/server-side/graceful-termination.html
+  https://pekko.apache.org/docs/pekko-http/current/server-side/graceful-termination.html
  */
-object AkkaWebServerApp
+object PekkoWebServerApp
     extends App
     with ApiConfiguration {
 
-  // A K K A  A C T O R  S Y S T E M
+  // P E K K O  A C T O R  S Y S T E M
   implicit lazy val system: ActorSystem           = ActorSystem("WebActorSystem")
   implicit val executionContext: ExecutionContext = system.dispatcher
   system.log.info(s"Starting WebServer")

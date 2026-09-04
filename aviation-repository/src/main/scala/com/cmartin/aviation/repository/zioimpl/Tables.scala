@@ -31,7 +31,7 @@ object Tables extends JdbcProfile with JdbcActionComponent.OneRowPerStatementOnl
 
     // mapper function
     def * : ProvenShape[CountryDbo] =
-      (name, code, id).<>(CountryDbo.tupled, CountryDbo.unapply)
+      (name, code, id).<>(CountryDbo.apply.tupled, CountryDbo.unapply)
 
     // indexes
     def nameIndex: Index =
@@ -55,7 +55,7 @@ object Tables extends JdbcProfile with JdbcActionComponent.OneRowPerStatementOnl
     def countryId: Rep[Long] = column[Long]("COUNTRY_ID")
 
     def * : ProvenShape[AirportDbo] =
-      (name, iataCode, icaoCode, countryId, id).<>(AirportDbo.tupled, AirportDbo.unapply)
+      (name, iataCode, icaoCode, countryId, id).<>(AirportDbo.apply.tupled, AirportDbo.unapply)
 
     // foreign keys
     def country = foreignKey("FK_COUNTRY_AIRPORT", countryId, countries)(_.id)
@@ -80,7 +80,7 @@ object Tables extends JdbcProfile with JdbcActionComponent.OneRowPerStatementOnl
     // foreign columns:
     def countryId = column[Long]("COUNTRY_ID")
 
-    def * = (name, iataCode, icaoCode, foundationDate, countryId, id).<>(AirlineDbo.tupled, AirlineDbo.unapply)
+    def * = (name, iataCode, icaoCode, foundationDate, countryId, id).<>(AirlineDbo.apply.tupled, AirlineDbo.unapply)
 
     // foreign keys
     def country = foreignKey("FK_COUNTRY_AIRLINE", countryId, countries)(_.id)
@@ -105,7 +105,7 @@ object Tables extends JdbcProfile with JdbcActionComponent.OneRowPerStatementOnl
 
     def destinationId = column[Long]("DESTINATION_ID")
 
-    def * = (distance, originId, destinationId, id).<>(RouteDbo.tupled, RouteDbo.unapply)
+    def * = (distance, originId, destinationId, id).<>(RouteDbo.apply.tupled, RouteDbo.unapply)
 
     // foreign keys
     def origin =

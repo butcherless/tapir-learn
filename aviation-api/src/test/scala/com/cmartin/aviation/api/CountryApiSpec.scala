@@ -1,9 +1,9 @@
 package com.cmartin.aviation.api
 
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.testkit.RouteTestTimeout
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import akka.testkit.TestDuration
+import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
+import org.apache.pekko.http.scaladsl.testkit.RouteTestTimeout
+import org.apache.pekko.http.scaladsl.testkit.ScalatestRouteTest
+import org.apache.pekko.testkit.TestDuration
 import com.cmartin.aviation.domain.Model._
 import com.cmartin.aviation.port.CountryService
 import io.circe.generic.auto._
@@ -35,15 +35,14 @@ class CountryApiSpec
 
   "Post" should "create a Country" in {
     // G I V E N
-    (countryService.create _)
+    (countryService.create)
       .expects(TestData.spainCountry)
       .returns(ZIO.succeed(TestData.spainCountry))
       .once()
 
     // W H E N
     Post(s"$baseApiPath/$countriesResource")
-      .withEntity(TestData.spainCountryJson) ~>
-      addHeader(jsonContentType) ~>
+      .withEntity(HttpEntity(ContentTypes.`application/json`, TestData.spainCountryJson)) ~>
       countryApi.postRoute ~>
       // T H E N
       check {
@@ -57,8 +56,7 @@ class CountryApiSpec
 
     // W H E N
     Post(s"$baseApiPath/$countriesResource")
-      .withEntity(TestData.invalidCountryCodeJson) ~>
-      addHeader(jsonContentType) ~>
+      .withEntity(HttpEntity(ContentTypes.`application/json`, TestData.invalidCountryCodeJson)) ~>
       countryApi.postRoute ~>
       // T H E N
       check {
@@ -72,7 +70,7 @@ class CountryApiSpec
   "Get" should "retrieve a Country by code" in {
     // G I V E N
     val code = CountryCode("es")
-    (countryService.findByCode _)
+    (countryService.findByCode)
       .expects(code)
       .returns(ZIO.succeed(TestData.spainCountry))
       .once()
@@ -106,7 +104,7 @@ class CountryApiSpec
   it should "return a NotFound for a missing country code" in {
     // G I V E N
     val code = CountryCode("xy")
-    (countryService.findByCode _)
+    (countryService.findByCode)
       .expects(code)
       .returns(ZIO.fail(MissingEntityError(s"missing country for code: $code")))
       .once()
@@ -126,15 +124,14 @@ class CountryApiSpec
 
   "Update" should "update a Country" in {
     // G I V E N
-    (countryService.update _)
+    (countryService.update)
       .expects(TestData.spainCountry)
       .returns(ZIO.succeed(TestData.spainCountry))
       .once()
 
     // W H E N
     Put(s"$baseApiPath/$countriesResource")
-      .withEntity(TestData.spainCountryJson) ~>
-      addHeader(jsonContentType) ~>
+      .withEntity(HttpEntity(ContentTypes.`application/json`, TestData.spainCountryJson)) ~>
       countryApi.putRoute ~>
       // T H E N
       check {
@@ -147,7 +144,7 @@ class CountryApiSpec
     // G I V E N
     val code = CountryCode("es")
 
-    (countryService.deleteByCode _)
+    (countryService.deleteByCode)
       .expects(code)
       .returns(ZIO.succeed(1))
       .once()

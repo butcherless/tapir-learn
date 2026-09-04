@@ -1,7 +1,7 @@
 package com.cmartin.learn.api
 
-import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.RouteConcatenation._
+import org.apache.pekko.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.RouteConcatenation._
 import com.cmartin.learn.api.AircraftEndpoint._
 import com.cmartin.learn.api.Model.AircraftType._
 import com.cmartin.learn.api.Model._
@@ -10,7 +10,7 @@ import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe._
-import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -32,7 +32,7 @@ trait AircraftApi {
       .errorOut(statusCode)
 
   lazy val getTypeRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       getAircraftTypeEndpoint.serverLogicSuccess { _ =>
         Future.successful(AircraftType.values.toSeq)
       }
@@ -68,14 +68,14 @@ trait AircraftApi {
       .errorOut(statusCode)
 
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       getAircraftEndpoint.serverLogicSuccess { _ =>
         Future.successful(apiAircraftMIGExample)
       }
     )
 
   lazy val getSeqRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       getAircraftSeqEndpoint.serverLogicSuccess { _ =>
         Future.successful(
           Seq(apiAircraftMIGExample.copy(id = Some(1234)), apiAircraftLVLExample.copy(id = Some(5678)))
@@ -84,7 +84,7 @@ trait AircraftApi {
     )
 
   lazy val postRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
+    PekkoHttpServerInterpreter().toRoute(
       postAircraftEndpoint.serverLogicSuccess { aircraft =>
         Future.successful(aircraft.copy(id = Some(1234L)))
       }

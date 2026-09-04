@@ -1,8 +1,8 @@
 package com.cmartin.aviation.api
 
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.Route
 import sttp.apispec.openapi._
-import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -11,7 +11,7 @@ import scala.concurrent.Future
 trait SwaggerApi {
 
   lazy val route: Route =
-    AkkaHttpServerInterpreter()
+    PekkoHttpServerInterpreter()
       .toRoute(swaggerEndpoints)
 
   // add endpoints to the list for swagger documentation

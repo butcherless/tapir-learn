@@ -95,7 +95,7 @@ final case class AirlinePersisterLive(
 }
 
 object AirlinePersisterLive {
-  val layer: URLayer[CountryRepository with AirlineRepository, AirlinePersister] =
+  val layer: URLayer[CountryRepository & AirlineRepository, AirlinePersister] =
     ZLayer {
       for {
         c <- ZIO.service[CountryRepository]

@@ -64,15 +64,15 @@ Manage the web server with Revolver plugin
 > **Currently broken:** `sbt-revolver` is not in `project/plugins.sbt`, so `reStart` fails with
 > `Not a valid key: reStart`. Until it's restored, run a module's server via its assembled jar
 > instead (also exercises the `assembly` task):
-> `sbt "<module>/assembly"` then `java -jar target/out/jvm/scala-2.13.18/<module>/<module>.jar`
+> `sbt "<module>/assembly"` then `java -jar target/out/jvm/scala-3.9.0/<module>/<module>.jar`
 > (or `<jarName>` from `assembly / assemblyJarName` if it differs from the module name).
 
 Check Swagger API:
 
-- `Akka` implementation (`aviation-api` module): http://localhost:8080/docs
+- `Pekko` implementation (`aviation-api` module): http://localhost:8080/docs
 - `ZIO` implementation (`aviation-web` odule): http://localhost:8081/docs/
 
-Check Health endpoint (Akka)
+Check Health endpoint (Pekko)
 
 http://localhost:8080/api/v1.0/health
 
@@ -152,11 +152,11 @@ Asynchronous non-blocking _appender_ config
 
 - http://logback.qos.ch/manual/appenders.html
 
-## Akka config
+## Pekko config
 
 Basic standard configuration
 
-https://doc.akka.io/docs/akka/current/general/configuration.html
+https://pekko.apache.org/docs/pekko/current/general/configuration.html
 
     tapir-webapp/src/main/resources/application.conf
 
@@ -164,5 +164,5 @@ https://doc.akka.io/docs/akka/current/general/configuration.html
 ## Links:
 
 - http://www.scalatest.org/at_a_glance/FlatSpec
-- https://doc.akka.io/docs/akka-http/current/routing-dsl/testkit.html
+- https://pekko.apache.org/docs/pekko-http/current/routing-dsl/testkit.html
 - https://tapir-scala.readthedocs.io/en/latest/index.html

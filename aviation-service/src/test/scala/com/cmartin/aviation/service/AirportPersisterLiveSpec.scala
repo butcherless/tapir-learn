@@ -14,7 +14,7 @@ class AirportPersisterLiveSpec
   import TestRepositories._
 
   val env =
-    ZLayer.make[CountryPersister with AirportPersister](
+    ZLayer.make[CountryPersister & AirportPersister](
       Common.dbLayer,
       SlickCountryRepository.layer,
       SlickAirportRepository.layer,
@@ -25,7 +25,7 @@ class AirportPersisterLiveSpec
   // Simulator for database infrastructure exceptions
   val airportRepoMock = mock[AirportRepository]
   val mockEnv         =
-    ZLayer.make[CountryPersister with AirportPersister](
+    ZLayer.make[CountryPersister & AirportPersister](
       Common.dbLayer,
       SlickCountryRepository.layer,
       ZLayer.succeed(airportRepoMock),
@@ -81,7 +81,7 @@ class AirportPersisterLiveSpec
 
   it should "manage a database exception: existsByCode" in {
     // GIVEN
-    (airportRepoMock.findByIataCode _)
+    (airportRepoMock.findByIataCode)
       .expects(madIataCode)
       .returns(TestRepositories.failDefault())
       .once()
@@ -119,7 +119,7 @@ class AirportPersisterLiveSpec
 
   it should "manage a database exception: findByCode" in {
     // GIVEN
-    (airportRepoMock.findByIataCode _)
+    (airportRepoMock.findByIataCode)
       .expects(madIataCode)
       .returns(TestRepositories.failDefault())
       .once()
@@ -151,15 +151,15 @@ class AirportPersisterLiveSpec
 
   it should "manage a database exception: update" in {
     // GIVEN
-    (airportRepoMock.insert _)
+    (airportRepoMock.insert)
       .expects(madDbo.copy(countryId = 1L))
       .returns(ZIO.succeed(1L))
 
-    (airportRepoMock.findByIataCode _)
+    (airportRepoMock.findByIataCode)
       .expects(madIataCode)
       .returns(ZIO.some(madDbo.copy(countryId = 1L)))
 
-    (airportRepoMock.update _)
+    (airportRepoMock.update)
       .expects(*)
       .returns(TestRepositories.failDefault())
 
@@ -190,7 +190,7 @@ class AirportPersisterLiveSpec
 
   it should "manage a database exception: delete" in {
     // GIVEN
-    (airportRepoMock.deleteByIataCode _)
+    (airportRepoMock.deleteByIataCode)
       .expects(madIataCode)
       .returns(TestRepositories.failDefault())
       .once()

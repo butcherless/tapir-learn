@@ -14,7 +14,7 @@ class AirlinePersisterLiveSpec
   import TestRepositories._
 
   val env =
-    ZLayer.make[CountryPersister with AirlinePersister](
+    ZLayer.make[CountryPersister & AirlinePersister](
       Common.dbLayer,
       SlickCountryRepository.layer,
       SlickAirlineRepository.layer,
@@ -25,7 +25,7 @@ class AirlinePersisterLiveSpec
   // Simulator for database infrastructure exceptions
   val airlineRepoMock = mock[AirlineRepository]
   val mockEnv         =
-    ZLayer.make[CountryPersister with AirlinePersister](
+    ZLayer.make[CountryPersister & AirlinePersister](
       Common.dbLayer,
       SlickCountryRepository.layer,
       ZLayer.succeed(airlineRepoMock),
@@ -81,7 +81,7 @@ class AirlinePersisterLiveSpec
 
   it should "manage a database exception: existsByCode" in {
     // GIVEN
-    (airlineRepoMock.findByIataCode _)
+    (airlineRepoMock.findByIataCode)
       .expects(ibeIataCode)
       .returns(TestRepositories.failDefault())
       .once()
@@ -120,7 +120,7 @@ class AirlinePersisterLiveSpec
 
   it should "manage a database exception: findByCode" in {
     // GIVEN
-    (airlineRepoMock.findByIataCode _)
+    (airlineRepoMock.findByIataCode)
       .expects(ibeIataCode)
       .returns(TestRepositories.failDefault())
       .once()
@@ -159,7 +159,7 @@ class AirlinePersisterLiveSpec
 
   it should "manage a database exception: findByCountry" in {
     // GIVEN
-    (airlineRepoMock.findByCountryCode _)
+    (airlineRepoMock.findByCountryCode)
       .expects(spainCode)
       .returns(TestRepositories.failDefault())
       .once()
@@ -191,15 +191,15 @@ class AirlinePersisterLiveSpec
 
   it should "manage a database exception: update" in {
     // GIVEN
-    (airlineRepoMock.insert _)
+    (airlineRepoMock.insert)
       .expects(ibeDbo.copy(countryId = 1L))
       .returns(ZIO.succeed(1L))
 
-    (airlineRepoMock.findByIataCode _)
+    (airlineRepoMock.findByIataCode)
       .expects(ibeIataCode)
       .returns(ZIO.some(ibeDbo.copy(countryId = 1L)))
 
-    (airlineRepoMock.update _)
+    (airlineRepoMock.update)
       .expects(*)
       .returns(TestRepositories.failDefault())
 
@@ -230,7 +230,7 @@ class AirlinePersisterLiveSpec
 
   it should "manage a database exception: delete" in {
     // GIVEN
-    (airlineRepoMock.deleteByIataCode _)
+    (airlineRepoMock.deleteByIataCode)
       .expects(ibeIataCode)
       .returns(TestRepositories.failDefault())
       .once()

@@ -12,8 +12,8 @@ import java.sql.SQLIntegrityConstraintViolationException
 class SlickAirportRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env: TaskLayer[CountryRepository with AirportRepository] =
-    ZLayer.make[CountryRepository with AirportRepository](
+  val env: TaskLayer[CountryRepository & AirportRepository] =
+    ZLayer.make[CountryRepository & AirportRepository](
       Common.dbLayer,
       SlickCountryRepository.layer,
       SlickAirportRepository.layer,

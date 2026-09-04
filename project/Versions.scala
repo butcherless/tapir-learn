@@ -1,8 +1,8 @@
 object Versions {
-  val scala      = "2.13.18"
+  val scala      = "3.9.0"
   // main
-  val akka       = "2.8.8"
-  val akkaHttp   = "10.5.3"
+  val pekko      = "1.6.0"
+  val pekkoHttp  = "1.3.0"
   val json4s     = "4.1.1"
   val h2         = "2.5.250"
   val logback    = "1.6.3"

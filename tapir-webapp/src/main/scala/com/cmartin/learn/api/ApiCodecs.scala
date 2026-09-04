@@ -6,7 +6,10 @@ import io.circe.Decoder
 import io.circe.Encoder
 import io.circe.HCursor
 import io.circe.Json
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import org.json4s.DefaultFormats
+import sttp.tapir.Schema
+import sttp.tapir.generic.auto._
 
 trait ApiCodecs {
 
@@ -107,6 +110,28 @@ trait ApiCodecs {
       case s @ OveStrategy => s
       case s @ ShaStrategy => s
     }
+
+  /*
+      S I D S   C O D E C
+   */
+  // circe-generic-auto's Scala 3 macro doesn't reliably chain through this nested
+  // Processors/Source/State/Sids hierarchy, so derive each level explicitly instead.
+
+  implicit lazy val processorsEncoder: Encoder[Processors] = deriveEncoder[Processors]
+  implicit lazy val processorsDecoder: Decoder[Processors] = deriveDecoder[Processors]
+  implicit lazy val processorsSchema: Schema[Processors]   = Schema.derived[Processors]
+
+  implicit lazy val sourceEncoder: Encoder[Source] = deriveEncoder[Source]
+  implicit lazy val sourceDecoder: Decoder[Source] = deriveDecoder[Source]
+  implicit lazy val sourceSchema: Schema[Source]   = Schema.derived[Source]
+
+  implicit lazy val stateEncoder: Encoder[State] = deriveEncoder[State]
+  implicit lazy val stateDecoder: Decoder[State] = deriveDecoder[State]
+  implicit lazy val stateSchema: Schema[State]   = Schema.derived[State]
+
+  implicit lazy val sidsEncoder: Encoder[Sids] = deriveEncoder[Sids]
+  implicit lazy val sidsDecoder: Decoder[Sids] = deriveDecoder[Sids]
+  implicit lazy val sidsSchema: Schema[Sids]   = Schema.derived[Sids]
 
 }
 

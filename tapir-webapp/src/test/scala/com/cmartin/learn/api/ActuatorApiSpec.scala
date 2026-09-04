@@ -1,9 +1,8 @@
 package com.cmartin.learn.api
 
-import akka.http.scaladsl.model.ContentTypes.`application/json`
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.model.headers.`Content-Type`
-import akka.http.scaladsl.testkit.ScalatestRouteTest
+import org.apache.pekko.http.scaladsl.model.ContentTypes.`application/json`
+import org.apache.pekko.http.scaladsl.model.StatusCodes
+import org.apache.pekko.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -24,7 +23,7 @@ final class ActuatorApiSpec
       // T H E N
       check {
         status shouldBe StatusCodes.OK
-        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        contentType shouldBe `application/json`
         val json = entityAs[String]
         json.contains("gitCommit") shouldBe true
         json.contains("name") shouldBe true
@@ -36,8 +35,4 @@ final class ActuatorApiSpec
 
 }
 
-object ActuatorApiSpec {
-
-  val contentTypeJson = `Content-Type`(`application/json`)
-
-}
+object ActuatorApiSpec {}

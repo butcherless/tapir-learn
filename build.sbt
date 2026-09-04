@@ -13,7 +13,6 @@ lazy val basicScalacOptions = Seq(
   "-explaintypes",
   "-unchecked",
   "-feature",
-  "-language:higherKinds",
   "-language:implicitConversions",
   "-language:postfixOps"
 )
@@ -167,6 +166,9 @@ ThisBuild / assemblyMergeStrategy := {
   case "META-INF/io.netty.versions.properties"                                      => MergeStrategy.first
   case "module-info.class"                                                          => MergeStrategy.discard
   case "deriving.conf"                                                              => MergeStrategy.first
+  // scala-library 3.9.0 folded in the `@unroll` annotation that com.lihaoyi:unroll-annotation
+  // (a transitive dependency) also still ships, so both jars now provide the same class/tasty file
+  case PathList("scala", "annotation", "unroll.class" | "unroll.tasty")             => MergeStrategy.first
   case x                                                                            =>
     val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
     oldStrategy(x)

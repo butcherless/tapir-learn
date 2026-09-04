@@ -1,9 +1,8 @@
 package com.cmartin.learn.api
 
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.model.headers.`Content-Type`
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.cmartin.learn.api.ActuatorApiSpec.contentTypeJson
+import org.apache.pekko.http.scaladsl.model.ContentTypes.`application/json`
+import org.apache.pekko.http.scaladsl.model.StatusCodes
+import org.apache.pekko.http.scaladsl.testkit.ScalatestRouteTest
 import com.cmartin.learn.api.Model.TransferDto
 import com.cmartin.learn.domain.{ApiConverters, Model}
 import com.cmartin.learn.domain.Model.Transfer
@@ -32,7 +31,7 @@ class TransferApiSpec
       // T H E N
       check {
         status shouldBe StatusCodes.OK
-        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        contentType shouldBe `application/json`
         parseTransfer(entityAs[String]) shouldBe Right(
           TransferEndpoint.transferExample
         )
@@ -48,7 +47,7 @@ class TransferApiSpec
       // T H E N
       check {
         status shouldBe StatusCodes.BadRequest
-        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        contentType shouldBe `application/json`
         info(entityAs[String])
       }
   }
@@ -61,7 +60,7 @@ class TransferApiSpec
       // T H E N
       check {
         status shouldBe StatusCodes.NotFound
-        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        contentType shouldBe `application/json`
         info(entityAs[String])
       }
   }
@@ -74,7 +73,7 @@ class TransferApiSpec
       // T H E N
       check {
         status shouldBe StatusCodes.InternalServerError
-        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        contentType shouldBe `application/json`
         info(entityAs[String])
       }
   }
@@ -87,7 +86,7 @@ class TransferApiSpec
       // T H E N
       check {
         status shouldBe StatusCodes.ServiceUnavailable
-        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        contentType shouldBe `application/json`
         info(entityAs[String])
       }
   }
@@ -100,7 +99,7 @@ class TransferApiSpec
       // T H E N
       check {
         status shouldBe StatusCodes.BadRequest
-        header[`Content-Type`] shouldBe Some(contentTypeJson)
+        contentType shouldBe `application/json`
         info(entityAs[String])
       }
   }

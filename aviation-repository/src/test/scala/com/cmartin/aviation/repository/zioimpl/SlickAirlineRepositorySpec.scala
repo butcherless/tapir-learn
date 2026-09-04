@@ -13,8 +13,8 @@ import java.time.LocalDate
 class SlickAirlineRepositorySpec
     extends SlickBaseRepositorySpec {
 
-  val env: TaskLayer[CountryRepository with AirlineRepository] =
-    ZLayer.make[CountryRepository with AirlineRepository](
+  val env: TaskLayer[CountryRepository & AirlineRepository] =
+    ZLayer.make[CountryRepository & AirlineRepository](
       Common.dbLayer,
       SlickCountryRepository.layer,
       SlickAirlineRepository.layer,

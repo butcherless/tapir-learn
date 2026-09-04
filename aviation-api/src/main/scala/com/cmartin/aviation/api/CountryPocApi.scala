@@ -1,23 +1,24 @@
 package com.cmartin.aviation.api
 
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.Route
 import com.cmartin.aviation.api.Common.Api2Response
 import com.cmartin.aviation.api.Model.CountryView
 import com.cmartin.aviation.domain
 import com.cmartin.aviation.domain.Model.CountryCode
 import com.cmartin.aviation.port.CountryPersister
-import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 import zio._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CountryPocApi(countryPersister: CountryPersister) {
   lazy val routes: Route =
     getRoute
 
   lazy val getRoute: Route =
-    AkkaHttpServerInterpreter().toRoute(
-      CountryEndpoints.getByCodeEndpoint.serverLogic { request =>
+    PekkoHttpServerInterpreter().toRoute(
+      CountryEndpoints.getByCodeEndpoint.serverLogic[Future] { request =>
         Common.run2(doGetLogic(request))
       }
     )

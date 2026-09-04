@@ -1,17 +1,17 @@
 package com.cmartin.aviation
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.http.scaladsl.Http
 import com.cmartin.aviation.api.configuration.ApiConfiguration
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
-object AkkaWebServerApp
+object PekkoWebServerApp
     extends App
     with ApiConfiguration {
-  // A K K A  A C T O R  S Y S T E M
+  // P E K K O  A C T O R  S Y S T E M
   implicit lazy val system: ActorSystem           = ActorSystem("WebAppActorSystem")
   implicit val executionContext: ExecutionContext = system.dispatcher
   system.log.info(s"Starting WebServer")

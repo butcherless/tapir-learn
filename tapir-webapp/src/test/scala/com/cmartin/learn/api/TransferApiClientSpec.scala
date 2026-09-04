@@ -95,11 +95,12 @@ class TransferApiClientSpec
       basicRequest
         .body(TransferEndpoint.transferExample)
         .post(uri"http://localhost:8080/api/v1.0/transfers/")
+        .response(asJson[TransferDto])
 
     val response = unsafeRun(backend.send(request))
 
     response.code shouldBe StatusCode.Created
-    response.body shouldBe TransferEndpoint.transferExample
+    response.body shouldBe Right(TransferEndpoint.transferExample)
   }
 
   it should "respond Bad Request for an invalid transfer entity" in {

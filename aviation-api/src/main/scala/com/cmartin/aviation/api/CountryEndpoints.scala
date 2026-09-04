@@ -1,6 +1,6 @@
 package com.cmartin.aviation.api
 
-import akka.http.scaladsl.model.headers.`Content-Location`
+import org.apache.pekko.http.scaladsl.model.headers.`Content-Location`
 import com.cmartin.aviation.domain.Model.CountryCode
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.auto._

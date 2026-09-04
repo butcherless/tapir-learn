@@ -14,7 +14,7 @@ class SlickRouteRepositorySpec
     extends SlickBaseRepositorySpec {
 
   val env =
-    ZLayer.make[CountryRepository with AirportRepository with RouteRepository](
+    ZLayer.make[CountryRepository & AirportRepository & RouteRepository](
       Common.dbLayer,
       SlickCountryRepository.layer,
       SlickAirportRepository.layer,
@@ -189,7 +189,7 @@ class SlickRouteRepositorySpec
       country: CountryDbo,
       origin: AirportDbo,
       destination: AirportDbo
-  ): ZIO[CountryRepository with AirportRepository, Throwable, (Long, Long)] = {
+  ): ZIO[CountryRepository & AirportRepository, Throwable, (Long, Long)] = {
     for {
       countryId     <- CountryRepository.insert(country)
       originId      <- AirportRepository.insert(origin.copy(countryId = countryId))

@@ -1,8 +1,8 @@
 package com.cmartin.aviation.api.configuration
 
-import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.RouteConcatenation._
-import akka.http.scaladsl.server.directives.DebuggingDirectives
+import org.apache.pekko.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.RouteConcatenation._
+import org.apache.pekko.http.scaladsl.server.directives.DebuggingDirectives
 import com.cmartin.aviation.Commons
 import com.cmartin.aviation.api.{ActuatorApi, CountryApi, SwaggerApi}
 import com.cmartin.aviation.domain.Model

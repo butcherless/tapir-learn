@@ -1,13 +1,13 @@
 package com.cmartin.learn.api
 
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.Route
 import com.cmartin.learn.api.CommonEndpoint._
 import sttp.apispec.openapi._
 import sttp.apispec.openapi.circe.yaml._
 import sttp.tapir.AnyEndpoint
 import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
 import sttp.tapir.docs.openapi._
-import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 import sttp.tapir.swagger.SwaggerUI
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
@@ -17,7 +17,7 @@ import scala.concurrent.Future
 trait SwaggerApi {
 
   lazy val route: Route =
-    AkkaHttpServerInterpreter()
+    PekkoHttpServerInterpreter()
       .toRoute(swaggerEndpoints)
 
   // add endpoints to the list for swagger documentation

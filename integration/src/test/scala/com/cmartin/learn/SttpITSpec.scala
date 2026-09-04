@@ -85,7 +85,7 @@ class SttpITSpec
 
 object SttpITSpec {
 
-  val backend: SttpBackend[Task, ZioStreams with WebSockets] =
+  val backend: SttpBackend[Task, ZioStreams & WebSockets] =
     unsafeRun(AsyncHttpClientZioBackend())
 
   def unsafeRun[E, A](program: ZIO[Any, E, A]): A =

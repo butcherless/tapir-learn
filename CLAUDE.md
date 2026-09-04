@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-A Scala 2.x / sbt 2.x learning project exploring the [Tapir](https://tapir-scala.readthedocs.io/) library for
-defining HTTP APIs, with both Akka HTTP and ZIO HTTP server interpreters. Application code targets Scala
-2.13 (`project/Versions.scala`); the build definition itself runs on sbt 2 (`project/build.properties`),
-whose own metabuild language is Scala 3 — these are independent and don't need to match. The repo contains
-two independent codebases:
+A Scala 3.x / sbt 2.x learning project exploring the [Tapir](https://tapir-scala.readthedocs.io/) library for
+defining HTTP APIs, with both Pekko HTTP and ZIO HTTP server interpreters. Application code targets Scala
+3.9.0 (`project/Versions.scala`); the build definition itself runs on sbt 2 (`project/build.properties`),
+whose own metabuild language is Scala 3 — these happen to coincide now but are independent and don't need to
+match. The repo contains two independent codebases:
 
 - **`tapir-webapp`** — the original module (package `com.cmartin.learn`). Money-transfer and aircraft APIs,
-  each exposed twice: once via Akka HTTP (`AkkaWebServerApp`) and once via ZIO HTTP (`ZioHttpServerApp`).
+  each exposed twice: once via Pekko HTTP (`PekkoWebServerApp`) and once via ZIO HTTP (`ZioHttpServerApp`).
 - **`aviation-*`** modules — a newer, layered rewrite (package `com.cmartin.aviation`) modeling countries,
   airports and airlines, structured as ports & adapters across five sbt modules (see Architecture below).
 
@@ -49,8 +49,8 @@ JDK 21 (Zulu).
 ### Running a server locally
 
 `reStart` is broken (see above). Build and run the assembled jar instead, e.g. for `tapir-webapp`:
-`sbt "tapir-webapp/assembly"` then `java -jar target/out/jvm/scala-2.13.18/tapir-webapp/tapir-webapp.jar`
-(Akka HTTP implementation, Swagger UI at http://localhost:8080/docs). Same pattern for `aviation-api`
+`sbt "tapir-webapp/assembly"` then `java -jar target/out/jvm/scala-3.9.0/tapir-webapp/tapir-webapp.jar`
+(Pekko HTTP implementation, Swagger UI at http://localhost:8080/docs). Same pattern for `aviation-api`
 (→ `aviation-webapp.jar`) and `aviation-web` (ZIO HTTP, port 8081; no assembly jar name override, so it's
 `aviation-web-assembly-<version>.jar` — or use `sbt aviation-web/run`, which runs in-process rather than via
 an assembled jar and isn't affected by the swagger-ui merge-strategy issue below).
@@ -59,7 +59,7 @@ Health check: `curl -v http://localhost:8080/api/v1.0/health | jq`.
 **Note:** before the assembly merge-strategy fix (see `assemblyMergeStrategy` in `build.sbt`), the
 assembled jars crashed the JVM on the very first HTTP request with `META-INF resources are missing`
 (tapir-swagger-ui-bundle's `SwaggerUI` static init failing because sbt-assembly's default strategy dropped
-the swagger-ui webjar's `META-INF/resources`, and `akka.jvm-exit-on-fatal-error` turns that into a hard
+the swagger-ui webjar's `META-INF/resources`, and `pekko.jvm-exit-on-fatal-error` turns that into a hard
 JVM exit). Fixed per
 [tapir's documented merge strategy](https://tapir.softwaremill.com/en/latest/docs/openapi.html#using-swaggerui-with-sbt-assembly);
 verified live end-to-end via the `integration` subproject below.
@@ -79,7 +79,7 @@ Module dependency chain (see `build.sbt` and `docs/component-diagram.puml`):
 
 ```
 aviation-core  <-- aviation-repository <-- aviation-service <-- aviation-api
-     ^                                            ^                (Akka HTTP)
+     ^                                            ^                (Pekko HTTP)
      |                                            |
      +-------------------- aviation-test-utils ---+           aviation-web
                                                                 (ZIO HTTP, depends on aviation-api
@@ -100,7 +100,7 @@ aviation-core  <-- aviation-repository <-- aviation-service <-- aviation-api
   corresponding repository. This is the layer that fulfils the port contracts defined in `aviation-core`
   using `aviation-repository`. Depends on `aviation-core`, `aviation-repository`, and
   `aviation-test-utils` (test scope only).
-- **`aviation-api`** — Akka HTTP server using tapir endpoints (`*Endpoints`), `Api` classes that bind
+- **`aviation-api`** — Pekko HTTP server using tapir endpoints (`*Endpoints`), `Api` classes that bind
   endpoints to server logic, and view models (`api.Model`) with `toView`/domain-conversion extension
   methods, mirroring the repository layer's Dbo mapping pattern. `CountryValidator` validates/converts
   incoming view requests to domain models. **Note:** `ApiConfiguration` currently wires `CountryApi` to a
@@ -122,16 +122,16 @@ Api-layer `ErrorInfo`/HTTP status codes via `manageError` functions).
 
 Package `com.cmartin.learn`. Independent of the `aviation-*` stack. `domain.Model` /
 `domain.ApiConverters` hold the domain model and view conversions; `api.*` holds tapir endpoint
-definitions (`*Endpoint`) and their Akka HTTP (`api.*Api`) and ZIO HTTP (`apizio.*Api`) bindings side by
-side, both served from the same `AkkaWebServerApp` / `ZioHttpServerApp` entry points. Uses json4s for the
-Akka HTTP JSON codec (`Json4sApi`) and zio-json elsewhere.
+definitions (`*Endpoint`) and their Pekko HTTP (`api.*Api`) and ZIO HTTP (`apizio.*Api`) bindings side by
+side, both served from the same `PekkoWebServerApp` / `ZioHttpServerApp` entry points. Uses json4s for the
+Pekko HTTP JSON codec (`Json4sApi`) and zio-json elsewhere.
 
 ### Cross-cutting notes
 
-- Scala 2.13, sbt multi-module build (`aviation-root` aggregates all modules).
+- Scala 3.9.0, sbt multi-module build (`aviation-root` aggregates all modules).
 - ZIO is used throughout for effect handling (`aviation-core`, `aviation-repository`, `aviation-service`,
-  `aviation-web`) even where the HTTP server itself is Akka HTTP (`aviation-api`, `tapir-webapp`) — ZIO
-  effects are run via `zio.Runtime` / `run(...)` helpers at the Akka route boundary, and `ZLayer`s wire
+  `aviation-web`) even where the HTTP server itself is Pekko HTTP (`aviation-api`, `tapir-webapp`) — ZIO
+  effects are run via `zio.Runtime` / `run(...)` helpers at the Pekko route boundary, and `ZLayer`s wire
   persister/repository implementations together.
 - Tests use ScalaTest (`AnyFlatSpec` style) with ScalaMock for mocking ports/services and an in-memory H2
   database for repository/persister-level tests.
