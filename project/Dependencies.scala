@@ -39,6 +39,7 @@ object Dependencies {
     "com.softwaremill.sttp.tapir" %% "tapir-json-circe"        % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"      % Versions.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir,
+    "org.apache.pekko"            %% "pekko-http"              % Versions.pekkoHttp,
     "org.apache.pekko"            %% "pekko-stream"            % Versions.pekko,
     "org.apache.pekko"            %% "pekko-slf4j"             % Versions.pekko
   )
@@ -64,6 +65,7 @@ object Dependencies {
     "com.softwaremill.sttp.tapir"   %% "tapir-swagger-ui-bundle"       % Versions.tapir,
     "com.softwaremill.sttp.tapir"   %% "tapir-json-json4s"             % Versions.tapir,
     "com.softwaremill.sttp.tapir"   %% "tapir-zio-http-server"         % Versions.tapir,
+    "org.apache.pekko"              %% "pekko-http"                    % Versions.pekkoHttp,
     "org.apache.pekko"              %% "pekko-slf4j"                   % Versions.pekko,
     "org.apache.pekko"              %% "pekko-stream"                  % Versions.pekko,
     "ch.qos.logback"                 % "logback-classic"               % Versions.logback,
