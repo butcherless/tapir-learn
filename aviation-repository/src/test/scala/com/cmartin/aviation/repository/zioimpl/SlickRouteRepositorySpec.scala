@@ -5,7 +5,6 @@ import com.cmartin.aviation.repository.Model.{AirportDbo, CountryDbo, RouteDbo}
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.{AirportRepository, Common, CountryRepository, RouteRepository}
 import org.scalatest.Inside._
-import zio.ZLayer.Debug
 import zio.{ZIO, ZLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
@@ -18,8 +17,7 @@ class SlickRouteRepositorySpec
       Common.dbLayer,
       SlickCountryRepository.layer,
       SlickAirportRepository.layer,
-      SlickRouteRepository.layer,
-      Debug.mermaid
+      SlickRouteRepository.layer
     )
 
   behavior of "SlickRouteRepository"

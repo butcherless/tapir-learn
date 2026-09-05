@@ -14,7 +14,12 @@ lazy val basicScalacOptions = Seq(
   "-unchecked",
   "-feature",
   "-language:implicitConversions",
-  "-language:postfixOps"
+  "-language:postfixOps",
+  // json4s's public API (CustomSerializer, Extraction.extract, tapir-json4s codecs) is defined
+  // against implicit Manifest/OptManifest and hasn't migrated off it even in its latest release
+  // (4.1.1) - the deprecation is inherent to calling json4s from Scala 3, not fixable at the
+  // call site, so it's suppressed here rather than left as noise on every build.
+  "-Wconf:msg=Manifest and OptManifest:s"
 )
 
 lazy val commonSettings = Seq(

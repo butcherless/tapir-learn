@@ -4,7 +4,6 @@ import com.cmartin.aviation.repository.Common._
 import com.cmartin.aviation.repository.Model.AirportDbo
 import com.cmartin.aviation.repository.TestData._
 import com.cmartin.aviation.repository.{AirportRepository, Common, CountryRepository}
-import zio.ZLayer.Debug
 import zio.{TaskLayer, ZLayer}
 
 import java.sql.SQLIntegrityConstraintViolationException
@@ -16,8 +15,7 @@ class SlickAirportRepositorySpec
     ZLayer.make[CountryRepository & AirportRepository](
       Common.dbLayer,
       SlickCountryRepository.layer,
-      SlickAirportRepository.layer,
-      Debug.mermaid
+      SlickAirportRepository.layer
     )
 
   behavior of "SlickAirportRepository"

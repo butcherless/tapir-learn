@@ -51,7 +51,7 @@ trait Json4sApi {
 
   implicit val serialization: Serialization = org.json4s.native.Serialization
   implicit val formats: Formats             =
-    DefaultFormats + new EnumNameSerializer(AircraftType) + new AircraftDtoSerializer()(DefaultFormats)
+    DefaultFormats + new EnumNameSerializer(AircraftType) + new AircraftDtoSerializer()(using DefaultFormats)
 
   lazy val routes: Route =
     getRoute ~
