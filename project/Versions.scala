@@ -5,7 +5,7 @@ object Versions {
   val pekkoHttp  = "1.4.0"
   val json4s     = "4.1.1"
   val h2         = "2.5.250"
-  val logback    = "1.6.3"
+  val logback    = "1.6.4"
   val slick      = "3.6.1"
   val tapir      = "1.13.31"
   val sttp       = "3.11.0"
