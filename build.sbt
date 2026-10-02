@@ -5,6 +5,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / scalaVersion := Versions.scala
 ThisBuild / organization := "com.cmartin.learn"
+ThisBuild / libraryDependencySchemes += "dev.zio" %% "zio-json" % VersionScheme.Always
 
 lazy val basicScalacOptions = Seq(
   "-deprecation",

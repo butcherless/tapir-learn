@@ -30,6 +30,7 @@ object Dependencies {
 
   val serviceTest = Seq(
     "org.scalamock" %% "scalamock" % Versions.scalaMock % Test,
+    "org.scalamock" %% "scalamock-scalatest" % Versions.scalaMock % Test,
     "com.h2database" % "h2"        % Versions.h2        % Test
   )
 
@@ -53,7 +54,8 @@ object Dependencies {
   val apiTest = Seq(
     "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp  % Test,
     "org.apache.pekko" %% "pekko-testkit"      % Versions.pekko      % Test,
-    "org.scalamock"    %% "scalamock"          % Versions.scalaMock % Test
+    "org.scalamock"    %% "scalamock"          % Versions.scalaMock % Test,
+    "org.scalamock"    %% "scalamock-scalatest" % Versions.scalaMock % Test
   )
 
   val mainAndTest = Seq(
