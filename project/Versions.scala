@@ -5,13 +5,13 @@ object Versions {
   val pekkoHttp  = "1.4.2"
   val json4s     = "4.1.1"
   val h2         = "2.5.252"
-  val logback    = "1.6.5"
+  val logback    = "1.6.6"
   val slick      = "3.6.1"
-  val tapir      = "1.13.33"
+  val tapir      = "1.14.1"
   val sttp       = "3.11.0"
   val zioLogging = "2.5.3"
   val zioPrelude = "1.0.0-RC48"
   // test
-  val scalaMock  = "7.6.0"
+  val scalaMock  = "7.6.2"
   val scalatest  = "3.2.20"
 }
