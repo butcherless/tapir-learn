@@ -34,7 +34,7 @@ jobs:
       - name: compile unit tests
         run: sbt Test/compile
       - name: tests
-        run: sbt test
+        run: sbt testFull
       - name: assembly
         run: sbt assembly
       - name: dependency updates

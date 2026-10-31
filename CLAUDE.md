@@ -43,7 +43,7 @@ space-separated commands (`sbt clean compile`) fail to parse under sbt 2's thin 
 - `scalafmt` / `scalafmtAll` — format code (config in `.scalafmt.conf`, max column 120)
 - `./cleanup.sh` — removes all `target`, `.bloop`, `.bsp`, `.idea`, `.vscode`, `.metals` directories repo-wide
 
-CI (`.github/workflows/scala.yml`) runs, in order: `compile`, `Test/compile`, `test`, `assembly`, `xdup`, on
+CI (`.github/workflows/scala.yml`) runs, in order: `compile`, `Test/compile`, `testFull`, `assembly`, `xdup`, on
 JDK 21 (Zulu).
 
 ### Running a server locally
