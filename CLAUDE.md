@@ -20,7 +20,7 @@ Run these from the sbt shell. From an OS shell, join multiple commands with `;` 
 - `scalafmtAll`: format (`.scalafmt.conf`)
 - `./cleanup.sh`: removes `target`, `.bloop`, `.bsp`, `.idea`, `.vscode`, `.metals` everywhere
 
-`reStart`/`reStop` are broken: `sbt-revolver` isn't in `project/plugins.sbt`, though the README documents it.
+There is no `reStart`/`reStop`: `sbt-revolver` isn't in `project/plugins.sbt`. Use `<module>/run` or the assembled jar.
 
 CI (`.github/workflows/scala.yml`) runs `scalafmtCheckAll`, `compile`, `Test/compile`, `testFull`, `assembly`, `xdup`.
 

@@ -12,12 +12,12 @@ Run the following commands for quick startup and check
 1. git clone https://github.com/butcherless/tapir-learn.git
 2. cd tapir-learn
 3. sbt
-4. aviation-api/reStart
+4. `aviation-api/run` (blocks the shell; `Ctrl+C` to stop, then run the next one)
 5. http://localhost:8080/docs
-6. aviation-web/reStart
+6. `aviation-web/run`
 7. http://localhost:8081/docs
-7. tapir-webapp/reStart
-8. http://localhost:8080/docs
+8. `tapir-webapp/run`
+9. http://localhost:8080/docs
 
 ## Project structure
 
@@ -57,15 +57,12 @@ Compile the application
 
 `compile` or `~compile` for continuous compiling
 
-Manage the web server with Revolver plugin
+Run a module's web server
 
-`reStart`, `reStop`, `reStatus`, or `~reStart`
-
-> **Currently broken:** `sbt-revolver` is not in `project/plugins.sbt`, so `reStart` fails with
-> `Not a valid key: reStart`. Until it's restored, run a module's server via its assembled jar
-> instead (also exercises the `assembly` task):
-> `sbt "<module>/assembly"` then `java -jar target/out/jvm/scala-3.9.0/<module>/<module>.jar`
-> (or `<jarName>` from `assembly / assemblyJarName` if it differs from the module name).
+`<module>/run` (e.g. `aviation-api/run`), or from its assembled jar (also exercises the
+`assembly` task): `sbt "<module>/assembly"` then
+`java -jar target/out/jvm/scala-<version>/<module>/<jarName>.jar`, where `<jarName>` is
+`assembly / assemblyJarName` if set, otherwise `<module>-assembly-<version>`.
 
 Check Swagger API:
 
@@ -117,10 +114,10 @@ Automated: the `integration` sbt subproject (`integration/src/test/scala/com/cma
 runs the same checks below as real sttp requests against a running server. It's intentionally left out of
 the default `aviation-root` aggregate (`compile`/`test` won't touch it), so run it explicitly:
 
-1. Start the server (see "Currently broken" note above for the `reStart` workaround), then
+1. Start the server (`tapir-webapp/run`, or its jar — see "Run a module's web server" above), then
 2. `sbt integration/test`
 
-Manual: module: `tapir-webapp/reStart`
+Manual: module: `tapir-webapp/run`
 
 bash command: `httpie`
 
