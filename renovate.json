@@ -16,6 +16,13 @@
   ],
   "packageRules": [
     {
+      "description": "Keep Pekko (core and HTTP) on 1.x until Pekko HTTP 2.0 is GA; tapir-pekko-http-server targets Pekko HTTP 1.x (see .scala-steward.conf and closed PR #982)",
+      "matchPackageNames": [
+        "org.apache.pekko:**"
+      ],
+      "allowedVersions": "<2.0.0"
+    },
+    {
       "description": "sbt-bloop also publishes hash-named builds (e.g. 217-c2115241) that Renovate reads as a major; only plain x.y.z releases are real",
       "matchPackageNames": [
         "ch.epfl.scala:sbt-bloop"
