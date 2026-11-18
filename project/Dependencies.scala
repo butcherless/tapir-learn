@@ -85,8 +85,8 @@ object Dependencies {
     "org.apache.pekko"              %% "pekko-http-testkit"            % Versions.pekkoHttp % Test,
     "org.apache.pekko"              %% "pekko-testkit"                 % Versions.pekko     % Test,
     // S T T P
-    "com.softwaremill.sttp.client3" %% "core"                          % Versions.sttp, // % "it, test",
-    "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % Versions.sttp, // % "it, test",
+    "com.softwaremill.sttp.client3" %% "core"                          % Versions.sttp      % Test,
+    "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % Versions.sttp      % Test,
     "com.softwaremill.sttp.client3" %% "circe"                         % Versions.sttp      % Test
   )
 }

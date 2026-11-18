@@ -65,7 +65,11 @@ lazy val integration = project
   .dependsOn(`tapir-webapp`)
   .settings(
     commonSettings,
-    libraryDependencies += "com.softwaremill.sttp.client3" %% "circe" % Versions.sttp,
+    libraryDependencies ++= Seq(
+      "com.softwaremill.sttp.client3" %% "core"                          % Versions.sttp % Test,
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % Versions.sttp % Test,
+      "com.softwaremill.sttp.client3" %% "circe"                         % Versions.sttp % Test
+    ),
     name                                                   := "tapir-webapp-integration",
     publish / skip                                         := true
   )
