@@ -18,10 +18,10 @@ object Dependencies {
 
   val repoMain = Seq(
     ("com.typesafe.slick" %% "slick"          % Versions.slick)
-      .exclude("org.slf4j", "slf4j-api")
-      .exclude("com.typesafe", "config"),
+      .exclude("org.slf4j" % "slf4j-api")
+      .exclude("com.typesafe" % "config"),
     ("com.typesafe.slick" %% "slick-hikaricp" % Versions.slick)
-      .exclude("org.slf4j", "slf4j-api")
+      .exclude("org.slf4j"    % "slf4j-api")
   )
 
   val h2Test = Seq(
@@ -29,9 +29,9 @@ object Dependencies {
   )
 
   val serviceTest = Seq(
-    "org.scalamock" %% "scalamock" % Versions.scalaMock % Test,
+    "org.scalamock" %% "scalamock"           % Versions.scalaMock % Test,
     "org.scalamock" %% "scalamock-scalatest" % Versions.scalaMock % Test,
-    "com.h2database" % "h2"        % Versions.h2        % Test
+    "com.h2database" % "h2"                  % Versions.h2        % Test
   )
 
   val apiMain = Seq(
@@ -52,9 +52,9 @@ object Dependencies {
   )
 
   val apiTest = Seq(
-    "org.apache.pekko" %% "pekko-http-testkit" % Versions.pekkoHttp  % Test,
-    "org.apache.pekko" %% "pekko-testkit"      % Versions.pekko      % Test,
-    "org.scalamock"    %% "scalamock"          % Versions.scalaMock % Test,
+    "org.apache.pekko" %% "pekko-http-testkit"  % Versions.pekkoHttp % Test,
+    "org.apache.pekko" %% "pekko-testkit"       % Versions.pekko     % Test,
+    "org.scalamock"    %% "scalamock"           % Versions.scalaMock % Test,
     "org.scalamock"    %% "scalamock-scalatest" % Versions.scalaMock % Test
   )
 
