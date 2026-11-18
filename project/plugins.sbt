@@ -1,7 +1,7 @@
 addSbtPlugin("com.eed3si9n"     % "sbt-assembly"  % "2.5.0")
 addSbtPlugin("com.timushev.sbt" % "sbt-updates"   % "0.7.1")
 addSbtPlugin("com.eed3si9n"     % "sbt-buildinfo" % "0.14.0")
-addSbtPlugin("com.github.sbt"   % "sbt-git"       % "2.2.0")
+addSbtPlugin("com.github.sbt"   % "sbt-git"       % "3.0.0")
 addSbtPlugin("org.scalameta"    % "sbt-scalafmt"  % "2.6.2")
 addSbtPlugin("org.scoverage"    % "sbt-scoverage" % "2.4.4")
 addSbtPlugin("ch.epfl.scala"    % "sbt-bloop"     % "2.1.3")
